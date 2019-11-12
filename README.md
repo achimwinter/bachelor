@@ -1,8 +1,4 @@
-# Vorlage für Bachelor- und Masterarbeiten
-
-Diese LaTeX Vorlage für Bachelorarbeiten bzw. mit leichten Änderungen auch für Masterarbeiten an der Fakultät Informatik und Wirtschaftsinformatik der Hochschule für angewandte Wissenschaften Würzburg-Schweinfurt kann verändert und natürlich an die spezifischen Vorgaben der betreuenden Dozenten angepasst werden.
-
-Mit der nächsten Version der Allgemeinen Prüfungsordnung (APO), gültig ab 01.10.2019, müssen Studierende Ihre Arbeit in zwei digitalen Fassungen abgeben. Eine Version muss den Namen des Autors enthalten, die andere Version darf den Namen des Autors nicht enthalten. Dies soll die Überprüfung auf Plagiate mit dem Tool PlagScan vereinfachen. In der LaTeX Vorlage existiert dazu eine Abfrage:
+# Zur Vorlage
 
 ```
 \ifdefined\iswithfullname
@@ -18,6 +14,6 @@ anderen Lösungen nicht funktionieren sollten, kommentiert man die obige Abfrage
 Variable `ShowBaAuthor` selbst. Wichtig, in der Arbeit muss immer das Makro `ShowBaAuthor` verwendet werden,
 wenn man den Namen des Autors angeben möchte. 
 
-Fehlerhinweise und Verbesserungsvorschläge bitte an Peter Braun <peter.braun@fhws.de> schicken.
+ # Zur Bachelorarbeit
 
-Veröffentlicht unter der Lizenz CC0.
+ Ziel der Arbeit ist eine vereinfachte Nutzung von private Keys.
