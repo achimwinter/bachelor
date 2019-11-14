@@ -14,7 +14,7 @@
 ## file names
 #################################################################################
 FILE        = thesis
-BIBTEXDB    = literatur.bib
+BIBTEXDB    = bibliography.bib
 TEXSRC      = $(FILE).tex
 FILEPDF     = $(FILE).pdf
 FILEAPDF    = $(FILE)-anonymous.pdf

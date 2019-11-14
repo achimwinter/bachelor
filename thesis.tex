@@ -33,7 +33,7 @@ style=apa,
 citestyle=authoryear-comp
 ]{biblatex}
 
-\bibliography{literatur}
+\bibliography{bibliography}
 
 
 %% Schauen ob die Reihenfolge passt
@@ -42,8 +42,8 @@ citestyle=authoryear-comp
 %% definitions
 %%%%%%%%%%%%%%%%%%%
 \def\BaAuthor{Achim Winter}
-\def\BaAuthorStudyProgram{Computer Science} %% Wirtschaftsinformatik, E-Commerce, Informationssysteme
-\def\BaType{Bachelor-Thesis} %% Masterarbeit
+\def\BaAuthorStudyProgram{Computer Science}
+\def\BaType{Bachelor thesis} %% passt das so?
 \def\BaTitle{Operating a smartphone as a hardware Security Module}
 \def\BaSupervisorOne{Prof.\ Dr.\ Junker-Schilling}
 \def\BaSupervisorTwo{Prof.\ Dr.\ Huffstadt}
@@ -177,10 +177,10 @@ pdfkeywords={Keywords}
 \title{\BaTitle\\[15mm]}
 \subtitle{\normalsize{submitted to the University of Applied Sciences W\"{u}rzburg-Schweinfurt in the Faculty of Computer Science and Business Informatics to complete a course of study in the course of studies  \BaAuthorStudyProgram}}
 \author{\ShowBaAuthor}
-\date{\normalsize{Eingereicht am: \BaDeadline}}
+\date{\normalsize{Submitted on: \BaDeadline}}
 \publishers{
-  \normalsize{Erstpr\"{u}fer: \BaSupervisorOne}\\
-  \normalsize{Zweitpr\"{u}fer: \BaSupervisorTwo}\\
+  \normalsize{First Supervisor: \BaSupervisorOne}\\
+  \normalsize{Second Supervisor: \BaSupervisorTwo}\\
 }
 %\lowertitleback{
 %\centering\includegraphics[width=4cm]{barcode_default}
@@ -193,8 +193,7 @@ pdfkeywords={Keywords}
 %% abstract
 %%%%%%%%%%%%%%%%%%%
 
-\section*{Zusammenfassung}
-
+\section*{Summary}
 TODO
 
 \section*{Abstract}
@@ -202,7 +201,7 @@ TODO
 TODO
 
 \newpage
-\chapter*{Danksagung}
+\chapter*{Acknowledgement}
 
 
 
@@ -218,64 +217,70 @@ TODO
 %%%%%%%%%%%%%%%%%%%
 \mainmatter
 
-\chapter{Motivation}\label{ch:intro}
+\chapter{Introduction}\label{ch:intro}
+
+\section{Motivation}
+
+The use of public/private keys is too difficult for many people, even IT professionals. The keys have to be distributed and stored securely. In many cases the distribution of keys is done by synchronizing the keys within a cloud. However, this is a potential security leak, because cloud service providers are not entirely trustworthy. On the other hand, distributing private keys
+by universal serial bus (USB) is too time-consuming for many users.
+
+\subsection{Entrepreneurial perspective}
+
+\subsection{Social perspective}
+
+\section{Objective}
+
+\section{Environment}
+
+\section{Structural Overview}
+
+\chapter{Approach}
+
+\section{Analysis of the current situation}
+
+\section{Requirements for Key-Distribution Systems}
+
+\section{Concept}
+
+\section{Implementation}
 
 
-\chapter{Einführung}\label{ch:intro}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vehicula felis lectus, nec aliquet arcu aliquam vitae. Quisque laoreet consequat ante, eget pretium quam hendrerit at. Pellentesque nec purus eget erat mattis varius. Nullam ut vulputate velit. Suspendisse in dui in eros iaculis tempus. Phasellus vel est arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer elementum, nulla eu faucibus dignissim, orci justo imperdiet lorem, luctus consectetur orci orci a nunc.
 
-Praesent at nunc nec tortor viverra viverra. Morbi in feugiat lectus. Vestibulum iaculis ipsum at eros viverra volutpat in id ipsum. Donec condimentum, ligula viverra pharetra tincidunt, nunc dui malesuada nisi, vitae mollis lacus massa quis velit. Integer feugiat ipsum a volutpat scelerisque. Nulla facilisis augue nunc. Curabitur eget consectetur nulla. Integer accumsan sem non nisi tristique dictum.
+\chapter{Fundamentals}
 
-Sed lacinia eu dolor sed congue. Ut dui orci, venenatis id interdum rhoncus, mattis elementum massa. Proin venenatis elementum purus ut rutrum. Phasellus sit amet enim porta, commodo mauris a, bibendum tortor. Nulla ut lobortis justo. Aenean auctor mi nec velit fermentum, quis ultricies odio viverra. Maecenas ultrices urna vel erat ornare, quis suscipit odio molestie. Donec vel dapibus orci, vel tincidunt orci.
+\section{Quick-Response Codes}
 
-Etiam vitae eros erat. Praesent nec accumsan turpis, et mollis eros. Praesent lacinia nulla at neque porta aliquam. Quisque elementum neque ac porta suscipit. Nulla volutpat luctus venenatis. Aliquam imperdiet suscipit pretium. Nunc feugiat lacinia aliquet. Mauris ut sapien nec risus porttitor bibendum. Aenean feugiat bibendum lectus, id mattis elit adipiscing at. Pellentesque interdum felis non risus iaculis euismod fermentum nec urna. Nullam lacinia suscipit erat ac ullamcorper. Sed vitae nulla posuere, posuere sem id, ultricies urna. Maecenas eros lorem, tempus non nulla vitae, ullamcorper egestas nibh. Vestibulum facilisis ante vel purus accumsan mattis. Donec molestie tempor eros, a gravida odio congue posuere.
+\section{Hardware Security Module}
 
-Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam quis porta mauris. Cras dapibus sapien eget sem porta, ut congue sapien accumsan. Maecenas hendrerit lobortis mauris ut hendrerit. Suspendisse at aliquet est. Quisque eros est, scelerisque ac orci quis, placerat suscipit lorem. Phasellus rutrum enim non odio ullamcorper, sit amet auctor nulla fringilla. Nunc eleifend vulputate dui, a sollicitudin tellus venenatis non. Cras condimentum lorem at ultricies vestibulum. Vestibulum interdum lobortis commodo. Nullam rhoncus interdum massa, ut varius nisi scelerisque id. Nunc interdum quam in enim bibendum vulputate.
+\section{Cryptography}
+
+\subsection{RSA Cryptography}
+
+\subsection{Secret Sharing}
+
+\subsection{Android Keystore System}
+
+\chapter{Problem definition}
+
+\chapter{Analysis of the current situation}
+
+\chapter{Requirements for Key-Distribution Systems}
+
+\chapter{Concept}
+
+\chapter{Implementation}
+
+\chapter{Evaluation}
+
+%\section{Existing Solutions}
+
+%\section{QR-Based Solution}
+
+
+\chapter{Summary}
 
 \parencite{gamma2011patterns}
-
-\chapter{Grundlagen}
-
-\chapter{Problemstellung}
-
-\chapter{Lösung}
-
-\begin{lstlisting}[label=lst:java,
-				   language=java,
-				   firstnumber=1,
-				   caption=Beispiel für einen Quelltext]
-
-public void foo() {
-	// Kommentar
-}
-\end{lstlisting}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vehicula felis lectus, nec aliquet arcu aliquam vitae. Quisque laoreet consequat ante, eget pretium quam hendrerit at. Pellentesque nec purus eget erat mattis varius. Nullam ut vulputate velit. Suspendisse in dui in eros iaculis tempus. Phasellus vel est arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer elementum, nulla eu faucibus dignissim, orci justo imperdiet lorem, luctus consectetur orci orci a nunc.
-
-Praesent at nunc nec tortor viverra viverra. Morbi in feugiat lectus. Vestibulum iaculis ipsum at eros viverra volutpat in id ipsum. Donec condimentum, ligula viverra pharetra tincidunt, nunc dui malesuada nisi, vitae mollis lacus massa quis velit. Integer feugiat ipsum a volutpat scelerisque. Nulla facilisis augue nunc. Curabitur eget consectetur nulla. Integer accumsan sem non nisi tristique dictum.
-
-Sed lacinia eu dolor sed congue. Ut dui orci, venenatis id interdum rhoncus, mattis elementum massa. Proin venenatis elementum purus ut rutrum. Phasellus sit amet enim porta, commodo mauris a, bibendum tortor. Nulla ut lobortis justo. Aenean auctor mi nec velit fermentum, quis ultricies odio viverra. Maecenas ultrices urna vel erat ornare, quis suscipit odio molestie. Donec vel dapibus orci, vel tincidunt orci.
-
-Etiam vitae eros erat. Praesent nec accumsan turpis, et mollis eros. Praesent lacinia nulla at neque porta aliquam. Quisque elementum neque ac porta suscipit. Nulla volutpat luctus venenatis. Aliquam imperdiet suscipit pretium. Nunc feugiat lacinia aliquet. Mauris ut sapien nec risus porttitor bibendum. Aenean feugiat bibendum lectus, id mattis elit adipiscing at. Pellentesque interdum felis non risus iaculis euismod fermentum nec urna. Nullam lacinia suscipit erat ac ullamcorper. Sed vitae nulla posuere, posuere sem id, ultricies urna. Maecenas eros lorem, tempus non nulla vitae, ullamcorper egestas nibh. Vestibulum facilisis ante vel purus accumsan mattis. Donec molestie tempor eros, a gravida odio congue posuere.
-
-Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam quis porta mauris. Cras dapibus sapien eget sem porta, ut congue sapien accumsan. Maecenas hendrerit lobortis mauris ut hendrerit. Suspendisse at aliquet est. Quisque eros est, scelerisque ac orci quis, placerat suscipit lorem. Phasellus rutrum enim non odio ullamcorper, sit amet auctor nulla fringilla. Nunc eleifend vulputate dui, a sollicitudin tellus venenatis non. Cras condimentum lorem at ultricies vestibulum. Vestibulum interdum lobortis commodo. Nullam rhoncus interdum massa, ut varius nisi scelerisque id. Nunc interdum quam in enim bibendum vulputate.
-
-
-\chapter{Evaluierung}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vehicula felis lectus, nec aliquet arcu aliquam vitae. Quisque laoreet consequat ante, eget pretium quam hendrerit at. Pellentesque nec purus eget erat mattis varius. Nullam ut vulputate velit. Suspendisse in dui in eros iaculis tempus. Phasellus vel est arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer elementum, nulla eu faucibus dignissim, orci justo imperdiet lorem, luctus consectetur orci orci a nunc.
-
-Praesent at nunc nec tortor viverra viverra. Morbi in feugiat lectus. Vestibulum iaculis ipsum at eros viverra volutpat in id ipsum. Donec condimentum, ligula viverra pharetra tincidunt, nunc dui malesuada nisi, vitae mollis lacus massa quis velit. Integer feugiat ipsum a volutpat scelerisque. Nulla facilisis augue nunc. Curabitur eget consectetur nulla. Integer accumsan sem non nisi tristique dictum.
-
-Sed lacinia eu dolor sed congue. Ut dui orci, venenatis id interdum rhoncus, mattis elementum massa. Proin venenatis elementum purus ut rutrum. Phasellus sit amet enim porta, commodo mauris a, bibendum tortor. Nulla ut lobortis justo. Aenean auctor mi nec velit fermentum, quis ultricies odio viverra. Maecenas ultrices urna vel erat ornare, quis suscipit odio molestie. Donec vel dapibus orci, vel tincidunt orci.
-
-Etiam vitae eros erat. Praesent nec accumsan turpis, et mollis eros. Praesent lacinia nulla at neque porta aliquam. Quisque elementum neque ac porta suscipit. Nulla volutpat luctus venenatis. Aliquam imperdiet suscipit pretium. Nunc feugiat lacinia aliquet. Mauris ut sapien nec risus porttitor bibendum. Aenean feugiat bibendum lectus, id mattis elit adipiscing at. Pellentesque interdum felis non risus iaculis euismod fermentum nec urna. Nullam lacinia suscipit erat ac ullamcorper. Sed vitae nulla posuere, posuere sem id, ultricies urna. Maecenas eros lorem, tempus non nulla vitae, ullamcorper egestas nibh. Vestibulum facilisis ante vel purus accumsan mattis. Donec molestie tempor eros, a gravida odio congue posuere.
-
-Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam quis porta mauris. Cras dapibus sapien eget sem porta, ut congue sapien accumsan. Maecenas hendrerit lobortis mauris ut hendrerit. Suspendisse at aliquet est. Quisque eros est, scelerisque ac orci quis, placerat suscipit lorem. Phasellus rutrum enim non odio ullamcorper, sit amet auctor nulla fringilla. Nunc eleifend vulputate dui, a sollicitudin tellus venenatis non. Cras condimentum lorem at ultricies vestibulum. Vestibulum interdum lobortis commodo. Nullam rhoncus interdum massa, ut varius nisi scelerisque id. Nunc interdum quam in enim bibendum vulputate.
-
-\chapter{Zusammenfassung}
-
 
 \backmatter
 %%%%%%%%%%%%%%%%%%%
@@ -283,7 +288,7 @@ Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam q
 %%%%%%%%%%%%%%%%%%%
 
 \listoffigures
-\addcontentsline{toc}{chapter}{Verzeichnisse}
+\addcontentsline{toc}{chapter}{Directories}
 
 %%%%%%%%%%%%%%%%%%%
 %% create tables list
@@ -298,7 +303,7 @@ Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam q
 
 \cleardoublepage
 \phantomsection
-\addcontentsline{toc}{chapter}{Literatur}
+\addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography
 
 %%%%%%%%%%%%%%%%%%%
@@ -307,19 +312,19 @@ Sed in tempus elit, sit amet suscipit quam. Ut suscipit dictum molestie. Etiam q
 
 \addchap{Affidavit}
 
-Hiermit versichere ich, dass ich die vorgelegte Bachelorarbeit selbstständig verfasst und noch nicht anderweitig zu Prüfungszwecken vorgelegt habe. Alle benutzten Quellen und Hilfsmittel sind angegeben, wörtliche und sinngemäße Zitate wurden als solche gekennzeichnet.
+I hereby certify that I have written my bachelor thesis independently and have not yet submitted it for examination purposes elsewhere. All sources and aids used are listed, literal and meaningful quotations have been marked as such.
 
 \vspace{20pt}
 \begin{flushright}
 $\overline{~~~~~~~~~~~~~~~~~\mbox{\ShowBaAuthor, am \today}~~~~~~~~~~~~~~~~~}$
 \end{flushright}
 
-\addchap{Zustimmung zur Plagiatsüberprüfung}
+\addchap{Consent to plagiarism check}
 
-Hiermit willige ich ein, dass zum Zwecke der Überprüfung auf Plagiate meine vorgelegte Arbeit in digitaler Form an PlagScan (www.plagscan.com) übermittelt und diese vorübergehend (max. 5~Jahre) in der von PlagScan geführten Datenbank gespeichert wird sowie persönliche Daten, die Teil dieser Arbeit sind, dort hinterlegt werden.
+I hereby agree that my submitted work may be sent to PlagScan (www.plagscan.com) in digital form for the purpose of checking for plagiarism and that it may be temporarily (max. 5~years) stored in the database maintained by PlagScan as well as personal data which are part of this work may be stored there.
 
 \begin{small}
-Die Einwilligung ist freiwillig. Ohne diese Einwilligung kann unter Entfernung aller persönlichen Angaben und Wahrung der urheberrechtlichen Vorgaben die Plagiatsüberprüfung nicht verhindert werden. Die Einwilligung zur Speicherung und Verwendung der persönlichen Daten kann jederzeit durch Erklärung gegenüber der Fakultät widerrufen werden.
+This Consent is voluntary. Without this consent, the plagiarism check can still take place, when all personal data is removed from the document. Consent to the storage and use of personal data may be revoked at any time by notifying the faculty.
 \end{small}
 
 \vspace{20pt}
