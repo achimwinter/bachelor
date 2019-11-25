@@ -258,30 +258,88 @@ by universal serial bus (USB) is too time-consuming for many users.
 
 \section{Secret Sharing}
 
-\subsection{Shamir's Secret Sharing}
-
-\section{Android Keystore System}
+\subsection{Shamir Secret Sharing}
 
 \section{Trusted Execution Environment}
 
-\chapter{Problem definition}
+\section{Android Keystore System}
+
+\section{Web of trust}
+
+%\chapter{Problem definition}
 
 \chapter{Analysis of the current situation}
 
+\section{Usage of private keys}
+
+\section{Distribution of private keys}
+
+\subsection{Local/Offline}
+
+USB or some other offline connections are used to transfer the private key.
+
+\subsubsection{Subkeys}
+
+Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
+
+\subsection{Webservers/Downloads}
+
+Possible vulnerability by man in the middle attacks.
+
+The private key is stored on a trusted server. Whenever a new device is added, the user can download his private key.
+
+\subsection{External Providers}
+
+Using Services like Dropbox or Google drive. This can be combined with encrypting the private key and or separating the key using secret sharing and 
+storing them on different clouds. 
+
+\subsection{Key Distribution Center}
+
+Using a trusted third party.
+
 \chapter{Requirements for Key-Distribution Systems}
 
+\section{Usability}
+
+\section{Security}
+
+Enter a passphrase on computer and then on mobile phone would add security but isn't that convenient.
+
+\section{Loss Coverage}
+
+
 \chapter{Concept}
+
+\section{Architecture}
+
+\section{Usability}
+
+\section{gRPC (Maybe better in Implementation?)}
 
 \chapter{Implementation}
 
 \section{Kotlin}
 
+\section{Prototype}
+
+\subsection{App}
+
+\subsection{Desktop Client}
+
+% Nach dem verbinden mit QR Code könnte in der App eine Pin angezeigt werden die dann am PC eingegeben werden muss.
+
+
 \chapter{Evaluation}
+
+\section{Usability}
+
+\section{Security}
 
 %\section{Existing Solutions}
 
 %\section{QR-Based Solution}
 
+\chapter{Outlook}
 
 \chapter{Summary}
 
