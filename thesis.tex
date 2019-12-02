@@ -44,7 +44,7 @@ citestyle=authoryear-comp
 \def\BaAuthor{Achim Winter}
 \def\BaAuthorStudyProgram{Computer Science}
 \def\BaType{Bachelor thesis} %% passt das so?
-\def\BaTitle{Operating a smartphone as a hardware Security Module}
+\def\BaTitle{Operating a Smartphone as a Hardware Security Module}
 \def\BaSupervisorOne{Prof.\ Dr.\ Junker-Schilling}
 \def\BaSupervisorTwo{Prof.\ Dr.\ Huffstadt}
 \def\BaDeadline{\today}
@@ -175,7 +175,7 @@ pdfkeywords={Keywords}
    Faculty of Computer Science und Business Informatics}}
 \subject{\BaType}
 \title{\BaTitle\\[15mm]}
-\subtitle{\normalsize{submitted to the University of Applied Sciences W\"{u}rzburg-Schweinfurt in the Faculty of Computer Science and Business Informatics to complete a course of study in the course of studies  \BaAuthorStudyProgram}}
+\subtitle{\normalsize{submitted to the University of Applied Sciences W\"{u}rzburg-Schweinfurt in the Faculty of \BaAuthorStudyProgram}}
 \author{\ShowBaAuthor}
 \date{\normalsize{Submitted on: \BaDeadline}}
 \publishers{
@@ -227,7 +227,12 @@ by universal serial bus (USB) is too time-consuming for many users.
 
 \subsection{Entrepreneurial perspective}
 
+The adorsys GmbH \& Co. KG is a software development and consulting company that specializes in the field of banking and insurance, but also develops software for industry companies. That's why internal security is especially important for adorsys and therefor also the security of communication within the company. Employees usually also have a smartphone that accesses corporate services. The management of key pairs, for example for secure email communication, is very important. 
+
 \subsection{Social perspective}
+
+Secure email communication is also a rarity in the private environment. Even signatures, the certainty that the person who sent me the email is really who he claims to be, is usually not given. 
+One reason for this is that email communication was never developed to be secure. On the other hand, the key management and use for many is far too cumbersome. 
 
 \section{Objective}
 
@@ -245,9 +250,6 @@ by universal serial bus (USB) is too time-consuming for many users.
 
 \section{Implementation}
 
-
-
-
 \chapter{Fundamentals}
 
 \section{Quick-Response Codes}
@@ -258,11 +260,21 @@ by universal serial bus (USB) is too time-consuming for many users.
 
 \section{Secret Sharing}
 
-\subsection{Shamir Secret Sharing}
+Shamirs Secret Sharing. sharing keys können bei den jeweiligen PCs evtl . als Backup gelagert werden
 
 \section{Trusted Execution Environment}
 
+\section{Secure Element}
+
 \section{Android Keystore System}
+
+The Android Keystore System is a container which lets the developer store cryptographic keys without doing the en- and decryption by himself and to make it more difficult to extract the key from the device. Also, with the Keystore System, it can be authorized which app can use these keys and which not. In addition, even the apps which are authorized cannot extract the key from the device once it's stored in the Keystore System. Messages which are to be signed or encrypted are packed in a system process which carries out the cryptographic operations. Thus, an adversary would be able to use the keys if he's able to compromise an authenticated app, but never extract it on other devices.
+
+%Another option is to use the Trusted Execution Environment or Secure Element of Android 
+\subsection{Strongbox Keystore}
+
+Since Android 9 (API Level 28), smartphones can have a Strongbox Keymaster, which relies on separated hardware which is only used for cryptographic operations.
+The separated hardware always has to contain a CPU, Secure Storage, Random Key Generator and additional mechanisms to resist package tampering and unauthorized sideloading of apps.
 
 \section{Web of trust}
 
@@ -280,12 +292,12 @@ USB or some other offline connections are used to transfer the private key.
 
 \subsubsection{Subkeys}
 
+Only possible for pgp
 Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
 
 \subsection{Webservers/Downloads}
 
 Possible vulnerability by man in the middle attacks.
-
 The private key is stored on a trusted server. Whenever a new device is added, the user can download his private key.
 
 \subsection{External Providers}
@@ -307,18 +319,17 @@ Enter a passphrase on computer and then on mobile phone would add security but i
 
 \section{Loss Coverage}
 
-
 \chapter{Concept}
 
 \section{Architecture}
 
 \section{Usability}
 
-\section{gRPC (Maybe better in Implementation?)}
-
 \chapter{Implementation}
 
 \section{Kotlin}
+
+\section{gRPC}
 
 \section{Prototype}
 
@@ -339,9 +350,11 @@ Enter a passphrase on computer and then on mobile phone would add security but i
 
 %\section{QR-Based Solution}
 
+\chapter{Summary}
+
 \chapter{Outlook}
 
-\chapter{Summary}
+You could create clients for all kinds of desktop Programs, ssh, pgp, and so on.
 
 \parencite{gamma2011patterns}
 
