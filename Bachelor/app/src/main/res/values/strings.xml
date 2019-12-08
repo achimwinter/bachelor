@@ -1,6 +1,0 @@
-<resources>
-    <string name="communication">Start Communication</string>
-    <string name="app_name">Bachelor</string>
-    <string name="scan_button">Scan Barcode or QR code</string>
-    <string name="greet_result">Greeting</string>
-</resources>
