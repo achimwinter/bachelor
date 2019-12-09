@@ -19,12 +19,12 @@ import org.whispersystems.libsignal.state.impl.InMemorySignalProtocolStore
 
 class SessionGenerator(context: Context) {
 
-    val ALICE_ADDRESS = SignalProtocolAddress("+14151111111", 1)
-    var BOB_ADDRESS = SignalProtocolAddress("+14152222222", 2)
+    val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
+    var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
 
     fun testSessionBuilder() {
         var aliceStore: SignalProtocolStore = TestInMemorySignalProtocolStore()
-        var aliceSessionBuilder = SessionBuilder(aliceStore, BOB_ADDRESS)
+        var aliceSessionBuilder = SessionBuilder(aliceStore, DESKTOP_ADDRESS)
 
         val bobStore: SignalProtocolStore = TestInMemorySignalProtocolStore()
         var bobPreKeyPair = Curve.generateKeyPair()
@@ -48,7 +48,7 @@ class SessionGenerator(context: Context) {
         aliceSessionBuilder.process(bobPreKey)
 
         val originalMessage = "Hello World through Signal Protocol"
-        var aliceSessionCipher = SessionCipher(aliceStore, BOB_ADDRESS)
+        var aliceSessionCipher = SessionCipher(aliceStore, DESKTOP_ADDRESS)
         var outgoingMessage =
             aliceSessionCipher.encrypt(originalMessage.toByteArray())
 
@@ -64,7 +64,7 @@ class SessionGenerator(context: Context) {
             )
         )
 
-        val bobSessionCipher = SessionCipher(bobStore, ALICE_ADDRESS)
+        val bobSessionCipher = SessionCipher(bobStore, MOBILE_ADDRESS)
 
         var plaintext = bobSessionCipher.decrypt(incomingMessage)
 
@@ -76,8 +76,8 @@ class SessionGenerator(context: Context) {
         runInteraction(aliceStore, bobStore)
 
         aliceStore = TestInMemorySignalProtocolStore()
-        aliceSessionBuilder = SessionBuilder(aliceStore, BOB_ADDRESS)
-        aliceSessionCipher = SessionCipher(aliceStore, BOB_ADDRESS)
+        aliceSessionBuilder = SessionBuilder(aliceStore, DESKTOP_ADDRESS)
+        aliceSessionCipher = SessionCipher(aliceStore, DESKTOP_ADDRESS)
 
         bobPreKeyPair = Curve.generateKeyPair()
         bobSignedPreKeyPair = Curve.generateKeyPair()
@@ -111,7 +111,7 @@ class SessionGenerator(context: Context) {
             plaintext = bobSessionCipher.decrypt(PreKeySignalMessage(outgoingMessage.serialize()))
             throw AssertionError("shouldn't be trusted!")
         } catch (uie: UntrustedIdentityException) {
-            bobStore.saveIdentity(ALICE_ADDRESS, PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey())
+            bobStore.saveIdentity(MOBILE_ADDRESS, PreKeySignalMessage(outgoingMessage.serialize()).getIdentityKey())
         }
 
         val plaintext2 = bobSessionCipher.decrypt( PreKeySignalMessage(outgoingMessage.serialize()))
@@ -141,8 +141,8 @@ class SessionGenerator(context: Context) {
         aliceStore: SignalProtocolStore,
         bobStore: SignalProtocolStore
     ) {
-        val aliceSessionCipher = SessionCipher(aliceStore, BOB_ADDRESS)
-        val bobSessionCipher = SessionCipher(bobStore, ALICE_ADDRESS)
+        val aliceSessionCipher = SessionCipher(aliceStore, DESKTOP_ADDRESS)
+        val bobSessionCipher = SessionCipher(bobStore, MOBILE_ADDRESS)
         val originalMessage = "smert ze smert"
 
 
@@ -191,11 +191,11 @@ class SessionGenerator(context: Context) {
 
         val store = InMemorySignalProtocolStore(identityKeyPair, registrationId)
 
-        val sessionBuilder = SessionBuilder(store, ALICE_ADDRESS)
+        val sessionBuilder = SessionBuilder(store, MOBILE_ADDRESS)
 
         sessionBuilder.process(generatePreKeyBundle(bobStore))
 
-        val sessionCipher = SessionCipher(store, ALICE_ADDRESS)
+        val sessionCipher = SessionCipher(store, MOBILE_ADDRESS)
         val message = sessionCipher.encrypt("Hello World".toByteArray(Charsets.UTF_8))
 
         message.serialize()

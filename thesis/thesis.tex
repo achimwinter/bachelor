@@ -288,6 +288,44 @@ With this generated Key you can then encrypt your own Data and safe them in the 
 
 \section{iOS Keychain}
 
+
+\section{Signal-Protocol}
+
+The Signal-Protocol which was developed by Open Whisper Systems for their own product, the signal messenger, is an end to end cryptography protocol used for
+popular instant messaging services like Whatsapp, Facebook-Messenger or Skype. There are also a few papers which prove the security of the protocol. \parencite{cohn-gordon_formal_2017}
+% Seitenzahl benoetigt wenn die komplette Arbeit daraus besteht?
+\newline
+The protocol uses a long-term identity key pair, a medium-term signed prekey pair and multiple transient keys, which are generated on each client and also stored there
+securely.
+
+If a client wishes to offer himself as a communication partner, he has to generate a PreKey Bundle and send it to the other communication party.
+Usually this is done by uploading the bundle to a \nameref{subsec:KDC}. 
+
+\subsection{Key Agreement Protocol}
+
+The Key Agreement Protocol is build upon the Extended Triple Diffie-Hellman (X3DH) Protocol. By using it a shared secret key can be generated which authentication
+is based upon public keys. 
+% Blabla --> Providing forward secrecy and cryptographic deniability.
+
+
+\subsection*{Key Distribution Center}
+\label{subsec:KDC}
+
+A Key Distribution Center is a network device with the purpose of storing and exchanging keys. Within the Signal Protocol the Key Distribution Center is used
+as a trusted party where so called Pre Key Bundles are uploaded. These Bundles contain information which is needed to create a session to a communication partner.
+The information contained consists of:
+\begin{itemize}
+  \item registrationId
+  \item deviceId
+  \item preKeyId
+  \item PreKeyPublic
+  \item signedPreKeyId
+  \item signedPreKeyPublic
+  \item signedPreKeySignature
+  \item identityKey
+\end{itemize}
+
+
 % \section{Web of trust}
 
 %\chapter{Problem definition}
@@ -302,10 +340,10 @@ With this generated Key you can then encrypt your own Data and safe them in the 
 
 USB or some other offline connections are used to transfer the private key.
 
-\subsubsection{Subkeys}
+% \subsubsection{Subkeys}
 
-Only possible for pgp
-Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
+% Only possible for pgp
+% Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
 
 \subsection{Webservers/Downloads}
 
@@ -317,9 +355,8 @@ The private key is stored on a trusted server. Whenever a new device is added, t
 Using Services like Dropbox or Google drive. This can be combined with encrypting the private key and or separating the key using secret sharing and 
 storing them on different clouds. 
 
-\subsection{Key Distribution Center}
 
-Using a trusted third party.
+
 
 \chapter{Requirements for Key-Distribution Systems}
 
