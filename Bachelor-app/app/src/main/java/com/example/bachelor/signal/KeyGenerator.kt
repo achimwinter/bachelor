@@ -8,14 +8,13 @@ import java.nio.charset.Charset
 
 class KeyGenerator(context: Context) {
 
-
-    // TODO: Only do this on install time https://github.com/signalapp/libsignal-protocol-java
-
     init {
-        var identityKeyPair = KeyHelper.generateIdentityKeyPair()
-        var registrationId = KeyHelper.generateRegistrationId(false)
-        var preKeys = KeyHelper.generatePreKeys(0, 100) // check startNumber. how does this affect... things...
-        var signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0) // check signedPreKeyId, what does this number mean
+        val identityKeyPair = KeyHelper.generateIdentityKeyPair()
+        val registrationId = KeyHelper.generateRegistrationId(false)
+        val preKeys = KeyHelper.generatePreKeys(0, 100) // check startNumber. how does this affect... things...
+        val signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0) // check signedPreKeyId, what does this number mean
+
+        // TODO: preKeys and signedPreKeys store in inMemoryKeyStore
 
         saveKeyPair(context, identityKeyPair)
         saveRegistrationId(context, registrationId)
