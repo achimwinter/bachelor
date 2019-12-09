@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.bachelor";
+option java_outer_classname = "SignalMessagesProto";
+option objc_class_prefix = "HLW";
+
+package bachelor;
+
+// The greeting service definition.
+service Decrypter {
+  // Sends a greeting
+  rpc DecryptMail (DecryptRequest) returns (DecryptResponse) {}
+}
+
+// The request message containing the user's name.
+message DecryptRequest {
+  bytes encrypted_mail = 1;
+}
+
+// The response contains the unecrypted byte stream of an mime mail.
+// its a byte stream because its still encrypted with signal.
+message DecryptResponse {
+  bytes unencrypted_mail = 1;
+}
