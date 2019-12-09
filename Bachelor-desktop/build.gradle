@@ -36,6 +36,7 @@ dependencies {
 
     compile "com.google.zxing:core:3.3.0"
     compile 'com.google.zxing:javase:3.3.0'
+    compile group: 'org.whispersystems', name: 'signal-protocol-android', version: '2.8.1'
     compileOnly "javax.annotation:javax.annotation-api:1.2"
 
     testImplementation "io.grpc:grpc-testing:${grpcVersion}" // gRCP testing utilities
@@ -54,7 +55,7 @@ protobuf {
 }
 
 startScripts.enabled = false
-
+// This somehow has to go
 task helloWorldServer(type: CreateStartScripts) {
     mainClassName = 'io.grpc.examples.helloworld.HelloWorldServer'
     applicationName = 'hello-world-server'
