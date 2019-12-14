@@ -1,27 +1,10 @@
 package com.example.bachelor
 
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.WriterException
-import com.google.zxing.client.j2se.MatrixToImageWriter
-import com.google.zxing.qrcode.QRCodeWriter
 import io.grpc.Server
 import io.grpc.ServerBuilder
-import java.awt.FlowLayout
-import java.awt.Graphics
-import java.awt.Image
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
-import java.net.DatagramSocket
-import java.net.Inet4Address
-import java.net.InetAddress
 import java.util.logging.Level
 import java.util.logging.Logger
-import javax.imageio.ImageIO
-import javax.swing.ImageIcon
-import javax.swing.JComponent
-import javax.swing.JFrame
-import javax.swing.JLabel
 
 
 class BachelorDesktop {
@@ -31,10 +14,7 @@ class BachelorDesktop {
     @Throws(IOException::class)
     private fun start() {
 
-       val ipAddress = getIpAdress()
-
-        displayQRCode(generateQRCode(ipAddress, 300, 300)!!)
-
+        QRCode().generateQRCode()
 
         /* The port on which the server should run */
         val port = 50051
@@ -64,42 +44,6 @@ class BachelorDesktop {
     private fun blockUntilShutdown() {
         server?.awaitTermination()
     }
-
-    private fun displayQRCode(imgArray: ByteArray) {
-        val icon = ImageIcon(imgArray)
-        val frame = JFrame()
-        frame.layout = FlowLayout()
-        frame.setSize(200, 300)
-        val lbl = JLabel()
-        lbl.icon = icon
-        frame.add(lbl)
-        frame.isVisible = true
-        frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-    }
-
-    fun getIpAdress(): String {
-        var ipAddress = ""
-        DatagramSocket().use { socket ->
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002)
-            ipAddress = socket.localAddress.hostAddress
-        }
-
-        if (ipAddress.isEmpty()) {
-            // TODO: Something which extracts the needed address from the multiple
-        }
-
-        return ipAddress
-    }
-
-    @Throws(WriterException::class, IOException::class)
-    private fun generateQRCode(ipAddress: String, width: Int, height: Int): ByteArray? {
-        val qrCodeWriter = QRCodeWriter()
-        val bitMatrix = qrCodeWriter.encode(ipAddress, BarcodeFormat.QR_CODE, width, height)
-        val pngOutputStream = ByteArrayOutputStream()
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
-        return pngOutputStream.toByteArray()
-    }
-
 
 //    // This has to be done on the mobile phone
 //    internal class DecryptMailImpl: DecrypterGrpc.DecrypterImplBase() {
