@@ -1,31 +1,27 @@
-/*
- * Copyright 2015 The gRPC Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.bachelor
 
-import com.google.protobuf.ByteString
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.WriterException
+import com.google.zxing.client.j2se.MatrixToImageWriter
+import com.google.zxing.qrcode.QRCodeWriter
 import io.grpc.Server
 import io.grpc.ServerBuilder
-import io.grpc.stub.StreamObserver
+import java.awt.FlowLayout
+import java.awt.Graphics
+import java.awt.Image
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.util.logging.Level
 import java.util.logging.Logger
+import javax.imageio.ImageIO
+import javax.swing.ImageIcon
+import javax.swing.JComponent
+import javax.swing.JFrame
+import javax.swing.JLabel
 
 
 class BachelorDesktop {
@@ -37,7 +33,7 @@ class BachelorDesktop {
 
        val ipAddress = getIpAdress()
 
-
+        displayQRCode(generateQRCode(ipAddress, 300, 300)!!)
 
 
         /* The port on which the server should run */
@@ -69,6 +65,18 @@ class BachelorDesktop {
         server?.awaitTermination()
     }
 
+    private fun displayQRCode(imgArray: ByteArray) {
+        val icon = ImageIcon(imgArray)
+        val frame = JFrame()
+        frame.layout = FlowLayout()
+        frame.setSize(200, 300)
+        val lbl = JLabel()
+        lbl.icon = icon
+        frame.add(lbl)
+        frame.isVisible = true
+        frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+    }
+
     fun getIpAdress(): String {
         var ipAddress = ""
         DatagramSocket().use { socket ->
@@ -77,22 +85,32 @@ class BachelorDesktop {
         }
 
         if (ipAddress.isEmpty()) {
-            // TODO: Something which extracts the needed Adress
+            // TODO: Something which extracts the needed address from the multiple
         }
 
         return ipAddress
     }
 
-    // This has to be done on the mobile phone
-    internal class DecryptMailImpl: DecrypterGrpc.DecrypterImplBase() {
-
-        override fun decryptMail(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
-            super.decryptMail(request, responseObserver)
-           // var reply = DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom("Hello from Desktop".toByteArray()))
-
-        }
-
+    @Throws(WriterException::class, IOException::class)
+    private fun generateQRCode(ipAddress: String, width: Int, height: Int): ByteArray? {
+        val qrCodeWriter = QRCodeWriter()
+        val bitMatrix = qrCodeWriter.encode(ipAddress, BarcodeFormat.QR_CODE, width, height)
+        val pngOutputStream = ByteArrayOutputStream()
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
+        return pngOutputStream.toByteArray()
     }
+
+
+//    // This has to be done on the mobile phone
+//    internal class DecryptMailImpl: DecrypterGrpc.DecrypterImplBase() {
+//
+//        override fun decryptMail(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
+//            super.decryptMail(request, responseObserver)
+//           // var reply = DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom("Hello from Desktop".toByteArray()))
+//
+//        }
+//
+//    }
 
     /*
     internal class DecryptMailImpl : GreeterGrpc.GreeterImplBase() {
