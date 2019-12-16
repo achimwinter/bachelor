@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        tvresult = findViewById(R.id.tvresult)
+        tvresult = findViewById(R.id.tvresult)
 
         btn = findViewById(R.id.btn)
 
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun startGreeting(view: View) {
-        GrpcClient().startCommunication("192.168.2.94", 8888)
+        GrpcClient().startCommunication(tvresult?.text.toString())
         SessionGenerator().testSessionBuilder()
 
     }

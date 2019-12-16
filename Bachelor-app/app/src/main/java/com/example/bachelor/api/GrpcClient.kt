@@ -8,18 +8,18 @@ import io.grpc.ManagedChannelBuilder
 
 class GrpcClient {
 
-    fun startCommunication(host: String, port: Int) {
+    fun startCommunication(address: String) {
 
-        val desktop = ManagedChannelBuilder.forAddress(host, port)
+        val desktop = ManagedChannelBuilder.forTarget(address)
             .usePlaintext() // Bad, but mails are already encrypted by signal
             .build()
 
 
-        val communication = GreeterGrpc.newBlockingStub(desktop)
+        val stub = GreeterGrpc.newBlockingStub(desktop)
 
-        val reponse = communication.greeter(Greet.newBuilder().setMessage("test client").build())
+        val response = stub.greeter(Greet.newBuilder().setMessage("test from client").build())
 
-        Log.w("api", reponse.message)
+        Log.w("api", response.message)
     }
 
 }

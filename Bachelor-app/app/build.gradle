@@ -44,7 +44,7 @@ dependencies {
     // Securestorage
     implementation group: 'de.adorsys.android', name: 'securestoragelibrary', version: '1.2.2'
     // Signalprotokoll
-    implementation ('org.whispersystems:signal-protocol-android:2.8.1')
+    implementation 'org.whispersystems:signal-protocol-android:2.8.1'
 
     // Android
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -82,27 +82,3 @@ protobuf {
         }
     }
 }
-//    plugins {
-//        javalite {
-//            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
-//        }
-//        grpc {
-//            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
-//        }
-//    }
-//    generateProtoTasks {
-//        all().each { task ->
-//            task.builtins {
-//                // In most cases you don't need the full Java output
-//                // if you use the lite output.
-//                remove java
-//            }
-//            task.plugins {
-//                javalite {}
-//                grpc { outputSubDir = 'java'
-//                    option 'lite' // Needed this line
-//                     }
-//            }
-//        }
-//    }
-//}
