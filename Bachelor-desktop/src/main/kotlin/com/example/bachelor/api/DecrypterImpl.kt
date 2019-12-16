@@ -5,15 +5,22 @@ import com.example.bachelor.DecryptResponse
 import com.example.bachelor.DecrypterGrpc
 import io.grpc.stub.StreamObserver
 
-class DeryptServiceImpl : DecrypterGrpc.DecrypterImplBase() {
+class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     override fun subscribeMails(responseObserver: StreamObserver<DecryptResponse?>?): StreamObserver<DecryptRequest?> {
         return object : StreamObserver<DecryptRequest?> {
             override fun onNext(value: DecryptRequest?) {
-                println()
+                println("onNext from Server")
+
+                responseObserver?.onNext(DecryptResponse.getDefaultInstance())
             }
 
-            override fun onError(t: Throwable) {}
-            override fun onCompleted() {}
+            override fun onError(t: Throwable) {
+                println("on error")
+                t.printStackTrace()
+            }
+            override fun onCompleted() {
+                println("on completed")
+            }
         }
     }
 }

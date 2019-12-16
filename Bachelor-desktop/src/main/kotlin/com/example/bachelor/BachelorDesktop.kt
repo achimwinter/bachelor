@@ -1,5 +1,6 @@
 package com.example.bachelor
 
+import com.example.bachelor.api.DecrypterImpl
 import com.example.bachelor.api.GreeterImpl
 import io.grpc.Server
 import io.grpc.ServerBuilder
@@ -21,8 +22,10 @@ class BachelorDesktop {
         val port = 50051
         server = ServerBuilder.forPort(port)
                 .addService(GreeterImpl())
+                .addService(DecrypterImpl())
                 .build()
                 .start()
+
         logger.log(Level.INFO, "Server started, listening on {0}", port)
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() {
@@ -45,31 +48,6 @@ class BachelorDesktop {
     private fun blockUntilShutdown() {
         server?.awaitTermination()
     }
-
-//    // This has to be done on the mobile phone
-//    internal class DecryptMailImpl: DecrypterGrpc.DecrypterImplBase() {
-//
-//        override fun decryptMail(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
-//            super.decryptMail(request, responseObserver)
-//           // var reply = DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom("Hello from Desktop".toByteArray()))
-//
-//        }
-//
-//    }
-
-    /*
-    internal class DecryptMailImpl : GreeterGrpc.GreeterImplBase() {
-
-        override fun decryptMail(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
-            super.decryptMail(request, responseObserver)
-        }(req: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
-            val reply = HelloReply.newBuilder().setMessage("Hello ${req.name}").build()
-            System.out.println("Got a greeting")
-            responseObserver.onNext(reply)
-            responseObserver.onCompleted()
-        }
-    }
-    */
 
 
     companion object {

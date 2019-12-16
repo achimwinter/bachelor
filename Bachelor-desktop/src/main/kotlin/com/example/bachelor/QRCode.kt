@@ -6,6 +6,7 @@ import com.google.zxing.qrcode.QRCodeWriter
 import java.awt.FlowLayout
 import java.io.ByteArrayOutputStream
 import java.net.DatagramSocket
+import java.net.Inet4Address
 import java.net.InetAddress
 import javax.swing.ImageIcon
 import javax.swing.JFrame
@@ -43,8 +44,8 @@ class QRCode {
             ipAddress = socket.localAddress.hostAddress
         }
 
-        if (ipAddress.isEmpty()) {
-            // TODO: Something which extracts the needed address from the multiple
+        if (ipAddress.isBlank()) {
+            ipAddress = Inet4Address.getLocalHost().hostAddress
         }
 
         return ipAddress
