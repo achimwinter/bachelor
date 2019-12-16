@@ -10,9 +10,7 @@ import androidx.core.content.ContextCompat
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
-/**
- * Created by Parsania Hardik on 19-Mar-18.
- */
+
 class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private var mScannerView: ZXingScannerView? = null
@@ -25,14 +23,14 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 arrayOf(Manifest.permission.CAMERA), 0 )
         }
 
-        mScannerView = ZXingScannerView(this)   // Programmatically initialize the scanner view
-        setContentView(mScannerView)                // Set the scanner view as the content view
+        mScannerView = ZXingScannerView(this)
+        setContentView(mScannerView)
     }
 
     public override fun onResume() {
         super.onResume()
-        mScannerView!!.setResultHandler(this) // Register ourselves as a handler for scan results.
-        mScannerView!!.startCamera()          // Start camera on resume
+        mScannerView!!.setResultHandler(this)
+        mScannerView!!.startCamera()
     }
 
     public override fun onPause() {
@@ -42,13 +40,10 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     override fun handleResult(rawResult: Result) {
         // Do something with the result here
-        Log.v("tag", rawResult.getText()) // Prints scan results
-        Log.v("tag", rawResult.getBarcodeFormat().toString()) // Prints the scan format (qrcode, pdf417 etc.)
+        Log.v("tag", rawResult.text) // Prints scan results
+        Log.v("tag", rawResult.barcodeFormat.toString()) // Prints the scan format (qrcode, pdf417 etc.)
 
-        MainActivity.tvresult!!.setText(rawResult.text)
+        MainActivity.tvresult!!.text = rawResult.text
         onBackPressed()
-
-        // If you would like to resume scanning, call this method below:
-        //mScannerView.resumeCameraPreview(this);
     }
 }

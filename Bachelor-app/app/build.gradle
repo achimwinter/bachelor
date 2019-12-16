@@ -1,6 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.protobuf'
+
+sourceSets {
+    main {
+        java {
+            srcDirs "${protobuf.generatedFilesBaseDir}/main/javalite"
+            srcDirs "${protobuf.generatedFilesBaseDir}/main/grpc"
+        }
+    }
+}
 
 android {
     compileSdkVersion 29
@@ -20,21 +30,37 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    configurations {
+        implementation.exclude module:'protobuf-lite'
+    }
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Barcodescanner
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
-
+    // Securestorage
     implementation group: 'de.adorsys.android', name: 'securestoragelibrary', version: '1.2.2'
+    // Signalprotokoll
+    implementation ('org.whispersystems:signal-protocol-android:2.8.1')
 
-    implementation group: 'org.whispersystems', name: 'signal-protocol-android', version: '2.8.1'
-
+    // Android
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    // GRPC
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation "io.grpc:grpc-okhttp:$grpcVersion" // CURRENT_GRPC_VERSION
+    implementation 'com.google.protobuf:protobuf-javalite:3.10.0'
+    implementation ("io.grpc:grpc-protobuf-lite:$grpcVersion") // CURRENT_GRPC_VERSION, Already imported in openwhispersystems
+    implementation "io.grpc:grpc-stub:$grpcVersion" // CURRENT_GRPC_VERSION
+
+    implementation 'javax.annotation:javax.annotation-api:1.2'
 
 
     testImplementation 'junit:junit:4.12'
@@ -42,3 +68,41 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.10.0'
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option "lite"
+                }
+            }
+        }
+    }
+}
+//    plugins {
+//        javalite {
+//            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+//        }
+//        grpc {
+//            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+//        }
+//    }
+//    generateProtoTasks {
+//        all().each { task ->
+//            task.builtins {
+//                // In most cases you don't need the full Java output
+//                // if you use the lite output.
+//                remove java
+//            }
+//            task.plugins {
+//                javalite {}
+//                grpc { outputSubDir = 'java'
+//                    option 'lite' // Needed this line
+//                     }
+//            }
+//        }
+//    }
+//}

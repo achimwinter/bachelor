@@ -17,10 +17,10 @@ import org.whispersystems.libsignal.state.SignedPreKeyRecord
 import org.whispersystems.libsignal.state.impl.InMemorySignalProtocolStore
 
 
-class SessionGenerator(context: Context) {
+class SessionGenerator {
 
-    val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
-    var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
+    private val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
+    private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
 
     fun testSessionBuilder() {
         var aliceStore: SignalProtocolStore = TestInMemorySignalProtocolStore()
@@ -172,7 +172,7 @@ class SessionGenerator(context: Context) {
 
 
 
-
+    // TODO: Do something with the session
     fun generateSession(context: Context) {
 
         val bobStore: SignalProtocolStore = TestInMemorySignalProtocolStore()
