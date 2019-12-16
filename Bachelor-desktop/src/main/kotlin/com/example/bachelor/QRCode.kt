@@ -18,7 +18,7 @@ class QRCode {
 
     fun generateQRCode() {
         val qrCodeWriter = QRCodeWriter()
-        val bitMatrix = qrCodeWriter.encode(getIpAdress(), BarcodeFormat.QR_CODE, WIDTH, HEIGHT)
+        val bitMatrix = qrCodeWriter.encode(getIpAdress() + ":" + 50051, BarcodeFormat.QR_CODE, WIDTH, HEIGHT)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
         displayQRCode(pngOutputStream.toByteArray())
