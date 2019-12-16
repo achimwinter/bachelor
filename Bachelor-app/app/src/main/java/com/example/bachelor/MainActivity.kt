@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.KeyGenerator
 import com.example.bachelor.signal.SessionGenerator
 
@@ -17,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     private var prefs: SharedPreferences? = null
 
     companion object {
-        var greetResult: TextView? = null
         var tvresult: TextView? = null
     }
 
@@ -25,8 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tvresult = findViewById(R.id.tvresult)
-        greetResult = findViewById(R.id.greet_result)
+//        tvresult = findViewById(R.id.tvresult)
 
         btn = findViewById(R.id.btn)
 
@@ -46,12 +45,12 @@ class MainActivity : AppCompatActivity() {
             KeyGenerator(this)
             prefs!!.edit().putBoolean("firstrun", false).apply()
         }
-
     }
 
 
     fun startGreeting(view: View) {
-        SessionGenerator(this).testSessionBuilder()
+        GrpcClient().startCommunication("192.168.2.94", 8888)
+        SessionGenerator().testSessionBuilder()
 
     }
 
