@@ -12,6 +12,14 @@ service Decrypter {
   rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
 }
 
+service Greeter {
+  rpc greeter(Greet) returns(Greet) {}
+}
+
+message Greet {
+  string message = 1;
+}
+
 // The request message containing the user's name.
 message DecryptRequest {
   bytes encrypted_mail = 1;
