@@ -1,27 +1,25 @@
 package com.example.bachelor.api
 
-import android.util.Log
-import com.example.bachelor.*
+//import com.example.bachelor.DecryptResponse
+import com.example.bachelor.DecryptRequest
+import com.example.bachelor.DecryptResponse
+import com.example.bachelor.DecrypterGrpc
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
+import org.whispersystems.libsignal.state.PreKeyBundle
 
 
-class GrpcClient {
+class GrpcClient(address: String) {
 
-    fun startCommunication(address: String) {
+    val managedChannel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
 
-        val desktop = ManagedChannelBuilder.forTarget(address)
-            .usePlaintext() // Bad, but mails are already encrypted by signal
-            .build()
+    fun startCommunication() {
 
-        val decryptStub = DecrypterGrpc.newBlockingStub(desktop)
+        DecryptResponse.newBuilder().clearUnencryptedMail()
 
-//        val greeterStub = GreeterGrpc.newStub(desktop)
+        val decryptStub = DecrypterGrpc.newStub(managedChannel)
 
-
-        val service = DecrypterGrpc.newStub(desktop)
-
-        val observer = service.subscribeMails(object : StreamObserver<DecryptResponse> {
+        val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptResponse> {
             override fun onNext(value: DecryptResponse?) {
                 println("onNext on Client")
             }
@@ -38,17 +36,12 @@ class GrpcClient {
 
         observer.onNext(DecryptRequest.getDefaultInstance())
         observer.onCompleted()
-
-//        decryptStub.
-//
-//
-//        val response = greeterStub.greeter(Greet.newBuilder().setMessage("test from client").build())
-//
-//        Log.w("api", response.message)
     }
 
-//    private fun startDecrypting(stub: DecrypterGrpc.DecrypterBlockingStub) {
-//        stub.
-//    }
+        fun exchangeKeybundles(prekey: PreKeyBundle) {
+//        val stub = DecrypterGrpc.newStub(managedChannel)
+
+
+        }
 
 }

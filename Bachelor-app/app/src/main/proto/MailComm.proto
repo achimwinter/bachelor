@@ -3,22 +3,13 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "com.example.bachelor";
 option java_outer_classname = "MailComm";
-option objc_class_prefix = "HLW";
+option objc_class_prefix = "MC";
 
 package bachelor;
 
-service Decrypter {
-    // Client subscribes on emailDecryption
-    rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
-}
-
-service Greeter {
-    rpc greeter(Greet) returns(Greet) {}
-}
-
-message Greet {
-    string message = 1;
-}
+//message Greet {
+//    string message = 1;
+//}
 
 // The request message containing the user's name.
 message DecryptRequest {
@@ -30,3 +21,12 @@ message DecryptRequest {
 message DecryptResponse {
     bytes unencrypted_mail = 1;
 }
+
+service Decrypter {
+    // Client subscribes on emailDecryption
+    rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
+}
+
+//service Greeter {
+//    rpc greeter(Greet) returns(Greet) {}
+//}
