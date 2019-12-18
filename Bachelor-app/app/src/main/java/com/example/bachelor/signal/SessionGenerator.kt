@@ -1,7 +1,9 @@
 package com.example.bachelor.signal
 
 import android.content.Context
+import android.se.omapi.Session
 import android.util.Log
+import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.storage.TestInMemorySignalProtocolStore
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import org.whispersystems.libsignal.*
@@ -21,6 +23,37 @@ class SessionGenerator {
 
     private val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
     private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
+
+
+    fun startCommunication() {
+        val signalProtocolStore = TestInMemorySignalProtocolStore()
+        val sessionBuilder = SessionBuilder(signalProtocolStore, DESKTOP_ADDRESS)
+
+        val ownPreKeyPair = Curve.generateKeyPair()
+        val ownSignedPreKeyPair = Curve.generateKeyPair()
+        val ownSignedPreKeySignature = Curve.calculateSignature(
+            signalProtocolStore.identityKeyPair.privateKey,
+            ownSignedPreKeyPair.publicKey.serialize()
+        )
+
+        val ownPreKeyBundle = PreKeyBundle(
+            signalProtocolStore.localRegistrationId, 1,
+            34567, ownPreKeyPair.publicKey, 11, ownSignedPreKeyPair.publicKey,
+            ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
+        )
+
+        val desktopKeyBundle = GrpcClient().exchangeKeybundles(ownPreKeyBundle)
+
+        sessionBuilder.process(desktopKeyBundle)
+
+        val message = "test"
+
+        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
+        val outgoingMessage = sessionCipher.encrypt(message.toByteArray())
+
+        GrpcClient().startCommunication()
+
+    }
 
     fun testSessionBuilder() {
         var aliceStore: SignalProtocolStore = TestInMemorySignalProtocolStore()

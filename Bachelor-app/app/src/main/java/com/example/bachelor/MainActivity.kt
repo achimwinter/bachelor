@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
 
     fun startGreeting(view: View) {
-        GrpcClient(tvresult?.text.toString()).startCommunication()
         SessionGenerator().testSessionBuilder()
 
     }

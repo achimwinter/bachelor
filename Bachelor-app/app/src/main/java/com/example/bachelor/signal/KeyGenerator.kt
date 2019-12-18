@@ -1,6 +1,7 @@
 package com.example.bachelor.signal
 
 import android.content.Context
+import com.example.bachelor.signal.storage.TestInMemorySignalProtocolStore
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import org.whispersystems.libsignal.IdentityKeyPair
 import org.whispersystems.libsignal.util.KeyHelper
@@ -8,16 +9,20 @@ import java.nio.charset.Charset
 
 class KeyGenerator(context: Context) {
 
-    init {
-        val identityKeyPair = KeyHelper.generateIdentityKeyPair()
-        val registrationId = KeyHelper.generateRegistrationId(false)
-        val preKeys = KeyHelper.generatePreKeys(0, 100) // check startNumber. how does this affect... things...
-        val signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0) // check signedPreKeyId, what does this number mean
+    val identityKeyPair = KeyHelper.generateIdentityKeyPair()
+    val registrationId = KeyHelper.generateRegistrationId(false)
+    val preKeys = KeyHelper.generatePreKeys(0, 100) // check startNumber. how does this affect... things...
+    val signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 0)  // check signedPreKeyId, what does this number mean
 
+    init {
         // TODO: preKeys and signedPreKeys store in inMemoryKeyStore
 
         saveKeyPair(context, identityKeyPair)
         saveRegistrationId(context, registrationId)
+    }
+
+    fun getPreKeyBundle(signalProtocolStore: TestInMemorySignalProtocolStore) {
+
     }
 
     fun saveKeyPair(context: Context, identityKeyPair: IdentityKeyPair) {

@@ -7,11 +7,17 @@ option objc_class_prefix = "MC";
 
 package bachelor;
 
-//message Greet {
-//    string message = 1;
-//}
+message Keybundle {
+    int32 registration_id = 1;
+    int32 device_id = 2;
+    int32 preKey_id = 3;
+    int32 signed_pre_key_id = 4;
+    bytes signed_pre_key_signature = 5;
+    bytes pre_key_public = 6;
+    bytes signed_pre_key_public = 7;
+    bytes identity_key = 8;
+}
 
-// The request message containing the user's name.
 message DecryptRequest {
     bytes encrypted_mail = 1;
 }
@@ -25,8 +31,5 @@ message DecryptResponse {
 service Decrypter {
     // Client subscribes on emailDecryption
     rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
+    rpc exchangeKeyBundle(Keybundle) returns (Keybundle) {}
 }
-
-//service Greeter {
-//    rpc greeter(Greet) returns(Greet) {}
-//}

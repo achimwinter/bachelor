@@ -2,15 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.protobuf'
-//
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs "${protobuf.generatedFilesBaseDir}/main/javalite"
-//            srcDirs "${protobuf.generatedFilesBaseDir}/main/grpc"
-//        }
-//    }
-//}
 
 android {
     compileSdkVersion 29
@@ -53,12 +44,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // GRPC
-//    implementation 'com.android.support:multidex:1.0.3'
-
-//    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
-//    implementation "io.grpc:grpc-okhttp:$grpcVersion" // CURRENT_GRPC_VERSION
-//    implementation "io.grpc:grpc-protobuf-lite:$grpcVersion" // CURRENT_GRPC_VERSION
-//    implementation "io.grpc:grpc-stub:1.25.0" // CURRENT_GRPC_VERSION
     implementation 'io.grpc:grpc-okhttp:1.25.0' // CURRENT_GRPC_VERSION
     implementation 'io.grpc:grpc-protobuf-lite:1.25.0' // CURRENT_GRPC_VERSION
     implementation 'io.grpc:grpc-stub:1.25.0' // CURRENT_GRPC_VERSION
