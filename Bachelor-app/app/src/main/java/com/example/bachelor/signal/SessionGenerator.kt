@@ -5,6 +5,7 @@ import android.se.omapi.Session
 import android.util.Log
 import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.storage.TestInMemorySignalProtocolStore
+import com.google.protobuf.ByteString
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import org.whispersystems.libsignal.*
 import org.whispersystems.libsignal.NoSessionException
@@ -51,7 +52,15 @@ class SessionGenerator {
         val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
         val outgoingMessage = sessionCipher.encrypt(message.toByteArray())
 
-        GrpcClient().startCommunication()
+        val response = GrpcClient().testDecrypt(ByteString.copyFrom(outgoingMessage.serialize()))
+
+        println(response)
+
+        // TODO: do something with response
+
+//        val incomingMessage = PreKeySignalMessage(response.toByteArray())
+
+
 
     }
 

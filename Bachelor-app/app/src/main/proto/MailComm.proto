@@ -32,4 +32,5 @@ service Decrypter {
     // Client subscribes on emailDecryption
     rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
     rpc exchangeKeyBundle(Keybundle) returns (Keybundle) {}
+    rpc testGreet(DecryptRequest) returns (DecryptResponse) {}
 }

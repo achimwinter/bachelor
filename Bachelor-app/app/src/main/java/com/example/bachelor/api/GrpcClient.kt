@@ -13,7 +13,7 @@ import java.io.ObjectInputStream
 
 class GrpcClient {
 
-     val managedChannel = ManagedChannelBuilder.forTarget(MainActivity.tvresult.toString()).usePlaintext().build()
+     private val managedChannel = ManagedChannelBuilder.forTarget(MainActivity.tvresult.toString()).usePlaintext().build()
 
     fun startCommunication() {
 
@@ -68,7 +68,14 @@ class GrpcClient {
         )
     }
 
-    //TODO :: Use generics maybe...
+    fun testDecrypt(byteString: ByteString): ByteString {
+        val stub = DecrypterGrpc.newBlockingStub(managedChannel)
+        val response = stub.testGreet(DecryptRequest.parseFrom(byteString))
+
+        return response.unencryptedMail
+    }
+
+    //TODO : Use generics maybe...
 
     private fun deserializeECPreKey(byteString: ByteString): ECPublicKey {
         val bis = ByteArrayInputStream(byteString.toByteArray())

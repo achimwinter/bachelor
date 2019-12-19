@@ -1,7 +1,7 @@
 package com.example.bachelor
 
 import com.example.bachelor.api.DecrypterImpl
-import com.example.bachelor.api.GreeterImpl
+import com.example.bachelor.signal.SessionGenerator
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import java.io.IOException
@@ -17,11 +17,11 @@ class BachelorDesktop {
     private fun start() {
 
         QRCode().generateQRCode()
+        SessionGenerator().getKeyBundle()
 
         /* The port on which the server should run */
         val port = 50051
         server = ServerBuilder.forPort(port)
-                .addService(GreeterImpl())
                 .addService(DecrypterImpl())
                 .build()
                 .start()
