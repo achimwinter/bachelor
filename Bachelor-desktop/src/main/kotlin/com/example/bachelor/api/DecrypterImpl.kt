@@ -8,6 +8,8 @@ import com.example.bachelor.signal.SessionGenerator
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
+import org.whispersystems.libsignal.ecc.Curve
+import org.whispersystems.libsignal.ecc.DjbECPublicKey
 import org.whispersystems.libsignal.ecc.ECPublicKey
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.ByteArrayInputStream
@@ -33,15 +35,15 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     }
 
     override fun exchangeKeyBundle(request: Keybundle?, responseObserver: StreamObserver<Keybundle>?) {
-        SessionGenerator().desktopKeyBundle = PreKeyBundle(
+        SessionGenerator().mobileKeyBundle = PreKeyBundle(
                 request?.registrationId!!,
                 request.deviceId,
                 request.preKeyId,
-                deserializeECPreKey(request.preKeyPublic),
+                Curve.decodePoint(request.preKeyPublic?.toByteArray(), 0),
                 request.signedPreKeyId,
-                deserializeECPreKey(request.signedPreKeyPublic),
+                Curve.decodePoint(request.signedPreKeyPublic.toByteArray(), 0),
                 request.signedPreKeySignature.toByteArray(),
-                deserializeIdentityKey(request.identityKey)
+                IdentityKey(request.identityKey.toByteArray(), 0)
         )
 
         val desktopPreKeyBundle = SessionGenerator().desktopKeyBundle

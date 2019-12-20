@@ -1,5 +1,6 @@
 package com.example.bachelor.signal
 
+import org.whispersystems.libsignal.IdentityKeyPair
 import org.whispersystems.libsignal.SessionBuilder
 import org.whispersystems.libsignal.SignalProtocolAddress
 import org.whispersystems.libsignal.ecc.Curve
@@ -23,7 +24,8 @@ class SessionGenerator {
         val preKeys = KeyHelper.generatePreKeys(0, 100)
         val signedPreKey = KeyHelper.generateSignedPreKey(identityKeyPair, 5)
 
-        val signalProtocolStore: SignalProtocolStore = TestInMemorySignalProtocolStore()
+
+        val signalProtocolStore: SignalProtocolStore = TestInMemorySignalProtocolStore(IdentityKeyPair(identityKeyPair.publicKey, identityKeyPair.privateKey), 1)
 
         val sessionBuilder = SessionBuilder(signalProtocolStore, MOBILE_ADDRESS)
 
@@ -34,8 +36,8 @@ class SessionGenerator {
                 desktopPreKeyPair.publicKey.serialize()
         )
 
-        return PreKeyBundle(registrationId, 2, 31338, desktopPreKeyPair.publicKey,
-                12, desktopSignedPreKeyPair.publicKey, desktopSignedPreKeySignature,
+        return PreKeyBundle(registrationId, 2, 31337, desktopPreKeyPair.publicKey,
+                22, desktopSignedPreKeyPair.publicKey, desktopSignedPreKeySignature,
                 signalProtocolStore.identityKeyPair.publicKey)
     }
 
