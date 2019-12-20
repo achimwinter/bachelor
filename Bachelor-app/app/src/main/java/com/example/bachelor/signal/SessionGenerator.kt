@@ -39,7 +39,7 @@ class SessionGenerator {
 
         val ownPreKeyBundle = PreKeyBundle(
             signalProtocolStore.localRegistrationId, 1,
-            34567, ownPreKeyPair.publicKey, 11, ownSignedPreKeyPair.publicKey,
+            31337, ownPreKeyPair.publicKey, 22, ownSignedPreKeyPair.publicKey,
             ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
 

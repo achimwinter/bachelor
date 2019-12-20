@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
+import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.ecc.ECPublicKey
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.ByteArrayInputStream
@@ -13,11 +14,9 @@ import java.io.ObjectInputStream
 
 class GrpcClient {
 
-     private val managedChannel = ManagedChannelBuilder.forTarget(MainActivity.tvresult.toString()).usePlaintext().build()
+     private val managedChannel = ManagedChannelBuilder.forTarget(MainActivity.tvresult!!.text.toString()).usePlaintext().build()
 
     fun startCommunication() {
-
-        DecryptResponse.newBuilder().clearUnencryptedMail()
 
         val decryptStub = DecrypterGrpc.newStub(managedChannel)
 
@@ -60,11 +59,11 @@ class GrpcClient {
             responseKeyBundle.registrationId,
             responseKeyBundle.deviceId,
             responseKeyBundle.preKeyId,
-            deserializeECPreKey(responseKeyBundle.preKeyPublic),
+            Curve.decodePoint(responseKeyBundle.preKeyPublic.toByteArray(), 0),
             responseKeyBundle.signedPreKeyId,
-            deserializeECPreKey(responseKeyBundle.signedPreKeyPublic),
+            Curve.decodePoint(responseKeyBundle.signedPreKeyPublic.toByteArray(), 0),
             responseKeyBundle.signedPreKeySignature.toByteArray(),
-            deserializeIdentityKey(responseKeyBundle.identityKey)
+            IdentityKey(responseKeyBundle.identityKey.toByteArray(), 0)
         )
     }
 
@@ -74,20 +73,5 @@ class GrpcClient {
 
         return response.unencryptedMail
     }
-
-    //TODO : Use generics maybe...
-
-    private fun deserializeECPreKey(byteString: ByteString): ECPublicKey {
-        val bis = ByteArrayInputStream(byteString.toByteArray())
-        val ois = ObjectInputStream(bis)
-        return ois.readObject() as ECPublicKey
-    }
-
-    private fun deserializeIdentityKey(byteString: ByteString): IdentityKey {
-        val bis = ByteArrayInputStream(byteString.toByteArray())
-        val ois = ObjectInputStream(bis)
-        return ois.readObject() as IdentityKey
-    }
-
 
 }
