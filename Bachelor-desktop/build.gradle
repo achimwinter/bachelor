@@ -57,8 +57,8 @@ protobuf {
 startScripts.enabled = false
 // This somehow has to go
 task helloWorldServer(type: CreateStartScripts) {
-    mainClassName = 'io.grpc.examples.helloworld.HelloWorldServer'
-    applicationName = 'hello-world-server'
+    mainClassName = 'com.example.bachelor.BachelorDesktop'
+    applicationName = 'BachelorDesktop'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
