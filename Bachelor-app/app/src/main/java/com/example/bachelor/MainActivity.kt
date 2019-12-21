@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     fun startGreeting(view: View) {
         SessionGenerator().startCommunication()
-
+//        SessionGenerator().testSessionBuilder()
     }
 
 

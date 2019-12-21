@@ -69,7 +69,9 @@ class GrpcClient {
 
     fun testDecrypt(byteString: ByteString): ByteString {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)
-        val response = stub.testGreet(DecryptRequest.parseFrom(byteString))
+        val response = stub.testGreet(DecryptRequest.newBuilder().setEncryptedMail(byteString).build())
+
+
 
         return response.unencryptedMail
     }

@@ -8,9 +8,13 @@ import com.example.bachelor.signal.SessionGenerator
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
+import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.ecc.DjbECPublicKey
 import org.whispersystems.libsignal.ecc.ECPublicKey
+import org.whispersystems.libsignal.protocol.CiphertextMessage
+import org.whispersystems.libsignal.protocol.PreKeySignalMessage
+import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
@@ -35,7 +39,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     }
 
     override fun exchangeKeyBundle(request: Keybundle?, responseObserver: StreamObserver<Keybundle>?) {
-        SessionGenerator().mobileKeyBundle = PreKeyBundle(
+        SessionGenerator.instance.mobileKeyBundle = PreKeyBundle(
                 request?.registrationId!!,
                 request.deviceId,
                 request.preKeyId,
@@ -46,7 +50,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
                 IdentityKey(request.identityKey.toByteArray(), 0)
         )
 
-        val desktopPreKeyBundle = SessionGenerator().desktopKeyBundle
+        val desktopPreKeyBundle = SessionGenerator.instance.desktopKeyBundle
 
         val desktopKeyBundle = Keybundle.newBuilder()
                 .setRegistrationId(desktopPreKeyBundle.registrationId)
@@ -63,21 +67,14 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     }
 
     override fun testGreet(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
+        val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
 
-        println(request.toString())
+        val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
 
-        super.testGreet(request, responseObserver)
+        println(plaintext)
+
+        responseObserver?.onNext(DecryptResponse.getDefaultInstance())
+        responseObserver?.onCompleted()
     }
 
-    private fun deserializeECPreKey(byteString: ByteString): ECPublicKey {
-        val bis = ByteArrayInputStream(byteString.toByteArray())
-        val ois = ObjectInputStream(bis)
-        return ois.readObject() as ECPublicKey
-    }
-
-    private fun deserializeIdentityKey(byteString: ByteString): IdentityKey {
-        val bis = ByteArrayInputStream(byteString.toByteArray())
-        val ois = ObjectInputStream(bis)
-        return ois.readObject() as IdentityKey
-    }
 }

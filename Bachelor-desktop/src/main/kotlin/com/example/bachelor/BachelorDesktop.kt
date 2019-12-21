@@ -17,7 +17,7 @@ class BachelorDesktop {
     private fun start() {
 
         QRCode().generateQRCode()
-        SessionGenerator().getKeyBundle()
+        SessionGenerator.instance.desktopKeyBundle
 
         /* The port on which the server should run */
         val port = 50051
