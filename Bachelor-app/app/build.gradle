@@ -30,6 +30,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // S/Mime
+    implementation 'net.markenwerk:utils-mail-smime:1.0.8'
+
     // Barcodescanner
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     // Securestorage

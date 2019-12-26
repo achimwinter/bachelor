@@ -44,7 +44,7 @@ class SessionGenerator {
             ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
 
-        val desktopKeyBundle = GrpcClient().exchangeKeybundles(ownPreKeyBundle)
+        val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
 
         sessionBuilder.process(desktopKeyBundle)
 
@@ -55,15 +55,14 @@ class SessionGenerator {
 
         val response = GrpcClient().testDecrypt(ByteString.copyFrom(outgoingMessage.serialize()))
 
-        println(response)
+        val incomingMessage = SignalMessage(response.unencryptedMail.toByteArray())
 
-        // TODO: do something with response
+        val incPlaintext = sessionCipher.decrypt(incomingMessage)
 
-//        val incomingMessage = PreKeySignalMessage(response.toByteArray())
-
-
+        print(incPlaintext)
 
     }
+
 
     fun testSessionBuilder() {
         var aliceStore: SignalProtocolStore = TestInMemorySignalProtocolStore()

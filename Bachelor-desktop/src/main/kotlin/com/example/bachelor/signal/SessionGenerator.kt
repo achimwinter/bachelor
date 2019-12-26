@@ -32,7 +32,9 @@ class SessionGenerator {
     val desktopKeyBundle = generateKeyBundle()
     var mobileKeyBundle : PreKeyBundle? = null
 
-    fun generateKeyBundle(): PreKeyBundle {
+    val sessionCipher = SessionCipher(signalProtocolStore, MOBILE_ADDRESS)
+
+    private fun generateKeyBundle(): PreKeyBundle {
         return PreKeyBundle(
                 signalProtocolStore.localRegistrationId, 1,
                 31337, desktopPreKeyPair.publicKey, 22, desktopSignedPreKeyPair.publicKey,
@@ -47,12 +49,8 @@ class SessionGenerator {
         val sessionBuilder = SessionBuilder(signalProtocolStore, MOBILE_ADDRESS)
         sessionBuilder.process(mobileKeyBundle)
 
-        val sessionCipher = SessionCipher(signalProtocolStore, MOBILE_ADDRESS)
-
         return sessionCipher.decrypt(message)
     }
 
+
 }
-//Curve.verifySignature(bundle.getIdentityKey().getPublicKey(),
-//bundle.getSignedPreKey().serialize(),
-//bundle.getSignedPreKeySignature())

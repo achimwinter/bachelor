@@ -18,6 +18,7 @@ import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.ByteArrayInputStream
 import java.io.ObjectInputStream
+import java.nio.charset.Charset
 
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     override fun subscribeMails(responseObserver: StreamObserver<DecryptResponse?>?): StreamObserver<DecryptRequest?> {
@@ -71,9 +72,13 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
         val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
 
-        println(plaintext)
+        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
 
-        responseObserver?.onNext(DecryptResponse.getDefaultInstance())
+        val outGoingMessage = sessionCipher.encrypt("test FROM DEsktop CLIENT".toByteArray(Charsets.UTF_8))
+
+        // TODO: Do something with Plaintext
+
+        responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
         responseObserver?.onCompleted()
     }
 

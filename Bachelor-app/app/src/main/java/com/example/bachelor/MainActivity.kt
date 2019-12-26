@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.KeyGenerator
 import com.example.bachelor.signal.SessionGenerator
 

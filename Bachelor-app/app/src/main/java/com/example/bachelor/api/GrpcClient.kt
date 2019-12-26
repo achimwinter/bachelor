@@ -6,15 +6,16 @@ import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.ecc.Curve
-import org.whispersystems.libsignal.ecc.ECPublicKey
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.io.ByteArrayInputStream
-import java.io.ObjectInputStream
 
 
 class GrpcClient {
 
-     private val managedChannel = ManagedChannelBuilder.forTarget(MainActivity.tvresult!!.text.toString()).usePlaintext().build()
+    companion object {
+        val instance = GrpcClient()
+    }
+
+    private val managedChannel = ManagedChannelBuilder.forTarget("192.168.2.117:50051").usePlaintext().build()
 
     fun startCommunication() {
 
@@ -52,7 +53,6 @@ class GrpcClient {
             .setIdentityKey(ByteString.copyFrom(ownPreKeyBundle.identityKey.publicKey.serialize()))
             .build()
 
-
         val responseKeyBundle = stub.exchangeKeyBundle(ownSerializedKeybundle)
 
         return PreKeyBundle(
@@ -67,13 +67,12 @@ class GrpcClient {
         )
     }
 
-    fun testDecrypt(byteString: ByteString): ByteString {
+    fun testDecrypt(byteString: ByteString): DecryptResponse {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)
-        val response = stub.testGreet(DecryptRequest.newBuilder().setEncryptedMail(byteString).build())
 
+        val test = stub.testGreet(DecryptRequest.newBuilder().setEncryptedMail(byteString).build())
 
-
-        return response.unencryptedMail
+        return test
     }
 
 }
