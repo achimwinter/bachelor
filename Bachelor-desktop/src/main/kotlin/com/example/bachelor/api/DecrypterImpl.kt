@@ -10,15 +10,11 @@ import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.ecc.Curve
-import org.whispersystems.libsignal.ecc.DjbECPublicKey
-import org.whispersystems.libsignal.ecc.ECPublicKey
-import org.whispersystems.libsignal.protocol.CiphertextMessage
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage
-import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.io.ByteArrayInputStream
-import java.io.ObjectInputStream
-import java.nio.charset.Charset
+import java.io.File
+import java.nio.file.Files
+
 
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     override fun subscribeMails(responseObserver: StreamObserver<DecryptResponse?>?): StreamObserver<DecryptRequest?> {
@@ -71,15 +67,18 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
 
         val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
+        println(plaintext)
 
         val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
 
-        val outGoingMessage = sessionCipher.encrypt("test FROM DEsktop CLIENT".toByteArray(Charsets.UTF_8))
+        val encryptedData: ByteArray = Files.readAllBytes(File("/Users/achim/certs/testEncrypted.txt").toPath())
 
-        // TODO: Do something with Plaintext
+        val outGoingMessage = sessionCipher.encrypt(encryptedData)
 
         responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
         responseObserver?.onCompleted()
     }
 
+//    private fun readFile(path: String)
+//            = File(path).inputStream().readBytes().toString(Charsets.UTF_8)
 }

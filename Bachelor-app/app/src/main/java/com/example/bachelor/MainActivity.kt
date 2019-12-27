@@ -7,8 +7,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.example.bachelor.signal.KeyGenerator
 import com.example.bachelor.signal.SessionGenerator
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.io.InputStream
+import java.security.Security
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         btn = findViewById(R.id.btn)
 
+        Security.addProvider(BouncyCastleProvider())
 
         btn!!.setOnClickListener {
             val intent = Intent(this@MainActivity, ScanActivity::class.java)
@@ -48,8 +54,15 @@ class MainActivity : AppCompatActivity() {
 
 
     fun startGreeting(view: View) {
-        SessionGenerator().startCommunication()
-//        SessionGenerator().testSessionBuilder()
+        val ins: InputStream = resources.openRawResource(
+            resources.getIdentifier(
+                "smime",
+                "raw", packageName
+            )
+        )
+
+
+        SessionGenerator().startCommunication(ins)
     }
 
 
