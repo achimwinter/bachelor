@@ -223,7 +223,16 @@ I would also like to thank my proofreaders and my family. Thanks to you too, the
 
 \chapter{Introduction}\label{ch:intro}
 
-The use of private and public keys as form 
+The two main fields of cryptography in computer systems can be divided between symmetric-key cryptography and public-key cryptography. Symmetric-key utilizes the same key for the sender and the receiver, which was the first form of encryption and also secure and easy to understand. If this is done by close relatives this may be possible, but exchanging this key to every website when browsing through the internet is impractical. Not only because it is physically nearly impossible, but also because the amount of keys one would have to store securely would be growing by the square of number of communication partners.
+% Maybe a picture for symmetric encryption
+To avoid this kind of key management, Whitfield Diffie and Martin Hellman published a system in 1976 known as the public-key cryptography. With this system it is possible to generate an encryption key over an insecure network such as the Internet in order to secure subsequent communication. However, the real encryption key is never transferred to the opposing communication partner. In fact the real encryption key is being calculated by using public and private keys, which have a mathematical relation to each other. Each communication partner has to create a pair of his own private and public key. While the public key can be exposed to the Internet, the private key has to remain secret. 
+By using both key pairs, a common shared key can be calculated which then can be used for the encryption. This system relies on the computational complexity, such as prime factorization, which is hard to do with big numbers. 
+%[Was ist der Diffie-Hellman-Schlüsselaustausch?] [https://en.wikipedia.org/wiki/Cryptography#Computer_era]
+
+The usage of encryption when visiting a web page has grown from about 30\% in 2014 to about 80\% by the end of 2019
+\includegraphics[Percentage of Web Pages Loaded by Firefox Using HTTPS]{ressources/https_statistics.png}
+This comes due to several reasons. Whistleblower Edward Snowden has received a lot of media interest and has made people aware of using secure services on the Internet, when he revealed the capabilities of the National Security Agency (NSA). In addition, browser manufacturers like Mozilla or Google warn their users when they visit a website without HTTPS with an open red lock next to the address bar.
+
 
 \section{Motivation}
 
