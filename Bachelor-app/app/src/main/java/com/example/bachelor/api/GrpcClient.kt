@@ -13,32 +13,37 @@ class GrpcClient {
 
     companion object {
         val instance = GrpcClient()
+        var counter = 0
     }
 
     private val managedChannel = ManagedChannelBuilder.forTarget("192.168.2.117:50051").usePlaintext().build()
 
+
+    val decryptStub = DecrypterGrpc.newStub(managedChannel)
+    val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptResponse> {
+        override fun onNext(value: DecryptResponse?) {
+            test(value)
+            counter++
+        }
+
+        override fun onError(t: Throwable?) {
+            println("onError on Client")
+        }
+
+        override fun onCompleted() {
+            println("onCompleted on Client")
+        }
+    })
+
+
     fun startCommunication() {
-
-        val decryptStub = DecrypterGrpc.newStub(managedChannel)
-
-        val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptResponse> {
-            override fun onNext(value: DecryptResponse?) {
-                println("onNext on Client")
-            }
-
-            override fun onError(t: Throwable?) {
-                println("onError on Client")
-            }
-
-            override fun onCompleted() {
-                println("onCompleted on Client")
-            }
-
-        })
-
-        observer.onNext(DecryptRequest.getDefaultInstance())
-        observer.onCompleted()
+        observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("Subscribing to Mails".toByteArray())).build())
     }
+
+    private fun test(value: DecryptResponse?) {
+        observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("test from Client".toByteArray())).build())
+    }
+
 
     fun exchangeKeybundles(ownPreKeyBundle: PreKeyBundle): PreKeyBundle {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)

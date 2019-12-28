@@ -14,25 +14,61 @@ import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.File
 import java.nio.file.Files
+import java.util.*
+import kotlin.collections.LinkedHashSet
 
 
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
-    override fun subscribeMails(responseObserver: StreamObserver<DecryptResponse?>?): StreamObserver<DecryptRequest?> {
-        return object : StreamObserver<DecryptRequest?> {
-            override fun onNext(value: DecryptRequest?) {
-                println("onNext from Server")
 
-                responseObserver?.onNext(DecryptResponse.getDefaultInstance())
+    companion object {
+        val observers = LinkedHashSet<StreamObserver<DecryptRequest>?>()
+        val messages = LinkedList<DecryptRequest>()
+    }
+
+    override fun subscribeMails(responseObserver: StreamObserver<DecryptRequest>?): StreamObserver<DecryptResponse?> {
+        observers.add(responseObserver)
+        messages.add(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("testMessage from Server".toByteArray())).build())
+        println("subscribeMails called")
+
+        return object : StreamObserver<DecryptResponse?> {
+            override fun onNext(value: DecryptResponse?) {
+                messages.forEach { message ->
+                    observers.forEach { observer ->
+                        observer?.onNext(message)
+//                        messages.remove(message)
+                    }
+
+                }
+
+
             }
 
-            override fun onError(t: Throwable) {
-                println("on error")
-                t.printStackTrace()
+            override fun onError(t: Throwable?) {
+                println("error on server")
+                t?.printStackTrace()
             }
+
             override fun onCompleted() {
-                println("on completed")
+                println("Completed on Server")
             }
+
         }
+    }
+
+    override fun testGreet(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
+        val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
+
+        val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
+        println(plaintext)
+
+        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
+
+        val encryptedData: ByteArray = readFile("/Users/achim/certs/testEncrypted.txt")
+
+        val outGoingMessage = sessionCipher.encrypt(encryptedData)
+
+        responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
+        responseObserver?.onCompleted()
     }
 
     override fun exchangeKeyBundle(request: Keybundle?, responseObserver: StreamObserver<Keybundle>?) {
@@ -63,22 +99,6 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         responseObserver?.onCompleted()
     }
 
-    override fun testGreet(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
-        val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
-
-        val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
-        println(plaintext)
-
-        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
-
-        val encryptedData: ByteArray = Files.readAllBytes(File("/Users/achim/certs/testEncrypted.txt").toPath())
-
-        val outGoingMessage = sessionCipher.encrypt(encryptedData)
-
-        responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
-        responseObserver?.onCompleted()
-    }
-
-//    private fun readFile(path: String)
-//            = File(path).inputStream().readBytes().toString(Charsets.UTF_8)
+    private fun readFile(path: String)
+            = Files.readAllBytes(File(path).toPath())
 }

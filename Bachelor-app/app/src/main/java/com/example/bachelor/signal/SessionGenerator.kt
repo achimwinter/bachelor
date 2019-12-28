@@ -37,6 +37,7 @@ class SessionGenerator {
         )
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
+        GrpcClient.instance.startCommunication()
 
         sessionBuilder.process(desktopKeyBundle)
 

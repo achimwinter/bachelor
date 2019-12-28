@@ -1,6 +1,5 @@
 package com.example.bachelor.signal
 
-import org.whispersystems.libsignal.IdentityKeyPair
 import org.whispersystems.libsignal.SessionBuilder
 import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.SignalProtocolAddress
@@ -9,7 +8,6 @@ import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import org.whispersystems.libsignal.state.PreKeyRecord
 import org.whispersystems.libsignal.state.SignedPreKeyRecord
-import org.whispersystems.libsignal.util.KeyHelper
 
 
 class SessionGenerator {
@@ -21,7 +19,7 @@ class SessionGenerator {
     val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
     var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
 
-    val signalProtocolStore = TestInMemorySignalProtocolStore(KeyHelper.generateIdentityKeyPair(), 1)
+    val signalProtocolStore = TestInMemorySignalProtocolStore()
     val desktopPreKeyPair = Curve.generateKeyPair()
     val desktopSignedPreKeyPair = Curve.generateKeyPair()
     val desktopSignedPreKeySignature = Curve.calculateSignature(

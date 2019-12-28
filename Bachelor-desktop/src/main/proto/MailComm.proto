@@ -30,7 +30,7 @@ message DecryptResponse {
 
 service Decrypter {
   // Client subscribes on emailDecryption
-  rpc SubscribeMails(stream DecryptRequest) returns(stream DecryptResponse) {}
+  rpc SubscribeMails(stream DecryptResponse) returns(stream DecryptRequest) {}
   rpc exchangeKeyBundle(Keybundle) returns (Keybundle) {}
   rpc testGreet(DecryptRequest) returns (DecryptResponse) {}
 }

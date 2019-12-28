@@ -1,9 +1,11 @@
 package com.example.bachelor
 
 import com.example.bachelor.api.DecrypterImpl
+import com.google.protobuf.ByteString
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import java.io.IOException
+import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -16,8 +18,8 @@ class BachelorDesktop {
     private fun start() {
 
         QRCode().generateQRCode()
+        sendMessages()
 
-        /* The port on which the server should run */
         val port = 50051
         server = ServerBuilder.forPort(port)
                 .addService(DecrypterImpl())
@@ -45,6 +47,18 @@ class BachelorDesktop {
     @Throws(InterruptedException::class)
     private fun blockUntilShutdown() {
         server?.awaitTermination()
+    }
+
+    private fun sendMessages() {
+//        val timer = Timer()
+//        val task = object: TimerTask() {
+//            override fun run() = run {
+//                var counter = 0
+//                DecrypterImpl().observer?.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("test ${++counter}".toByteArray())).build())
+//                println("new message added.")
+//            }
+//        }
+//        timer.schedule(task, 0, 20000)
     }
 
 
