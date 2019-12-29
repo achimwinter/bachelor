@@ -54,9 +54,7 @@ class BachelorDesktop {
         val task = object: TimerTask() {
             override fun run() = run {
                 var counter = 0
-                DecrypterImpl.observers.forEach{
-                    it?.onNext(null)
-                }
+                DecrypterImpl.observer?.onNext(null)
                 DecrypterImpl.messages.add(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("Test Message from Server ${++counter}".toByteArray())).build())
                 println("new message added.")
             }

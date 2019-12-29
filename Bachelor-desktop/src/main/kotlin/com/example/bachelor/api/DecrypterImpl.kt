@@ -21,22 +21,21 @@ import kotlin.collections.LinkedHashSet
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
     companion object {
-        val observers = LinkedHashSet<StreamObserver<DecryptRequest>?>()
+        var observer : StreamObserver<DecryptRequest>? = null
         val messages = LinkedList<DecryptRequest>()
     }
 
     override fun subscribeMails(responseObserver: StreamObserver<DecryptRequest>?): StreamObserver<DecryptResponse?> {
-        observers.add(responseObserver)
+        observer = responseObserver
 
         return object : StreamObserver<DecryptResponse?> {
             override fun onNext(value: DecryptResponse?) {
-                    observers.forEach {
-                        val message = messages.firstOrNull()
-                        if (message != null) {
-                            messages.remove(message)
-                            it?.onNext(message)
-                        }
-                    }
+
+                val message = messages.firstOrNull()
+                if (message != null) {
+                    messages.remove(message)
+                    observer?.onNext(message)
+                }
             }
 
             override fun onError(t: Throwable?) {
