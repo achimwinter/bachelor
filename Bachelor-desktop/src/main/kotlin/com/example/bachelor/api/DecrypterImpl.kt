@@ -27,20 +27,16 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
     override fun subscribeMails(responseObserver: StreamObserver<DecryptRequest>?): StreamObserver<DecryptResponse?> {
         observers.add(responseObserver)
-        messages.add(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("testMessage from Server".toByteArray())).build())
-        println("subscribeMails called")
 
         return object : StreamObserver<DecryptResponse?> {
             override fun onNext(value: DecryptResponse?) {
-                messages.forEach { message ->
-                    observers.forEach { observer ->
-                        observer?.onNext(message)
-//                        messages.remove(message)
+                    observers.forEach {
+                        val message = messages.firstOrNull()
+                        if (message != null) {
+                            messages.remove(message)
+                            it?.onNext(message)
+                        }
                     }
-
-                }
-
-
             }
 
             override fun onError(t: Throwable?) {

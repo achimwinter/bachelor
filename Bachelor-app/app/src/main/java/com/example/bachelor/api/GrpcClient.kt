@@ -16,7 +16,10 @@ class GrpcClient {
         var counter = 0
     }
 
-    private val managedChannel = ManagedChannelBuilder.forTarget("192.168.2.117:50051").usePlaintext().build()
+    private val managedChannel = ManagedChannelBuilder
+        .forTarget("192.168.2.117:50051")
+        .usePlaintext()
+        .build()
 
 
     val decryptStub = DecrypterGrpc.newStub(managedChannel)
