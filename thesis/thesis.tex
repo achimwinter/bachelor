@@ -244,47 +244,62 @@ This could come due to several reasons. Whistleblower Edward Snowden has receive
 
 \section{Motivation}
 
-The use of public/private keys is too difficult for many people, even IT professionals. The keys have to be distributed and stored securely. In many cases the distribution of keys is done by synchronizing the keys within a cloud. However, this is a potential security leak, because cloud service providers are not entirely trustworthy. On the other hand, distributing private keys
-by universal serial bus (USB) is too time-consuming for many users.
+The use of public/private keys is too troublesome for many people, even IT professionals. The manual distribution of keys between several devices becomes more difficult the more devices there are. However, end-to-end encryption is only possible if multiple devices have the access to the same private key. The synchronization of private keys is often done via cloud providers, although they are also often attacked. The keys would either have to be additionally encrypted, which makes handling more difficult again, or distributed in another way. On the other hand, systems such as Android or iOS offer more and more security features in their latest versions, such as the generation of random numbers in their own encapsulated processor. It is therefore worth investigating to what extent this can be used to simplify the handling of private keys.
 
-\subsection{Entrepreneurial perspective}
+The use of public/private keys is too difficult for many people, even IT professionals. The keys have to be distributed and stored securely. In many cases the distribution of keys is done by synchronizing the keys within a cloud. However, this is a potential security leak, because cloud service providers are not entirely trustworthy. On the other hand, distributing private keys by universal serial bus (USB) is too time-consuming for many users. 
 
-The adorsys GmbH \& Co. KG is a software development and consulting company that specializes in the field of banking and insurance, but also develops software for industry companies. That's why internal security is especially important for adorsys and therefor also the security of communication within the company. Employees usually also have a smartphone that accesses corporate services. The management of key pairs, for example for secure email communication, is very important. 
+% \subsection{Entrepreneurial perspective}
 
-\subsection{Social perspective}
+% The adorsys GmbH \& Co. KG is a software development and consulting company that specializes in the fields of banking and insurance, but also develops software for industry companies. That's why internal security is especially important for adorsys and therefor also the security of communication within the company. Employees usually also have a smartphone that accesses corporate services. The management of key pairs, for example for secure email communication, is very important. 
 
-Secure email communication is also a rarity in the private environment. Even signatures, the certainty that the person who sent me the email is really who he claims to be, is usually not given. 
-One reason for this is that email communication was never developed to be secure. On the other hand, the key management and use for many is far too cumbersome. 
+% \subsection{Social perspective}
+
+% The principles of private/public keys are 
+% Secure email communication is also a rarity in the private environment. Even signatures, the certainty that the person who sent me the email is really who he claims to be, is usually not given. 
+% One reason for this is that email communication was never developed to be secure. On the other hand, the key management and use for many is far too cumbersome. 
 
 \section{Objective}
 
+The goal of this work is to use a smartphone as a kind of secure wallet to store private keys on it. The private keys should never leave the smartphone. However, the smartphone must make the services of the private keys available to other applications, such as an email client on a desktop computer, so that encrypted emails can be read from there.
+
 \section{Environment}
+
+The work was carried out in cooperation with adorsys GmbH \& Co. KG. Founded in 2006, adorsys primarily offers software services in the banking and insurance industries. Adorsys became particularly well known through the open source implementation of the PSD2 payment directive, which came into force in 2019. The largest customers include Teambank AG, Datev eG, Bankverlag and ERGO Direkt. Adorsys has thus built up expertise in the financial sector, where security plays a major role. 
 
 \section{Structural Overview}
 
+%% Was passiert in den einzelnen Kapiteln
+
 \chapter{Approach}
 
+%% Wie bin ich in den einzelnen Kapiteln vorgegangen.
 \section{Analysis of the current situation}
-
 \section{Requirements for Key-Distribution Systems}
-
 \section{Concept}
-
 \section{Implementation}
+
+
 
 \chapter{Fundamentals}
 
 \section{Quick-Response Codes}
 
+Quick Response Codes (QR-Codes) are a kind of further development of barcodes, as they can be found on many products. Compared to barcodes, QR codes offer two dimensions instead of just one, which enables readers to read the codes faster and more robustly from different perspectives, but also contain more data. When a QR Code reader starts to analyze the code, it first calculates the ratio between the dark and light areas and then eliminates any possible distortion. Then the modules can be viewed, holding data ready to be used again. \parencite{office_masahiro_nodate}
+
 \section{Hardware Security Module}
 
-\section{RSA Cryptography}
+A hardware security module is a peripheral device which, depending on the model, performs cryptographic functions for another computer system. This may include: Securely generating or managing cryptographic keys, protecting signatures and identities or establishing secure communication channels. It is important to note that the system using the functions of the module has no influence on the module, but can only call the functions. Such modules range from small USB large tokens, such as the Ledger Nano S for cryptographic currency storage, to stand-alone servers that perform these cryptographic functions for a complete data center and then obtain the necessary GDPR or HIPAA certifications. \parencite{noauthor_hardware_nodate} \parencite{noauthor_safenet_nodate} \parencite{sustek_hardware_2011}
 
-\section{Secret Sharing}
+\section{Elliptic Curve Cryptography}
 
-Shamirs Secret Sharing. sharing keys können bei den jeweiligen PCs evtl . als Backup gelagert werden
+Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
+\parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007}
 
-\section{Trusted Execution Environment}
+% \section{Secret Sharing}
+
+% Shamirs Secret Sharing. sharing keys können bei den jeweiligen PCs evtl . als Backup gelagert werden
+
+% \section{Trusted Execution Environment}
 
 \section{Secure Element}
 
@@ -334,7 +349,7 @@ The Key Agreement Protocol is build upon the Diffie-Hellman (DH) Key Exchange Pr
   \item Bob receives a message from Alice and processes it.
 \end{itemize}
 
-After Alice receives the \"prekey bundle\" from the server, checks the signature of the pre key. In the case that the signatures do not match, the protocol is aborted.
+After Alice receives the \"prekey bundle\" from the server, checks the signature of the prekey. In the case that the signatures do not match, the protocol is aborted.
 Otherwise, she generates an ephemeral key pair by using her own public key. Using this ephemeral key she can calculate a shared key (SK). After calculating SK, she deletes the private ephemeral key and the DH outputs. Eventually, she calculates an \"associated data\" byte sequence which contains the identity keys of herself and Bob.
 Finally, she can generate a message containing following keys:
 \begin{itemize}
@@ -344,7 +359,7 @@ Finally, she can generate a message containing following keys:
   \item An initial ciphertext encrypted by the calculated shared key.
 \end{itemize}
 
-By receiving the message, Bob tries to decrypt the ciphertext by loading his identity key and the used pre key with the Identifier send from Alice. With this information, Bob can repeat the calculations which were done by Alice and check if the results match and deletes the DH outputs. If not, he deletes everything he received and aborts the communication. If it was successful, he also deletes the used prekey for forward secrecy and can then use the SK for further encryption/decryption. 
+By receiving the message, Bob tries to decrypt the ciphertext by loading his identity key and the used prekey with the Identifier send from Alice. With this information, Bob can repeat the calculations which were done by Alice and check if the results match and deletes the DH outputs. If not, he deletes everything he received and aborts the communication. If it was successful, he also deletes the used prekey for forward secrecy and can then use the SK for further encryption/decryption. 
 
 \subsection{Double Ratcheting Algorithm}
 
@@ -368,7 +383,7 @@ This is where the double ratchet comes to play. The constant value which is used
 \label{subsec:KDC}
 
 A Key Distribution Center is a network device with the purpose of storing and exchanging keys. Within the Signal Protocol the Key Distribution Center is used
-as a trusted party where so called Pre Key Bundles are uploaded. These Bundles contain information which is needed to create a session to a communication partner.
+as a trusted party where so called Prekey Bundles are uploaded. These Bundles contain information which is needed to create a session to a communication partner.
 The information contained consists of:
 \begin{itemize}
   \item registrationId
