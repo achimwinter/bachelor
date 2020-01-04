@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         if (prefs!!.getBoolean("firstrun", true)) {
-            KeyGenerator(this)
             prefs!!.edit().putBoolean("firstrun", false).apply()
         }
     }

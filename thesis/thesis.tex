@@ -231,7 +231,7 @@ By using both key pairs, a common shared key can be calculated which then can be
 
 The usage of encryption when visiting a web page has grown from about 30\% in 2014 to about 80\% by the end of 2019
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
   \includegraphics[width=0.8\textwidth]{ressources/https_statistics.png}
 	\caption{Percentage of Web Pages Loaded by Firefox Using HTTPS}
@@ -293,7 +293,9 @@ A hardware security module is a peripheral device which, depending on the model,
 \section{Elliptic Curve Cryptography}
 
 Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
-\parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007}
+\parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007} \parencite{noauthor_security_nodate}
+
+% Dass NIST-P-256 in die eigentliche Arbeit 
 
 % \section{Secret Sharing}
 
@@ -318,33 +320,43 @@ is safed in the keystore and is never exposed outside of the Keystore. ?
 
 With this generated Key you can then encrypt your own Data and safe them in the Preferences Section of your app.
 
-\section{iOS Keychain}
+\section{iOS Secure Enclave}
 
+The iOS keychain helps developers and users to store passwords or other sensible information. But also Keys, or things like certificates. 
+The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. So, just like the Android Keystore System, Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. Again, it is very important, that the main system/processor cannot see the key in plaintext. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
+Apple has implemented this feature for all smartphones with an A7 chip or higher. However, the Secure Enclave only supports NIST-P-256 elliptic curves at the moment.
+\parencite{noauthor_storing_nodate} \parencite{noauthor_keychain_nodate}
 
 \section{Signal-Protocol}
 
-The Signal-Protocol which was developed by Open Whisper Systems for their own product, the signal messenger, is an end to end cryptography protocol used for
-popular instant messaging services like Whatsapp, Facebook-Messenger or Skype.
+The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service "Signal". It is an end-to-end encryption protocol that is developed open source. The mayor benefit of this protocol is, that the sender is able to send a message even though the receiver is offline. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
+% Quelle dafür das andere das auch eingebaut haben.
 
 \parencite{cohn-gordon_formal_2017}
 % Seitenzahl benoetigt wenn die komplette Arbeit daraus besteht?
 \newline
 
+\subsection*{Key Distribution Center}
+\label{subsec:KDC}
+
+In the Signal App the Key Distribution Center exists to allow users to upload their bunch of keys so that they can be used by other users. In addition, messages that cannot be delivered at this point are stored there temporarily. For example, if the recipient has switched off his mobile phone at the moment. 
+
+
 \subsection{Key Agreement Protocol}
 The Protocol knows three parties. Alice, who would like to talk to Bob, Bob who wants other parties like Alice allow communicating with him and a server, which acts as a
 Public Key Infrastructure (PKI) and also store messages which cannot be delivered at the moment. The keys needed for this key exchange are as follows:
  \begin{itemize}
-   \item Alice's identity key \[  (IK_{A}) \]
-   \item Alice's ephemeral key \[  {EK_{A}} \]
-   \item Bob's identity key \[  {IK_{B}} \] 
-   \item Bob's one-time prekey \[  {OPK_{B}} \]
+   \item Alice's identity key $   (IK_{A})  $
+   \item Alice's ephemeral key $   {EK_{A}}  $
+   \item Bob's identity key $   {IK_{B}}  $ 
+   \item Bob's one-time prekey $   {OPK_{B}}  $
  \end{itemize}
 
 Each of these keys is a key pair generated using elliptic curves (X25519 or X448). Though each Bob's one-time prekeys can only be used once and Alice's ephemeral key is generated anew in each key exchange run.
 
 The Key Agreement Protocol is build upon the Diffie-Hellman (DH) Key Exchange Protocol. However, the Signal-Protocol is using three phases of the DH Key Agreement:
 \begin{itemize}
-  \item Bob uploads his identity key and several \"prekey bundles\" to a server.
+  \item Bob uploads his identity key and several 'prekey bundles' to a server.
   \item Alice requests one \"prekey bundle\" of Bob from the server.
   \item Bob receives a message from Alice and processes it.
 \end{itemize}
@@ -366,7 +378,7 @@ By receiving the message, Bob tries to decrypt the ciphertext by loading his ide
 The \"Double Ratchet Algorithm\" as used in the signal-protocol is a Key Derivation Function (KDF) algorithm, which is used to exchange encrypted messages by using a previously known SK. This SK can be generated by using some sort of DH Key Exchange as explained in the previous section, but outside this scope also by every other DH Key Exchange. 
 The algorithm is based on a KDF chain, which is generating the encryption keys. The figure how this is done for three messages.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
   \includegraphics[width=0.8\textwidth]{ressources/kdf_chain.png}
   \caption{KDF Chain}
@@ -379,22 +391,6 @@ However, the receiver and transmitter chain are based on a constant value as inp
 
 This is where the double ratchet comes to play. The constant value which is used for the transmitter and receiver chain is updated in some period of time (depends on the implementation). This is done by calculating a new DH secret in the root chain and using it to reset the transmitter and receiver chain. 
 
-\subsection*{Key Distribution Center}
-\label{subsec:KDC}
-
-A Key Distribution Center is a network device with the purpose of storing and exchanging keys. Within the Signal Protocol the Key Distribution Center is used
-as a trusted party where so called Prekey Bundles are uploaded. These Bundles contain information which is needed to create a session to a communication partner.
-The information contained consists of:
-\begin{itemize}
-  \item registrationId
-  \item deviceId
-  \item preKeyId
-  \item PreKeyPublic
-  \item signedPreKeyId
-  \item signedPreKeyPublic
-  \item signedPreKeySignature
-  \item identityKey
-\end{itemize}
 
 
 % \section{Web of trust}
