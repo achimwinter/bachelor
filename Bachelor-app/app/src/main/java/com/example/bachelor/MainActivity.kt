@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
-import com.example.bachelor.signal.KeyGenerator
 import com.example.bachelor.signal.SessionGenerator
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.io.InputStream

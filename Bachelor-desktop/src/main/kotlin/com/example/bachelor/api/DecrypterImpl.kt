@@ -14,6 +14,7 @@ import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
@@ -53,8 +54,8 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     override fun testGreet(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
         val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
 
-        val plaintext = String(SessionGenerator.instance.decryptMessage(incMessage))
-        println(plaintext)
+        val plaintext = SessionGenerator.instance.decryptMessage(incMessage)
+        println(String(plaintext))
 
         val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
 

@@ -234,9 +234,8 @@ The usage of encryption when visiting a web page has grown from about 30\% in 20
 \begin{figure}[ht]
 	\centering
   \includegraphics[width=0.8\textwidth]{ressources/https_statistics.png}
-	\caption{Percentage of Web Pages Loaded by Firefox Using HTTPS}
+	\caption{Percentage of Web Pages Loaded by Firefox Using HTTPS \parencite{letsencrypt_lets_2019}}
 \end{figure}
-%Quelle Bild Letsencrypt
 
 This could come due to several reasons. Whistleblower Edward Snowden has received a lot of media interest and has made people aware of using secure services on the Internet, when he revealed the capabilities of the National Security Agency (NSA). In addition, browser manufacturers like Mozilla or Google warn their users when they visit a website without HTTPS with an open red lock next to the address bar.
 % Quelle NSA Snowden, http = unsecure google
@@ -274,62 +273,66 @@ The work was carried out in cooperation with adorsys GmbH \& Co. KG. Founded in 
 
 %% Wie bin ich in den einzelnen Kapiteln vorgegangen.
 \section{Analysis of the current situation}
+
+First of all, it is necessary to examine how keys are currently handled and their most common uses, where the end user needs to be able to access the keys. Use cases like the Diffie-Hellman should be excluded. 
+
 \section{Requirements for Key-Distribution Systems}
+
+After the frequent use cases have been identified, an analysis can be made of the requirements they place on key management. 
+
 \section{Concept}
+
+From the results of the requirements, a concept can be worked out how different systems can work together to best meet the requirements and provide the user with the best possible user experience. 
+
 \section{Implementation}
 
+With the help of the concept, a prototype can then be developed in the Implementation chapter, which fulfills the main functions of the concept in an exemplary manner. The findings that become visible during the development of the prototype can then be used to further improve the result of the work.
 
 
 \chapter{Fundamentals}
 
 \section{Quick-Response Codes}
 
-Quick Response Codes (QR-Codes) are a kind of further development of barcodes, as they can be found on many products. Compared to barcodes, QR codes offer two dimensions instead of just one, which enables readers to read the codes faster and more robustly from different perspectives, but also contain more data. When a QR Code reader starts to analyze the code, it first calculates the ratio between the dark and light areas and then eliminates any possible distortion. Then the modules can be viewed, holding data ready to be used again. \parencite{office_masahiro_nodate}
+Quick Response Codes (QR-Codes) are a kind of further development of barcodes, as they can be found on many products. Compared to barcodes, QR codes offer two dimensions instead of just one, which enables readers to read the codes faster and more robustly from different perspectives, but also contain more data. When a QR Code reader starts to analyze the code, it first calculates the ratio between the dark and light areas and then eliminates any possible distortion. Then the modules can be viewed, holding data ready to be used again. \parencite{office_masahiro_1994}
 
 \section{Hardware Security Module}
+\label{sec:HSM}
 
-A hardware security module is a peripheral device which, depending on the model, performs cryptographic functions for another computer system. This may include: Securely generating or managing cryptographic keys, protecting signatures and identities or establishing secure communication channels. It is important to note that the system using the functions of the module has no influence on the module, but can only call the functions. Such modules range from small USB large tokens, such as the Ledger Nano S for cryptographic currency storage, to stand-alone servers that perform these cryptographic functions for a complete data center and then obtain the necessary GDPR or HIPAA certifications. \parencite{noauthor_hardware_nodate} \parencite{noauthor_safenet_nodate} \parencite{sustek_hardware_2011}
+A Hardware Security Module (HSM) is a peripheral device which, depending on the model, performs cryptographic functions for another computer system. This may include: Securely generating or managing cryptographic keys, protecting signatures and identities or establishing secure communication channels. It is important to note that the system using the functions of the module has no influence on the module, but can only call the functions. Such modules range from small USB large tokens, such as the Ledger Nano S for cryptographic currency storage, to stand-alone servers that perform these cryptographic functions for a complete data center and then obtain the necessary GDPR or HIPAA certifications. As the name HSM suggests, it includes separated hardware. This usually consists of a CPU, separated secure storage and a generator for random numbers.
+\parencite{ibm_hardware_2020} \parencite{gemalto_safenet_2020} \parencite{sustek_hardware_2011}
 
 \section{Elliptic Curve Cryptography}
 
 Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
-\parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007} \parencite{noauthor_security_nodate}
+\parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007} \parencite{wifi_security_2020}
 
-% Dass NIST-P-256 in die eigentliche Arbeit 
+% Dass NIST-P-256 schlecht ist in die eigentliche Arbeit 
 
 % \section{Secret Sharing}
 
-% Shamirs Secret Sharing. sharing keys können bei den jeweiligen PCs evtl . als Backup gelagert werden
-
 % \section{Trusted Execution Environment}
 
-\section{Secure Element}
+% \section{Secure Element}
 
 \section{Android Keystore System}
 
-The Android Keystore System is a container which lets the developer store cryptographic keys without doing the en- and decryption by himself and to make it more difficult to extract the key from the device. Also, with the Keystore System, it can be authorized which app can use these keys and which not. In addition, even the apps which are authorized cannot extract the key from the device once it's stored in the Keystore System. Messages which are to be signed or encrypted are packed in a system process which carries out the cryptographic operations. Thus, an adversary would be able to use the keys if he's able to compromise an authenticated app, but never extract it on other devices.
+The Android keystore is a secure environment that is used to store keys and prevent their extraction as much as possible. To prevent extraction, the Android keystore follows several paths. Firstly, it gives the possibility to link the key to a secure hardware element if it supports the key type. Then the actual application never has full access to the generated key. If the application wants to perform cryptographic operations like signing, encrypting or decrypting, this does not happen inside the application, but the application requests the keystore to perform the requested operation. The keystore can also be used to specify exactly which applications should have access to the keystore. So if an app is compromised, the attacker can only perform the same operations as the user did before. For example, if an attack has taken place and countermeasures have been taken, it is ensured that the attacker cannot do operations with the key anymore. 
+\parencite{google_android_2020}
 
-%Another option is to use the Trusted Execution Environment or Secure Element of Android 
-\subsection{Strongbox Keystore}
+\subsection{Hardware Backed Keystore}
 
-Since Android 9 (API Level 28), smartphones can have a Strongbox Keymaster, which relies on separated hardware and is only used for cryptographic operations.
-The separated hardware always has to contain a CPU, Secure Storage, Random Key Generator and additional mechanisms to resist package tampering and unauthorized sideloading of apps.
-
-However secrets/passwords cannot be imported in the Keystore. The ordinary way to safe information in android securely is to let the Keystore generate a Key, which then 
-is safed in the keystore and is never exposed outside of the Keystore. ? 
-
-With this generated Key you can then encrypt your own Data and safe them in the Preferences Section of your app.
+With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphone certified for Android Versions prior 'Marshmallow' (Android Version 6.0)only supported the creation of signatures, verification and generating/importing of asymmetric keys, the newest version of the Android Keystore System may have a support for a Hardware Security Module which is builtin by the OEM. In the background the developer uses the same API to access the keystores. However, if there are special parameters, the keystore tries to use the Hardware Security Module (if it exists and supports the specified algorithm). The advantage is then that the cryptographic functions are executed on separate hardware (\ref{sec:HSM}). \parencite{google_hardware-backed_2020}
 
 \section{iOS Secure Enclave}
 
 The iOS keychain helps developers and users to store passwords or other sensible information. But also Keys, or things like certificates. 
-The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. So, just like the Android Keystore System, Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. Again, it is very important, that the main system/processor cannot see the key in plaintext. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
-Apple has implemented this feature for all smartphones with an A7 chip or higher. However, the Secure Enclave only supports NIST-P-256 elliptic curves at the moment.
-\parencite{noauthor_storing_nodate} \parencite{noauthor_keychain_nodate}
+The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
+Apple has implemented this feature for all smartphones with an A7 processor chip or higher.
+\parencite{apple_storing_2020} \parencite{apple_keychain_2020}
 
 \section{Signal-Protocol}
 
-The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service "Signal". It is an end-to-end encryption protocol that is developed open source. The mayor benefit of this protocol is, that the sender is able to send a message even though the receiver is offline. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
+The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an end-to-end encryption protocol that is developed open source. The mayor benefit of this protocol is, that the sender is able to send a message even though the receiver is offline. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
 % Quelle dafür das andere das auch eingebaut haben.
 
 \parencite{cohn-gordon_formal_2017}
@@ -345,52 +348,53 @@ In the Signal App the Key Distribution Center exists to allow users to upload th
 \subsection{Key Agreement Protocol}
 The Protocol knows three parties. Alice, who would like to talk to Bob, Bob who wants other parties like Alice allow communicating with him and a server, which acts as a
 Public Key Infrastructure (PKI) and also store messages which cannot be delivered at the moment. The keys needed for this key exchange are as follows:
- \begin{itemize}
-   \item Alice's identity key $   (IK_{A})  $
-   \item Alice's ephemeral key $   {EK_{A}}  $
-   \item Bob's identity key $   {IK_{B}}  $ 
-   \item Bob's one-time prekey $   {OPK_{B}}  $
- \end{itemize}
+\begin{itemize}
+  \item Alice's identity key $   (IK_{A})  $
+  \item Alice's ephemeral key $   {EK_{A}}  $
+  \item Bob's identity key $   {IK_{B}}  $ 
+  \item Bob's one-time prekey $   {OPK_{B}}  $
+\end{itemize}
 
 Each of these keys is a key pair generated using elliptic curves (X25519 or X448). Though each Bob's one-time prekeys can only be used once and Alice's ephemeral key is generated anew in each key exchange run.
 
 The Key Agreement Protocol is build upon the Diffie-Hellman (DH) Key Exchange Protocol. However, the Signal-Protocol is using three phases of the DH Key Agreement:
 \begin{itemize}
-  \item Bob uploads his identity key and several 'prekey bundles' to a server.
-  \item Alice requests one \"prekey bundle\" of Bob from the server.
+  \item Bob uploads his identity key and several prekey bundles to a server.
+  \item Alice requests one prekey bundle of Bob from the server.
   \item Bob receives a message from Alice and processes it.
 \end{itemize}
 
-After Alice receives the \"prekey bundle\" from the server, checks the signature of the prekey. In the case that the signatures do not match, the protocol is aborted.
-Otherwise, she generates an ephemeral key pair by using her own public key. Using this ephemeral key she can calculate a shared key (SK). After calculating SK, she deletes the private ephemeral key and the DH outputs. Eventually, she calculates an \"associated data\" byte sequence which contains the identity keys of herself and Bob.
+After Alice receives the prekey bundle from the server, checks the signature of the prekey. In the case that the signatures do not match, the protocol is aborted.
+Otherwise, she generates an ephemeral key pair by using her own public key. Using this ephemeral key she can calculate a shared key (SK). After calculating SK, she deletes the private ephemeral key and the DH outputs. Eventually, she calculates an associated data byte sequence which contains the identity keys of herself and Bob.
 Finally, she can generate a message containing following keys:
 \begin{itemize}
   \item Alice's identity key  \[  (IK_{A}) \]
   \item Alice's ephemeral key \[  {EK_{A}} \] 
-  \item Identifier which pre key Alice used
+  \item Identifier which of the prekeys Alice used
   \item An initial ciphertext encrypted by the calculated shared key.
 \end{itemize}
 
 By receiving the message, Bob tries to decrypt the ciphertext by loading his identity key and the used prekey with the Identifier send from Alice. With this information, Bob can repeat the calculations which were done by Alice and check if the results match and deletes the DH outputs. If not, he deletes everything he received and aborts the communication. If it was successful, he also deletes the used prekey for forward secrecy and can then use the SK for further encryption/decryption. 
+\parencite{marlinspike_x3dh_2016}
 
 \subsection{Double Ratcheting Algorithm}
 
-The \"Double Ratchet Algorithm\" as used in the signal-protocol is a Key Derivation Function (KDF) algorithm, which is used to exchange encrypted messages by using a previously known SK. This SK can be generated by using some sort of DH Key Exchange as explained in the previous section, but outside this scope also by every other DH Key Exchange. 
+The Double Ratchet Algorithm as used in the signal-protocol is a Key Derivation Function (KDF) algorithm, which is used to exchange encrypted messages by using a previously known SK. This SK can be generated by using some sort of DH Key Exchange as explained in the previous section, but outside this scope also by every other DH Key Exchange. 
 The algorithm is based on a KDF chain, which is generating the encryption keys. The figure how this is done for three messages.
 
 \begin{figure}[ht]
 	\centering
   \includegraphics[width=0.8\textwidth]{ressources/kdf_chain.png}
-  \caption{KDF Chain}
+  \caption{KDF Chain \parencite{perrin_double_2016}}
   \label{KDF_Chain}
 \end{figure}
 
-In a \"Double Ratchet session\" between Alice and Bob, three different key chains are used. A root chain, a transmitter chain and a receiver chain. The transmitter and receiver chains are the same on each side (Alice receiver chain is the same as Bob's transmitter chain and vice versa). As Alice and Bob exchange messages, they also exchange new Diffie-Hellman public keys. The shared secret generated from this exchange can be used to form the root chain. The output keys of the root chain are then used as KDF keys for the receiver chain and the transmitter chain, which is called Diffie-Hellman ratchet.
+In a Double Ratchet session between Alice and Bob, three different key chains are used. A root chain, a transmitter chain and a receiver chain. The transmitter and receiver chains are the same on each side (Alice receiver chain is the same as Bob's transmitter chain and vice versa). As Alice and Bob exchange messages, they also exchange new Diffie-Hellman public keys. The shared secret generated from this exchange can be used to form the root chain. The output keys of the root chain are then used as KDF keys for the receiver chain and the transmitter chain, which is called Diffie-Hellman ratchet.
 
 However, the receiver and transmitter chain are based on a constant value as input, which is called symmetric key ratchet. So, if an adversary would get a KDF Key at some point and also the constant value which was used, he still can't recover older messages. Anyhow, he could calculate messages in the future, because he captured the constant value and one key. 
 
 This is where the double ratchet comes to play. The constant value which is used for the transmitter and receiver chain is updated in some period of time (depends on the implementation). This is done by calculating a new DH secret in the root chain and using it to reset the transmitter and receiver chain. 
-
+\parencite{perrin_double_2016}
 
 
 % \section{Web of trust}
@@ -473,8 +477,6 @@ Enter a passphrase on computer and then on mobile phone would add security but i
 Backup can be implemented using social secret sharing or other things.
 
 You could create clients for all kinds of desktop Programs, ssh, pgp, and so on.
-
-\parencite{gamma2011patterns}
 
 \backmatter
 %%%%%%%%%%%%%%%%%%%

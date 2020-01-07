@@ -2,6 +2,7 @@ package com.example.bachelor.signal
 
 import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.storage.TestInMemorySignalProtocolStore
+import com.example.bachelor.smime.KeyGenerator
 import com.example.bachelor.smime.SmimeUtils
 import com.google.protobuf.ByteString
 import org.whispersystems.libsignal.SessionBuilder
@@ -11,6 +12,7 @@ import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.InputStream
+import java.util.*
 
 
 class SessionGenerator {
@@ -32,19 +34,22 @@ class SessionGenerator {
 
         val ownPreKeyBundle = PreKeyBundle(
             signalProtocolStore.localRegistrationId, 1,
-            31337, ownPreKeyPair.publicKey, 22, ownSignedPreKeyPair.publicKey,
+            Random().nextInt(), ownPreKeyPair.publicKey, Random().nextInt(), ownSignedPreKeyPair.publicKey,
             ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
+
+        val keypair = KeyGenerator().generateOrGetKeyPair()
+        val certificateSigningRequest = KeyGenerator().generateCSR(keypair!!)
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
         GrpcClient.instance.startCommunication()
 
         sessionBuilder.process(desktopKeyBundle)
 
-        val message = "test"
+        val message = certificateSigningRequest
 
         val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
-        val outgoingMessage = sessionCipher.encrypt(message.toByteArray())
+        val outgoingMessage = sessionCipher.encrypt(message?.encoded)
 
         val response = GrpcClient.instance.testDecrypt(ByteString.copyFrom(outgoingMessage.serialize()))
 
