@@ -1,11 +1,15 @@
 package com.example.bachelor.api
 
 import com.example.bachelor.*
+import com.example.bachelor.signal.SessionGenerator
+import com.example.bachelor.smime.SmimeUtils
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
 import org.whispersystems.libsignal.IdentityKey
+import org.whispersystems.libsignal.InvalidMessageException
 import org.whispersystems.libsignal.ecc.Curve
+import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 
 
@@ -17,6 +21,7 @@ class GrpcClient {
     }
 
     private val managedChannel = ManagedChannelBuilder
+//        .forTarget(MainActivity.tvresult?.text.toString())
         .forTarget("192.168.2.117:50051")
         .usePlaintext()
         .build()
@@ -25,7 +30,7 @@ class GrpcClient {
     val decryptStub = DecrypterGrpc.newStub(managedChannel)
     val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptResponse> {
         override fun onNext(value: DecryptResponse?) {
-            test(value)
+            decryptMail(value)
             counter++
         }
 
@@ -43,8 +48,17 @@ class GrpcClient {
         observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("Subscribing to Mails".toByteArray())).build())
     }
 
-    private fun test(value: DecryptResponse?) {
-        observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("test from Client".toByteArray())).build())
+    private fun decryptMail(value: DecryptResponse?) {
+        if (!value?.unencryptedMail!!.isEmpty) {
+            val signalMessage = SignalMessage(value.unencryptedMail?.toByteArray())
+
+            val encryptedMail = SessionGenerator.sessionCipher.decrypt(signalMessage)
+
+            val decryptedMail = SmimeUtils().decrypt(encryptedMail)
+
+            observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom(decryptedMail)).build())
+        }
+
     }
 
 

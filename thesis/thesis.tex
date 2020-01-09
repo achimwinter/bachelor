@@ -306,6 +306,8 @@ A Hardware Security Module (HSM) is a peripheral device which, depending on the 
 Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
 \parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007} \parencite{wifi_security_2020}
 
+
+
 % Dass NIST-P-256 schlecht ist in die eigentliche Arbeit 
 
 % \section{Secret Sharing}
@@ -323,12 +325,42 @@ The Android keystore is a secure environment that is used to store keys and prev
 
 With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphone certified for Android Versions prior 'Marshmallow' (Android Version 6.0)only supported the creation of signatures, verification and generating/importing of asymmetric keys, the newest version of the Android Keystore System may have a support for a Hardware Security Module which is builtin by the OEM. In the background the developer uses the same API to access the keystores. However, if there are special parameters, the keystore tries to use the Hardware Security Module (if it exists and supports the specified algorithm). The advantage is then that the cryptographic functions are executed on separate hardware (\ref{sec:HSM}). \parencite{google_hardware-backed_2020}
 
-\section{iOS Secure Enclave}
+\subsection{Strongbox Keystore}
 
-The iOS keychain helps developers and users to store passwords or other sensible information. But also Keys, or things like certificates. 
-The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
+
+%% HW-Backed = various implementations like TrustZone
+%% StrongBox = separated hardware
+
+\section{iOS Keychain}
+
+The iOS Keychain helps developers and users to store passwords or other sensible information. But also Keys, or things like certificates. There is also a built-in password manager that is not for developers, but directly for the user. The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. 
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ressources/apple_keychain.png}
+  \caption{Apple Keychain \parencite{apple_keychain_2020}}
+  \label{apple:keychain}
+\end{figure}
+
+It is an encrypted file in which all information that is particularly worth protecting is stored. In addition, this file can be synchronized via iCloud, Apple's cloud service, to make it available on all devices of a user.
+
+However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
 Apple has implemented this feature for all smartphones with an A7 processor chip or higher.
 \parencite{apple_storing_2020} \parencite{apple_keychain_2020}
+
+\subsection{iOS Secure Enclave}
+
+\subsection{Apple Cryptokit}
+
+\subsection{Common Crypto}
+
+\subsection{Security Framework}
+
+available from iOS 13+ upwards
+
+secure digest
+
+uses secure enclave in background
 
 \section{Signal-Protocol}
 
@@ -403,7 +435,17 @@ This is where the double ratchet comes to play. The constant value which is used
 
 \chapter{Analysis of the current situation}
 
-\section{Usage of private keys}
+When designing a new type of key management, it is important to look at the current solutions and their characteristics. This helps to have a better overview of the functions required in the concept. In addition, the concept should also provide a way to make it as easy as possible for the user to use his keys on several devices and at the same time to have a simple administration of them. On the other hand, this step is also necessary to identify the problems of previous solutions so that they can be addressed in the concept. In a subsequent evaluation, the best solution in terms of security, usability and the required trust in third party providers can then be evaluated in various categories.
+
+\section{Usage Cases for distributed Keys}
+
+\subsection{Email}
+
+\subsection{Git}
+
+\subsection{Password Manager}
+
+
 
 \section{Distribution of private keys}
 

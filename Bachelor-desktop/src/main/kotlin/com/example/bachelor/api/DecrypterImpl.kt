@@ -11,6 +11,7 @@ import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage
+import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.File
 import java.nio.file.Files
@@ -31,11 +32,17 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
         return object : StreamObserver<DecryptResponse?> {
             override fun onNext(value: DecryptResponse?) {
+//                val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
+//                val signalMessage = SignalMessage(value?.unencryptedMail?.toByteArray())
+//
+//                println(sessionCipher.decrypt(signalMessage))
 
                 val message = messages.firstOrNull()
                 if (message != null) {
+                    val encryptedMessage = SessionGenerator.instance.sessionCipher.encrypt(message.encryptedMail.toByteArray())
+                    val decryptRequest = DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom(encryptedMessage.serialize())).build()
                     messages.remove(message)
-                    observer?.onNext(message)
+                    observer?.onNext(decryptRequest)
                 }
             }
 
@@ -57,11 +64,11 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         val plaintext = SessionGenerator.instance.decryptMessage(incMessage)
         println(String(plaintext))
 
-        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
-
         val encryptedData: ByteArray = readFile("/Users/achim/certs/testEncrypted.txt")
 
-        val outGoingMessage = sessionCipher.encrypt(encryptedData)
+//        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
+
+        val outGoingMessage = SessionGenerator.instance.sessionCipher.encrypt(encryptedData)
 
         responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
         responseObserver?.onCompleted()
@@ -95,6 +102,6 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         responseObserver?.onCompleted()
     }
 
-    private fun readFile(path: String)
+    fun readFile(path: String)
             = Files.readAllBytes(File(path).toPath())
 }

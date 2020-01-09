@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bachelor.signal.SessionGenerator
+import com.example.bachelor.smime.SmimeUtils
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.io.InputStream
 import java.security.Security
@@ -51,15 +52,14 @@ class MainActivity : AppCompatActivity() {
 
 
     fun startGreeting(view: View) {
-        val ins: InputStream = resources.openRawResource(
+        SmimeUtils.keystoreInputStream = resources.openRawResource(
             resources.getIdentifier(
                 "smime",
                 "raw", packageName
             )
         )
 
-
-        SessionGenerator().startCommunication(ins)
+        SessionGenerator().startCommunication()
     }
 
 

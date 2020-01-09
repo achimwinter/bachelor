@@ -4,7 +4,9 @@ import com.example.bachelor.api.DecrypterImpl
 import com.google.protobuf.ByteString
 import io.grpc.Server
 import io.grpc.ServerBuilder
+import java.io.File
 import java.io.IOException
+import java.nio.file.Files
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -54,12 +56,18 @@ class BachelorDesktop {
         val task = object: TimerTask() {
             override fun run() = run {
                 var counter = 0
+
+                DecrypterImpl.messages.add(DecryptRequest.newBuilder()
+                        .setEncryptedMail(
+                                ByteString.copyFrom(
+                                        Files.readAllBytes(File("/Users/achim/certs/testEncrypted.txt").toPath())
+                                )).build()
+                )
                 DecrypterImpl.observer?.onNext(null)
-                DecrypterImpl.messages.add(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("Test Message from Server ${++counter}".toByteArray())).build())
                 println("new message added.")
             }
         }
-        timer.schedule(task, 0, 20000)
+        timer.schedule(task, 10000, 20000)
     }
 
 

@@ -12,19 +12,26 @@ import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import java.io.InputStream
+import java.nio.charset.Charset
 import java.util.*
 
 
 class SessionGenerator {
 
     private val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
-    private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
 
 
-    fun startCommunication(keystore: InputStream) {
+    companion object {
+        private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
         val signalProtocolStore = TestInMemorySignalProtocolStore()
+        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
         val sessionBuilder = SessionBuilder(signalProtocolStore, DESKTOP_ADDRESS)
+        var keyStoreStream = 
+    }
 
+
+
+    fun startCommunication() {
         val ownPreKeyPair = Curve.generateKeyPair()
         val ownSignedPreKeyPair = Curve.generateKeyPair()
         val ownSignedPreKeySignature = Curve.calculateSignature(
@@ -38,18 +45,18 @@ class SessionGenerator {
             ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
 
-        val keypair = KeyGenerator().generateOrGetKeyPair()
-        val certificateSigningRequest = KeyGenerator().generateCSR(keypair!!)
+//        val keypair = KeyGenerator().generateOrGetKeyPair()
+//        val certificateSigningRequest = KeyGenerator().generateCSR(keypair!!)
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
-        GrpcClient.instance.startCommunication()
+
 
         sessionBuilder.process(desktopKeyBundle)
 
-        val message = certificateSigningRequest
-
-        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
-        val outgoingMessage = sessionCipher.encrypt(message?.encoded)
+        val message = "test"
+//
+//        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
+        val outgoingMessage = sessionCipher.encrypt(message.toByteArray(Charset.defaultCharset()))
 
         val response = GrpcClient.instance.testDecrypt(ByteString.copyFrom(outgoingMessage.serialize()))
 
@@ -57,8 +64,9 @@ class SessionGenerator {
 
         val incPlaintext = sessionCipher.decrypt(incomingMessage)
 
-        val decrypted = SmimeUtils(keystore).decrypt(incPlaintext)
+        val decrypted = SmimeUtils().decrypt(incPlaintext)
         print(String(decrypted!!))
+        GrpcClient.instance.startCommunication()
 
     }
 

@@ -14,6 +14,7 @@ class SessionGenerator {
 
     companion object {
         val instance = SessionGenerator()
+        val sessionCipher = SessionCipher(instance.signalProtocolStore, instance.MOBILE_ADDRESS)
     }
 
     val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)

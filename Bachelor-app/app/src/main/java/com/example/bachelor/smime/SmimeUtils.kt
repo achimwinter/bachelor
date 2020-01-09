@@ -1,5 +1,6 @@
 package com.example.bachelor.smime
 
+import com.example.bachelor.signal.SessionGenerator
 import org.bouncycastle.cms.CMSEnvelopedDataParser
 import org.bouncycastle.cms.RecipientInformation
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient
@@ -8,15 +9,23 @@ import java.security.KeyStore
 import java.security.PrivateKey
 
 
-class SmimeUtils(ins: InputStream) {
+class SmimeUtils {
+
+    companion object {
+        val instance = SmimeUtils()
+    }
+
+
+    var keystoreInputStream: InputStream? = null
+    val privateKey = getPrivateKeyFromPKCS()
 
     val keyStore = KeyStore.getInstance("PKCS12", "BC")
-    val privateKey = getPrivateKey(ins)
 
-    private fun getPrivateKey(ins: InputStream): PrivateKey {
-        keyStore.load(ins, "adorsys".toCharArray())
+    private fun getPrivateKeyFromPKCS(): PrivateKey {
+        keyStore.load(keystoreInputStream, "adorsys".toCharArray())
         return (keyStore.getKey("acw", "adorsys".toCharArray())) as PrivateKey
     }
+
 
     fun decrypt(message: ByteArray): ByteArray? {
         val parser = CMSEnvelopedDataParser(message)

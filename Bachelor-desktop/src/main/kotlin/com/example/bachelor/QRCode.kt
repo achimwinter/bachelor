@@ -5,9 +5,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import java.awt.FlowLayout
 import java.io.ByteArrayOutputStream
-import java.net.DatagramSocket
-import java.net.Inet4Address
-import java.net.InetAddress
+import java.net.*
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -42,10 +40,15 @@ class QRCode {
         DatagramSocket().use { socket ->
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002)
             ipAddress = socket.localAddress.hostAddress
+            socket.close()
         }
 
         if (ipAddress.isBlank() || ipAddress == "0.0.0.0") {
             ipAddress = Inet4Address.getLocalHost().hostAddress
+            val socket = Socket()
+            socket.connect( InetSocketAddress("google.com", 80))
+            ipAddress = socket.localAddress.hostAddress
+            socket.close()
         }
 
         return ipAddress
