@@ -18,18 +18,6 @@ import java.util.*
 
 class SessionGenerator {
 
-    private val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
-
-
-    companion object {
-        private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
-        val signalProtocolStore = TestInMemorySignalProtocolStore()
-        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
-        val sessionBuilder = SessionBuilder(signalProtocolStore, DESKTOP_ADDRESS)
-        var keyStoreStream = 
-    }
-
-
 
     fun startCommunication() {
         val ownPreKeyPair = Curve.generateKeyPair()
@@ -45,17 +33,15 @@ class SessionGenerator {
             ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
 
-//        val keypair = KeyGenerator().generateOrGetKeyPair()
-//        val certificateSigningRequest = KeyGenerator().generateCSR(keypair!!)
+        val keypair = KeyGenerator().generateKeyPair()
+        val certificateSigningRequest = KeyGenerator().generateCSR(keypair)
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
-
 
         sessionBuilder.process(desktopKeyBundle)
 
         val message = "test"
-//
-//        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
+
         val outgoingMessage = sessionCipher.encrypt(message.toByteArray(Charset.defaultCharset()))
 
         val response = GrpcClient.instance.testDecrypt(ByteString.copyFrom(outgoingMessage.serialize()))
@@ -65,9 +51,16 @@ class SessionGenerator {
         val incPlaintext = sessionCipher.decrypt(incomingMessage)
 
         val decrypted = SmimeUtils().decrypt(incPlaintext)
-        print(String(decrypted!!))
+        print(String(decrypted?:ByteArray(1)))
         GrpcClient.instance.startCommunication()
 
+    }
+
+    companion object {
+        private var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
+        val signalProtocolStore = TestInMemorySignalProtocolStore()
+        val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
+        val sessionBuilder = SessionBuilder(signalProtocolStore, DESKTOP_ADDRESS)
     }
 
 }

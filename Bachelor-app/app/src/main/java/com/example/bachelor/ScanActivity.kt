@@ -1,6 +1,8 @@
 package com.example.bachelor
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,10 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
 class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
+
+    companion object {
+        const val EXTRA_SCAN_RESULT = "extraScanResult"
+    }
 
     private var mScannerView: ZXingScannerView? = null
 
@@ -43,8 +49,9 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         Log.v("tag", rawResult.text) // Prints scan results
         Log.v("tag", rawResult.barcodeFormat.toString()) // Prints the scan format (qrcode, pdf417 etc.)
 
-        MainActivity.tvresult!!.text = rawResult.text
-        // TODO: Check if Identity Key send matches the scanned one
-        onBackPressed()
+        val intent = Intent()
+        intent.putExtra(EXTRA_SCAN_RESULT, rawResult.text)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

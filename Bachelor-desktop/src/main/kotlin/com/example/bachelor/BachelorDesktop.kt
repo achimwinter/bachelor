@@ -31,7 +31,6 @@ class BachelorDesktop {
         logger.log(Level.INFO, "Server started, listening on {0}", port)
         Runtime.getRuntime().addShutdownHook(object : Thread() {
             override fun run() {
-                // Use stderr here since the logger may have been reset by its JVM shutdown hook.
                 System.err.println("*** shutting down gRPC server since JVM is shutting down")
                 this@BachelorDesktop.stop()
                 System.err.println("*** server shut down")
@@ -51,12 +50,12 @@ class BachelorDesktop {
         server?.awaitTermination()
     }
 
+    // In real use-case, clicks in a user interface would add messages.
+    // This is just for simulation purposes
     private fun sendMessages() {
         val timer = Timer()
         val task = object: TimerTask() {
             override fun run() = run {
-                var counter = 0
-
                 DecrypterImpl.messages.add(DecryptRequest.newBuilder()
                         .setEncryptedMail(
                                 ByteString.copyFrom(
