@@ -1,5 +1,6 @@
 package com.example.bachelor.signal
 
+import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.SessionBuilder
 import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.SignalProtocolAddress
@@ -32,6 +33,10 @@ class SessionGenerator {
     var mobileKeyBundle : PreKeyBundle? = null
 
     val sessionCipher = SessionCipher(signalProtocolStore, MOBILE_ADDRESS)
+
+    fun getIdentityKey(): IdentityKey {
+        return signalProtocolStore.identityKeyPair.publicKey
+    }
 
     private fun generateKeyBundle(): PreKeyBundle {
         return PreKeyBundle(

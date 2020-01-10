@@ -29,7 +29,8 @@ import kotlin.collections.HashMap
 class KeyGenerator {
 
     private val principalName = "C=DE,ST=Bayern,L=Nuremberg,O=adorsys,OU=it,CN=adorsys.de/emailAddress=acw@adorsys.de"
-    val keyAlias = "bachelor"
+    private val keyAlias = "bachelor"
+    private val keyStoreProvider = "AndroidKeyStore"
 
     fun generateKeyPair(): KeyPair {
         val start = Calendar.getInstance()
@@ -37,7 +38,7 @@ class KeyGenerator {
         end.add(Calendar.YEAR, 5)
 
         KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA,
-            "AndroidKeyStore")
+            keyStoreProvider)
             .apply {
                 val certBuilder = KeyGenParameterSpec.Builder(keyAlias,
                     KeyProperties.PURPOSE_ENCRYPT or
@@ -47,7 +48,7 @@ class KeyGenerator {
                     .setKeyValidityStart(start.time)
                     .setKeyValidityEnd(end.time)
                     .setCertificateSerialNumber(BigInteger.ONE)
-                    .setCertificateSubject(X500Principal("CN=adorsys"))
+                    .setCertificateSubject(X500Principal(principalName))
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     initialize(

@@ -27,6 +27,7 @@
 \usepackage{longtable}
 \usepackage{setspace}
 \usepackage{booktabs}
+\usepackage{nameref}
 \usepackage[
 backend=biber,
 style=apa,
@@ -329,16 +330,14 @@ The Android keystore is a secure environment that is used to store keys and prev
 \subsection{Hardware Backed Keystore}
 \label{android:HWB}
 
-With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has a \ref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material like Netflix. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
+With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has an \nameref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material like Netflix. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
 \parencite{google_hardware-backed_2020}
 % Quelle für Fingerprint 
 
 
 \subsection{Strongbox Keystore}
 
-As an extension to the \ref{android:HWB}, Google introduced a new security feature in Android 9.0 (Android Pie), the StrongBox Keystore. The addition is, that the kind of implementation is specified by Google. With the \ref{android:HWB} every mobile phone manufacturer can implement their own TrustZone. Also, the StrongBox must operate on separated hardware to fulfil the specifications of a \ref{sec:HSM} and to increase the security level by using dedicated hardware.
-
-(\ref{sec:HSM})
+As an extension to the \nameref{android:HWB}, Google introduced a new security feature in Android 9.0 (Android Pie), the StrongBox Keystore. The addition is, that the kind of implementation is specified by Google. With the \ref{android:HWB} every mobile phone manufacturer can implement their own TrustZone. Also, the StrongBox must operate on separated hardware to fulfil the specifications of a \nameref{sec:HSM} and to increase the security level by using dedicated hardware.
 
 %% HW-Backed = various implementations like TrustZone
 %% StrongBox = separated hardware
@@ -354,49 +353,53 @@ The iOS Keychain helps developers and users to store passwords or other sensible
   \label{apple:keychain}
 \end{figure}
 
-It is an encrypted file in which all information that is particularly worth protecting is stored. In addition, this file can be synchronized via iCloud, Apple's cloud service, to make it available on all devices of a user.
+It is an encrypted file in which all information that is particularly worth protecting is stored. In addition, this file can be synchronized via iCloud, Apple's cloud service, to make it available on all devices of a user. Particularly for the iPhone, every App can create its own keychain. Access to the Keychain can be additionally secured by authentication methods like FaceId or TouchId.
 
 However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
 Apple has implemented this feature for all smartphones with an A7 processor chip or higher.
-\parencite{apple_storing_2020} \parencite{apple_keychain_2020}
+\parencite{apple_keychain_2020}
+
+% \subsection{Common Crypto}
 
 \subsection{iOS Secure Enclave}
 
-\subsection{Apple Cryptokit}
+Alike the \nameref{android:HWB}, the Secure Enclave is a coprocessor, which runs cryptographic operations. In addition, it is in possession of an own random-number generator, memory, operating-system and an encrypted storage. Thus, it can securely store keys, even if the kernel of the smartphone has been compromised. Also, cryptographic keys are never exposed to applications or the operating system of the main processor.
+\parencite{apple_storing_2020} 
 
-\subsection{Common Crypto}
+\subsection{Apple CryptoKit}
 
-\subsection{Security Framework}
+Since Version 13.0, Apple introduced a new cryptographic API for developers, the CryptoKit. The intention behind this is to simplify the use of cryptographic functions for developers. The most important functions are the generation and comparison of secure digests, public-key cryptography for digital signatures, as well as the execution of DH key exchange and the generation and use of symmetric keys. Also, it is possible to use private keys which are managed and generated by the Secure Enclave.
 
-available from iOS 13+ upwards
+% \subsection{Security Framework}
 
-secure digest
+% available from iOS 13+ upwards
 
-uses secure enclave in background
+% secure digest
+
+% uses secure enclave in background
+
 
 \section{Signal-Protocol}
 
-The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an end-to-end encryption protocol that is developed open source. The mayor benefit of this protocol is, that the sender is able to send a message even though the receiver is offline. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
+The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an open standard end-to-end encryption protocol. The mayor benefit of this protocol is, that the sender is able to send a message even though the receiver is offline. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. \parencite{cohn-gordon_formal_2017}
 % Quelle dafür das andere das auch eingebaut haben.
 
-\parencite{cohn-gordon_formal_2017}
+
 % Seitenzahl benoetigt wenn die komplette Arbeit daraus besteht?
-\newline
 
 \subsection*{Key Distribution Center}
 \label{subsec:KDC}
 
-In the Signal App the Key Distribution Center exists to allow users to upload their bunch of keys so that they can be used by other users. In addition, messages that cannot be delivered at this point are stored there temporarily. For example, if the recipient has switched off his mobile phone at the moment. 
+In the Signal App, the Key Distribution Center exists to allow users to upload a bunch of keybundles so that they can be used by other users. In addition, messages that cannot be delivered at this point, because e.g. the receiver mobile phone is switched off, are stored there temporarily until the messages can be sent.
 
 
 \subsection{Key Agreement Protocol}
-The Protocol knows three parties. Alice, who would like to talk to Bob, Bob who wants other parties like Alice allow communicating with him and a server, which acts as a
-Public Key Infrastructure (PKI) and also store messages which cannot be delivered at the moment. The keys needed for this key exchange are as follows:
+The Key Agreement Protocol knows three parties. Alice, who would like to talk to Bob, Bob who wants other parties like Alice allow communicating with him and a server, which acts as the \nameref{subsec:KDC}. The keys needed for this key exchange are as follows:
 \begin{itemize}
   \item Alice's identity key $   (IK_{A})  $
-  \item Alice's ephemeral key $   {EK_{A}}  $
-  \item Bob's identity key $   {IK_{B}}  $ 
-  \item Bob's one-time prekey $   {OPK_{B}}  $
+  \item Alice's ephemeral key $   ({EK_{A}})  $
+  \item Bob's identity key $   ({IK_{B}})  $ 
+  \item Bob's one-time prekey $   ({OPK_{B}})  $
 \end{itemize}
 
 Each of these keys is a key pair generated using elliptic curves (X25519 or X448). Though each Bob's one-time prekeys can only be used once and Alice's ephemeral key is generated anew in each key exchange run.

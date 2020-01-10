@@ -44,6 +44,7 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         Log.v("tag", rawResult.barcodeFormat.toString()) // Prints the scan format (qrcode, pdf417 etc.)
 
         MainActivity.tvresult!!.text = rawResult.text
+        // TODO: Check if Identity Key send matches the scanned one
         onBackPressed()
     }
 }
