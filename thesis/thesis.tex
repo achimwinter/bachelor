@@ -295,12 +295,6 @@ With the help of the concept, a prototype can then be developed in the Implement
 
 Quick Response Codes (QR-Codes) are a kind of further development of barcodes, as they can be found on many products. Compared to barcodes, QR codes offer two dimensions instead of just one, which enables readers to read the codes faster and more robustly from different perspectives, but also contain more data. When a QR Code reader starts to analyze the code, it first calculates the ratio between the dark and light areas and then eliminates any possible distortion. Then the modules can be viewed, holding data ready to be used again. \parencite{office_masahiro_1994}
 
-\section{Hardware Security Module}
-\label{sec:HSM}
-
-A Hardware Security Module (HSM) is a peripheral device which, depending on the model, performs cryptographic functions for another computer system. This may include: Securely generating or managing cryptographic keys, protecting signatures and identities or establishing secure communication channels. It is important to note that the system using the functions of the module has no influence on the module, but can only call the functions. Such modules range from small USB large tokens, such as the Ledger Nano S for cryptographic currency storage, to stand-alone servers that perform these cryptographic functions for a complete data center and then obtain the necessary GDPR or HIPAA certifications. As the name HSM suggests, it includes separated hardware. This usually consists of a CPU, separated secure storage and a generator for random numbers.
-\parencite{ibm_hardware_2020} \parencite{gemalto_safenet_2020} \parencite{sustek_hardware_2011}
-
 \section{Elliptic Curve Cryptography}
 
 Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
@@ -312,8 +306,19 @@ Elliptical curve cryptography is also based on the system of public-key cryptogr
 
 % \section{Secret Sharing}
 
-% \section{Trusted Execution Environment}
+\section{ARM TrustZone}
+\label{arm:TrustZone}
 
+The ARM-TrustZone is an implementation for a Trusted Execution Environment (TEE) for ARM-Cortex based processors, which is the standard for mobile phones. It is a technology, which creates two environments, a trusted and a non-trusted, simultaneously on a single core. In each of the environments an own operating system is running. Software can run either in the trusted environment or the non-trusted. However, both environments can work together. For example an application can use a library which is running in the trusted environment. Applications in the non-trusted environment can thus access resources in the trusted environment by an API which are provided by secure software.
+So, the TrustZone allows the secure storage of sensitive information like biometric information or Digital Rights Management (DRM) material, even if applications in the non-trusted environment are compromised.
+\parencite{fowler_trustzone_2017}
+
+\section{Hardware Security Module}
+\label{sec:HSM}
+
+A Hardware Security Module (HSM) is a peripheral device which, depending on the model, performs cryptographic functions for another computer system. This may include: Securely generating or managing cryptographic keys, protecting signatures and identities or establishing secure communication channels. It is important to note that the system using the functions of the module has no influence on the module, but can only call the functions. Such modules range from small USB large tokens, such as the Ledger Nano S for cryptographic currency storage, to stand-alone servers that perform these cryptographic functions for a complete data center and then obtain the necessary GDPR or HIPAA certifications. As the name suggests, an HSM has separate hardware, as opposed to a Trusted Execution Environment as implemented by the TrustZone. This usually consists of a CPU, separated secure storage and a generator for random numbers.
+\parencite{sustek_hardware_2011}
+% \parencite{ibm_hardware_2020} \parencite{gemalto_safenet_2020} 
 % \section{Secure Element}
 
 \section{Android Keystore System}
@@ -322,11 +327,18 @@ The Android keystore is a secure environment that is used to store keys and prev
 \parencite{google_android_2020}
 
 \subsection{Hardware Backed Keystore}
+\label{android:HWB}
 
-With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphone certified for Android Versions prior 'Marshmallow' (Android Version 6.0)only supported the creation of signatures, verification and generating/importing of asymmetric keys, the newest version of the Android Keystore System may have a support for a Hardware Security Module which is builtin by the OEM. In the background the developer uses the same API to access the keystores. However, if there are special parameters, the keystore tries to use the Hardware Security Module (if it exists and supports the specified algorithm). The advantage is then that the cryptographic functions are executed on separate hardware (\ref{sec:HSM}). \parencite{google_hardware-backed_2020}
+With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has a \ref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material like Netflix. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
+\parencite{google_hardware-backed_2020}
+% Quelle für Fingerprint 
+
 
 \subsection{Strongbox Keystore}
 
+As an extension to the \ref{android:HWB}, Google introduced a new security feature in Android 9.0 (Android Pie), the StrongBox Keystore. The addition is, that the kind of implementation is specified by Google. With the \ref{android:HWB} every mobile phone manufacturer can implement their own TrustZone. Also, the StrongBox must operate on separated hardware to fulfil the specifications of a \ref{sec:HSM} and to increase the security level by using dedicated hardware.
+
+(\ref{sec:HSM})
 
 %% HW-Backed = various implementations like TrustZone
 %% StrongBox = separated hardware
