@@ -4,9 +4,11 @@ import com.example.bachelor.api.DecrypterImpl
 import com.google.protobuf.ByteString
 import io.grpc.Server
 import io.grpc.ServerBuilder
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
+import java.security.Security
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -19,6 +21,7 @@ class BachelorDesktop {
     @Throws(IOException::class)
     private fun start() {
 
+        Security.addProvider(BouncyCastleProvider())
         QRCode().generateQRCode()
         sendMessages()
 
@@ -66,7 +69,7 @@ class BachelorDesktop {
                 println("new message added.")
             }
         }
-        timer.schedule(task, 10000, 20000)
+        timer.schedule(task, 0, 20000)
     }
 
 

@@ -18,12 +18,19 @@ message Keybundle {
   bytes identity_key = 8;
 }
 
+message SigningRequest {
+  bytes certification_request = 1;
+  bytes public_key = 2;
+}
+
+message SigningResponse {
+  bytes x509_certificate = 1;
+}
+
 message DecryptRequest {
   bytes encrypted_mail = 1;
 }
 
-// The response contains the unecrypted byte stream of an mime mail.
-// its a byte stream because its still encrypted with signal.
 message DecryptResponse {
   bytes unencrypted_mail = 1;
 }
@@ -32,5 +39,5 @@ service Decrypter {
   // Client subscribes on emailDecryption
   rpc SubscribeMails(stream DecryptResponse) returns(stream DecryptRequest) {}
   rpc exchangeKeyBundle(Keybundle) returns (Keybundle) {}
-  rpc testGreet(DecryptRequest) returns (DecryptResponse) {}
+  rpc signPublicKey(SigningRequest) returns (SigningResponse) {}
 }

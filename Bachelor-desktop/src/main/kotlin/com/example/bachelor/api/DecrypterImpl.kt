@@ -1,23 +1,18 @@
 package com.example.bachelor.api
 
-import com.example.bachelor.DecryptRequest
-import com.example.bachelor.DecryptResponse
-import com.example.bachelor.DecrypterGrpc
-import com.example.bachelor.Keybundle
+import com.example.bachelor.*
 import com.example.bachelor.signal.SessionGenerator
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
+import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.whispersystems.libsignal.IdentityKey
-import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
+import java.security.KeyFactory
+import java.security.spec.X509EncodedKeySpec
 import java.util.*
-import kotlin.collections.LinkedHashSet
 
 
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
@@ -32,10 +27,13 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
         return object : StreamObserver<DecryptResponse?> {
             override fun onNext(value: DecryptResponse?) {
-//                val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
-//                val signalMessage = SignalMessage(value?.unencryptedMail?.toByteArray())
-//
-//                println(sessionCipher.decrypt(signalMessage))
+                if (SessionGenerator.instance.signalProtocolStore.containsSession(SessionGenerator.instance.MOBILE_ADDRESS)) {
+                    val message = SignalMessage(value?.unencryptedMail?.toByteArray())
+                    println(String(SessionGenerator.instance.sessionCipher.decrypt(message)))
+                } else {
+                    val message = PreKeySignalMessage(value?.unencryptedMail?.toByteArray())
+                    println(String(SessionGenerator.instance.decryptMessage(message)))
+                }
 
                 val message = messages.firstOrNull()
                 if (message != null) {
@@ -58,19 +56,18 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         }
     }
 
-    override fun testGreet(request: DecryptRequest?, responseObserver: StreamObserver<DecryptResponse>?) {
-        val incMessage = PreKeySignalMessage(request?.encryptedMail?.toByteArray())
+    override fun signPublicKey(request: SigningRequest?, responseObserver: StreamObserver<SigningResponse>?) {
+        val preKeyPublicKey = PreKeySignalMessage(request?.publicKey?.toByteArray())
+        val publicKeyBytes = SessionGenerator.instance.decryptMessage(preKeyPublicKey)
+        val publicKey = KeyFactory.getInstance("RSA").generatePublic(X509EncodedKeySpec(publicKeyBytes))
+        val certificationRequest = request?.certificationRequest?.toByteArray()
 
-        val plaintext = SessionGenerator.instance.decryptMessage(incMessage)
-        println(String(plaintext))
+        val signedCertificate = sign(PKCS10CertificationRequest(certificationRequest), publicKey)
+        val encryptedMessage = SessionGenerator.sessionCipher.encrypt(signedCertificate?.encoded)
 
-        val encryptedData: ByteArray = readFile("/Users/achim/certs/testEncrypted.txt")
-
-//        val sessionCipher = SessionCipher(SessionGenerator.instance.signalProtocolStore, SessionGenerator.instance.MOBILE_ADDRESS)
-
-        val outGoingMessage = SessionGenerator.instance.sessionCipher.encrypt(encryptedData)
-
-        responseObserver?.onNext(DecryptResponse.newBuilder().setUnencryptedMail(ByteString.copyFrom(outGoingMessage.serialize())).build())
+        responseObserver?.onNext(SigningResponse.newBuilder()
+                .setX509Certificate(ByteString.copyFrom(encryptedMessage.serialize()))
+                .build())
         responseObserver?.onCompleted()
     }
 
@@ -101,7 +98,4 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         responseObserver?.onNext(desktopKeyBundle)
         responseObserver?.onCompleted()
     }
-
-    fun readFile(path: String)
-            = Files.readAllBytes(File(path).toPath())
 }

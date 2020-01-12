@@ -6,11 +6,14 @@ import com.example.bachelor.smime.SmimeUtils
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
+import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.InvalidMessageException
 import org.whispersystems.libsignal.ecc.Curve
+import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
+import java.security.PublicKey
 
 
 class GrpcClient {
@@ -28,13 +31,14 @@ class GrpcClient {
 
 
     val decryptStub = DecrypterGrpc.newStub(managedChannel)
-    val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptResponse> {
-        override fun onNext(value: DecryptResponse?) {
+    val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptRequest> {
+        override fun onNext(value: DecryptRequest?) {
             decryptMail(value)
             counter++
         }
 
         override fun onError(t: Throwable?) {
+            t?.printStackTrace()
             println("onError on Client")
         }
 
@@ -45,18 +49,24 @@ class GrpcClient {
 
 
     fun startCommunication() {
-        observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom("Subscribing to Mails".toByteArray())).build())
+        val handshakeMessage = SessionGenerator.sessionCipher.encrypt("INIT".toByteArray())
+
+        observer.onNext(DecryptResponse.newBuilder()
+            .setUnencryptedMail(ByteString.copyFrom(handshakeMessage.serialize()))
+            .build())
     }
 
-    private fun decryptMail(value: DecryptResponse?) {
-        if (!value?.unencryptedMail!!.isEmpty) {
-            val signalMessage = SignalMessage(value.unencryptedMail?.toByteArray())
+    private fun decryptMail(value: DecryptRequest?) {
+        if (!value?.encryptedMail?.isEmpty!!) {
+            val signalMessage = SignalMessage(value.encryptedMail?.toByteArray())
 
             val encryptedMail = SessionGenerator.sessionCipher.decrypt(signalMessage)
 
             val decryptedMail = SmimeUtils().decrypt(encryptedMail)
 
-            observer.onNext(DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom(decryptedMail)).build())
+            observer.onNext(DecryptResponse.newBuilder()
+                .setUnencryptedMail(ByteString.copyFrom(decryptedMail))
+                .build())
         }
 
     }
@@ -89,10 +99,13 @@ class GrpcClient {
         )
     }
 
-    fun testDecrypt(byteString: ByteString): DecryptResponse {
+    fun signCertificate(certificateSigningRequest: ByteArray?, encryptedPublicKey: ByteArray): SigningResponse {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)
 
-        return stub.testGreet(DecryptRequest.newBuilder().setEncryptedMail(byteString).build())
+        return stub.signPublicKey(SigningRequest.newBuilder()
+            .setCertificationRequest(ByteString.copyFrom(certificateSigningRequest))
+            .setPublicKey(ByteString.copyFrom(encryptedPublicKey))
+            .build())
     }
 
 }

@@ -9,6 +9,7 @@ import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
 import org.whispersystems.libsignal.state.PreKeyRecord
 import org.whispersystems.libsignal.state.SignedPreKeyRecord
+import kotlin.random.Random
 
 
 class SessionGenerator {
@@ -41,7 +42,7 @@ class SessionGenerator {
     private fun generateKeyBundle(): PreKeyBundle {
         return PreKeyBundle(
                 signalProtocolStore.localRegistrationId, 1,
-                31337, desktopPreKeyPair.publicKey, 22, desktopSignedPreKeyPair.publicKey,
+                Random.nextInt(), desktopPreKeyPair.publicKey, Random.nextInt(), desktopSignedPreKeyPair.publicKey,
                 desktopSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
         )
     }
