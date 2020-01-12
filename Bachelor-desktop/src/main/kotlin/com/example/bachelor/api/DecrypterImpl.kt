@@ -18,7 +18,7 @@ import java.util.*
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
     companion object {
-        var observer : StreamObserver<DecryptRequest>? = null
+        var observer: StreamObserver<DecryptRequest>? = null
         val messages = LinkedList<DecryptRequest>()
     }
 
@@ -27,14 +27,15 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
         return object : StreamObserver<DecryptResponse?> {
             override fun onNext(value: DecryptResponse?) {
-                if (SessionGenerator.instance.signalProtocolStore.containsSession(SessionGenerator.instance.MOBILE_ADDRESS)) {
-                    val message = SignalMessage(value?.unencryptedMail?.toByteArray())
-                    println(String(SessionGenerator.instance.sessionCipher.decrypt(message)))
-                } else {
-                    val message = PreKeySignalMessage(value?.unencryptedMail?.toByteArray())
-                    println(String(SessionGenerator.instance.decryptMessage(message)))
+                if (!value?.unencryptedMail?.isEmpty!!) {
+                    if (SessionGenerator.instance.signalProtocolStore.containsSession(SessionGenerator.instance.MOBILE_ADDRESS)) {
+                        val message = SignalMessage(value.unencryptedMail?.toByteArray())
+                        println(String(SessionGenerator.instance.sessionCipher.decrypt(message)))
+                    } else {
+                        val message = PreKeySignalMessage(value.unencryptedMail?.toByteArray())
+                        println(String(SessionGenerator.instance.decryptMessage(message)))
+                    }
                 }
-
                 val message = messages.firstOrNull()
                 if (message != null) {
                     val encryptedMessage = SessionGenerator.instance.sessionCipher.encrypt(message.encryptedMail.toByteArray())
@@ -43,6 +44,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
                     observer?.onNext(decryptRequest)
                 }
             }
+
 
             override fun onError(t: Throwable?) {
                 println("error on server")

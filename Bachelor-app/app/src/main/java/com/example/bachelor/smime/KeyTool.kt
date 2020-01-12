@@ -23,6 +23,7 @@ import java.math.BigInteger
 import java.security.*
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
+import java.security.spec.AlgorithmParameterSpec
 import java.util.*
 import javax.security.auth.x500.X500Principal
 import kotlin.collections.HashMap
@@ -44,9 +45,9 @@ class KeyTool {
     }
 
     fun generateKeyPair() {
-//        if (doesKeyPairExist()) {
-//            return
-//        }
+        if (doesKeyPairExist()) {
+            return
+        }
 
         val start = Calendar.getInstance()
         val end = Calendar.getInstance()

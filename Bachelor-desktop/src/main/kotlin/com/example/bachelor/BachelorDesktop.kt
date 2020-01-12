@@ -59,13 +59,13 @@ class BachelorDesktop {
         val timer = Timer()
         val task = object: TimerTask() {
             override fun run() = run {
+                DecrypterImpl.observer?.onNext(null)
                 DecrypterImpl.messages.add(DecryptRequest.newBuilder()
                         .setEncryptedMail(
                                 ByteString.copyFrom(
                                         Files.readAllBytes(File("/Users/achim/certs/testEncrypted.txt").toPath())
                                 )).build()
                 )
-                DecrypterImpl.observer?.onNext(null)
                 println("new message added.")
             }
         }

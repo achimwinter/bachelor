@@ -58,16 +58,19 @@ class GrpcClient {
 
     private fun decryptMail(value: DecryptRequest?) {
         if (!value?.encryptedMail?.isEmpty!!) {
-            val signalMessage = SignalMessage(value.encryptedMail?.toByteArray())
+            val incomingSignalMessage = SignalMessage(value.encryptedMail?.toByteArray())
 
-            val encryptedMail = SessionGenerator.sessionCipher.decrypt(signalMessage)
+            val encryptedMail = SessionGenerator.sessionCipher.decrypt(incomingSignalMessage)
 
             val decryptedMail = SmimeUtils().decrypt(encryptedMail)
 
+            val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(decryptedMail)
+
             observer.onNext(DecryptResponse.newBuilder()
-                .setUnencryptedMail(ByteString.copyFrom(decryptedMail))
+                .setUnencryptedMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
                 .build())
         }
+        observer.onNext(null)
 
     }
 
