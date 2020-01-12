@@ -7,18 +7,16 @@ import org.whispersystems.libsignal.SessionBuilder
 import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.SignalProtocolAddress
 import org.whispersystems.libsignal.ecc.Curve
-import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.io.ByteArrayInputStream
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
 import java.util.*
 
 
 class SessionGenerator {
 
+    fun startCommunication(qrCode: String) {
+        serverAddress = qrCode.split("|")[0]
+        val scannedFingerprint = qrCode.split("|")[1]
 
-    fun startCommunication() {
         val ownPreKeyPair = Curve.generateKeyPair()
         val ownSignedPreKeyPair = Curve.generateKeyPair()
         val ownSignedPreKeySignature = Curve.calculateSignature(
@@ -33,6 +31,9 @@ class SessionGenerator {
         )
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)
+        if (desktopKeyBundle.identityKey.fingerprint != scannedFingerprint) {
+            return
+        }
 
         sessionBuilder.process(desktopKeyBundle)
 
@@ -46,6 +47,7 @@ class SessionGenerator {
         val signalProtocolStore = TestInMemorySignalProtocolStore()
         val sessionCipher = SessionCipher(signalProtocolStore, DESKTOP_ADDRESS)
         val sessionBuilder = SessionBuilder(signalProtocolStore, DESKTOP_ADDRESS)
+        lateinit var serverAddress: String
     }
 
 }

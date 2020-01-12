@@ -20,12 +20,11 @@ class GrpcClient {
 
     companion object {
         val instance = GrpcClient()
-        var counter = 0
     }
 
     private val managedChannel = ManagedChannelBuilder
-//        .forTarget(MainActivity.tvresult?.text.toString())
-        .forTarget("192.168.2.117:50051")
+        .forTarget(SessionGenerator.serverAddress)
+//        .forTarget("192.168.2.117:50051")
         .usePlaintext()
         .build()
 
@@ -34,7 +33,6 @@ class GrpcClient {
     val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptRequest> {
         override fun onNext(value: DecryptRequest?) {
             decryptMail(value)
-            counter++
         }
 
         override fun onError(t: Throwable?) {

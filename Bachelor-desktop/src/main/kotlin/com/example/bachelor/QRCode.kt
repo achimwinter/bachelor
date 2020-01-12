@@ -19,10 +19,9 @@ class QRCode {
     // In a real Application the ip Adress wouldnt be needed here. The QR-Code should just prove that the identity key matches
     fun generateQRCode() {
         val qrCodeWriter = QRCodeWriter()
-        // TODO: Maybe find a format to seperate ip from fingerprint
         val bitMatrix = qrCodeWriter.encode(
                 getIpAdress() + ":" + 50051 +
-                SessionGenerator.instance.getIdentityKey().fingerprint,
+                "|" + SessionGenerator.instance.getIdentityKey().fingerprint,
                 BarcodeFormat.QR_CODE, WIDTH, HEIGHT)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)
@@ -51,10 +50,6 @@ class QRCode {
 
         if (ipAddress.isBlank() || ipAddress == "0.0.0.0") {
             ipAddress = Inet4Address.getLocalHost().hostAddress
-            val socket = Socket()
-            socket.connect( InetSocketAddress("google.com", 80))
-            ipAddress = socket.localAddress.hostAddress
-            socket.close()
         }
 
         return ipAddress

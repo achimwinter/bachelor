@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
 
     companion object {
-        lateinit var tvresult: String
         const val SCAN_RESULT_CODE = 888
     }
 
@@ -61,13 +60,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    fun startGreeting(view: View) {
-        SessionGenerator().startCommunication()
-    }
+//
+//    fun startGreeting(view: View) {
+//        SessionGenerator().startCommunication()
+//    }
 
     fun startGreeting(scanResult: String?) {
-        SessionGenerator().startCommunication()
+        SessionGenerator().startCommunication(scanResult!!)
     }
 
 }
