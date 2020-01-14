@@ -23,7 +23,6 @@ import java.io.File
 import java.io.FileReader
 import java.io.InputStream
 import java.math.BigInteger
-import java.nio.file.Files
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.cert.CertificateFactory
@@ -34,8 +33,6 @@ import java.util.*
 fun sign(inputCSR: PKCS10CertificationRequest?, requestPublicKey: PublicKey): X509Certificate? {
     val signatureAlgId: AlgorithmIdentifier = DefaultSignatureAlgorithmIdentifierFinder().find("SHA512withRSA")
     val digestAlgId: AlgorithmIdentifier = DefaultDigestAlgorithmIdentifierFinder().find(signatureAlgId)
-//    val spec = PKCS8EncodedKeySpec(Files.readAllBytes(Paths.get()))
-//    val kf = KeyFactory.getInstance("RSA")
     val caPrivate = readPrivateKey("/Users/achim/certs/ca.key", "test")
     val asymmetricKeyParameter: AsymmetricKeyParameter = PrivateKeyFactory.createKey(caPrivate?.encoded)
     val keyInfo: SubjectPublicKeyInfo = SubjectPublicKeyInfo.getInstance(requestPublicKey.encoded)

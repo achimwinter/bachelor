@@ -298,7 +298,7 @@ Quick Response Codes (QR-Codes) are a kind of further development of barcodes, a
 
 \section{Elliptic Curve Cryptography}
 
-Elliptical curve cryptography is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
+Elliptical curve cryptography is one implementation of a public-key cryptography system. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length to provide the same level of security. They can be combined with Diffie-Hellman for key negotiation or to generate signatures. But what does not work yet is the encryption of data. However, this can be avoided by combining key negotiation with a symmetric encryption method. Due to the smaller key length, this form of cryptography is particularly suitable for hardware with weak computing capabilities, such as WLAN routers. However, there are concerns that a back door has been built into one of the random number generators. Other curves that are not based on this are considered secure. 
 \parencite{hankerson_elliptic_2011} \parencite{schneier_essays_2007} \parencite{wifi_security_2020}
 
 
@@ -435,6 +435,10 @@ The algorithm is based on a KDF chain, which is generating the encryption keys. 
   \caption{KDF Chain \parencite{perrin_double_2016}}
   \label{KDF_Chain}
 \end{figure}
+
+\subsubsection{Diffie-Hellman Ratchet}
+
+\subsubsection{Static Ratchet}
 
 In a Double Ratchet session between Alice and Bob, three different key chains are used. A root chain, a transmitter chain and a receiver chain. The transmitter and receiver chains are the same on each side (Alice receiver chain is the same as Bob's transmitter chain and vice versa). As Alice and Bob exchange messages, they also exchange new Diffie-Hellman public keys. The shared secret generated from this exchange can be used to form the root chain. The output keys of the root chain are then used as KDF keys for the receiver chain and the transmitter chain, which is called Diffie-Hellman ratchet.
 

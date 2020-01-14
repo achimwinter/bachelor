@@ -1,8 +1,6 @@
 package com.example.bachelor.smime
 
-import android.R.id
 import android.security.keystore.KeyProperties
-import org.bouncycastle.asn1.bsi.BSIObjectIdentifiers.algorithm
 import org.bouncycastle.cms.CMSEnvelopedDataParser
 import org.bouncycastle.cms.RecipientInformation
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient

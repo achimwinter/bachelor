@@ -14,6 +14,7 @@ private fun identityKeypair(): IdentityKeyPair {
     return IdentityKeyPair(IdentityKey(identityKeyPairKeys.publicKey),
             identityKeyPairKeys.privateKey)
 }
+
 private fun registrationId(): Int {
     return KeyHelper.generateRegistrationId(false)
 }

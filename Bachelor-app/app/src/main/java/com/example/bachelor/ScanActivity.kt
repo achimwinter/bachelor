@@ -23,10 +23,15 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     public override fun onCreate(state: Bundle?) {
         super.onCreate(state)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.CAMERA), 0 )
+                arrayOf(Manifest.permission.CAMERA), 0
+            )
         }
 
         mScannerView = ZXingScannerView(this)
@@ -47,7 +52,10 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun handleResult(rawResult: Result) {
         // Do something with the result here
         Log.v("tag", rawResult.text) // Prints scan results
-        Log.v("tag", rawResult.barcodeFormat.toString()) // Prints the scan format (qrcode, pdf417 etc.)
+        Log.v(
+            "tag",
+            rawResult.barcodeFormat.toString()
+        ) // Prints the scan format (qrcode, pdf417 etc.)
 
         val intent = Intent()
         intent.putExtra(EXTRA_SCAN_RESULT, rawResult.text)

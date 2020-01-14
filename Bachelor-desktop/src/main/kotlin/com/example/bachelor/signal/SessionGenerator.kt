@@ -31,7 +31,7 @@ class SessionGenerator {
     )
 
     val desktopKeyBundle = generateKeyBundle()
-    var mobileKeyBundle : PreKeyBundle? = null
+    var mobileKeyBundle: PreKeyBundle? = null
 
     val sessionCipher = SessionCipher(signalProtocolStore, MOBILE_ADDRESS)
 
@@ -48,7 +48,7 @@ class SessionGenerator {
     }
 
     fun decryptMessage(message: PreKeySignalMessage): ByteArray {
-        signalProtocolStore.storePreKey(message.preKeyId.get(), PreKeyRecord( desktopKeyBundle.preKeyId, desktopPreKeyPair ))
+        signalProtocolStore.storePreKey(message.preKeyId.get(), PreKeyRecord(desktopKeyBundle.preKeyId, desktopPreKeyPair))
         signalProtocolStore.storeSignedPreKey(message.signedPreKeyId, SignedPreKeyRecord(message.signedPreKeyId, System.currentTimeMillis(), desktopSignedPreKeyPair, desktopSignedPreKeySignature))
 
         val sessionBuilder = SessionBuilder(signalProtocolStore, MOBILE_ADDRESS)

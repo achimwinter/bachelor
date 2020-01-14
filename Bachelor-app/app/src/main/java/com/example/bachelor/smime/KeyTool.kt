@@ -5,7 +5,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.SessionGenerator
-import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.asn1.x509.BasicConstraints
@@ -23,7 +22,6 @@ import java.math.BigInteger
 import java.security.*
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import java.security.spec.AlgorithmParameterSpec
 import java.util.*
 import javax.security.auth.x500.X500Principal
 import kotlin.collections.HashMap
@@ -38,7 +36,8 @@ class KeyTool {
 
     fun getKeyPair(): KeyPair? {
         if (doesKeyPairExist()) {
-            val privateKeyEntry = getKeyStoreInstance().getEntry("bachelor", null) as KeyStore.PrivateKeyEntry
+            val privateKeyEntry =
+                getKeyStoreInstance().getEntry("bachelor", null) as KeyStore.PrivateKeyEntry
             return KeyPair(privateKeyEntry.certificate.publicKey, privateKeyEntry.privateKey)
         }
         return null
@@ -65,7 +64,7 @@ class KeyTool {
                             KeyProperties.PURPOSE_VERIFY or
                             KeyProperties.PURPOSE_SIGN
                 )
-                        // Disabled, Emulator doesnt support biometric
+                    // Disabled, Emulator doesnt support biometric
 //                    .setUserAuthenticationRequired(true)
                     .setKeySize(4096)
                     .setKeyValidityEnd(end.time)
@@ -91,17 +90,21 @@ class KeyTool {
                 val csr = generateCSR(keypair)
 
                 val signingRequest = csr?.encoded
-                val encryptedPublicKey = SessionGenerator.sessionCipher.encrypt(keypair.public.encoded).serialize()
+                val encryptedPublicKey =
+                    SessionGenerator.sessionCipher.encrypt(keypair.public.encoded).serialize()
 
-                val encryptedSignedCertificate = GrpcClient.instance.signCertificate(signingRequest, encryptedPublicKey)
+                val encryptedSignedCertificate =
+                    GrpcClient.instance.signCertificate(signingRequest, encryptedPublicKey)
 
 
-                val encryptedCertificate = SignalMessage(encryptedSignedCertificate.x509Certificate.toByteArray())
+                val encryptedCertificate =
+                    SignalMessage(encryptedSignedCertificate.x509Certificate.toByteArray())
                 val certificate = SessionGenerator.sessionCipher.decrypt(encryptedCertificate)
 
                 val certFactory = CertificateFactory.getInstance("X.509")
                 val inputStream = ByteArrayInputStream(certificate)
-                val signedCertificate = certFactory.generateCertificate(inputStream) as X509Certificate
+                val signedCertificate =
+                    certFactory.generateCertificate(inputStream) as X509Certificate
                 inputStream.close()
 
                 replaceCertificate(signedCertificate)

@@ -6,14 +6,10 @@ import com.example.bachelor.smime.SmimeUtils
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
-import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.whispersystems.libsignal.IdentityKey
-import org.whispersystems.libsignal.InvalidMessageException
 import org.whispersystems.libsignal.ecc.Curve
-import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.security.PublicKey
 
 
 class GrpcClient {
@@ -49,9 +45,11 @@ class GrpcClient {
     fun startCommunication() {
         val handshakeMessage = SessionGenerator.sessionCipher.encrypt("INIT".toByteArray())
 
-        observer.onNext(DecryptResponse.newBuilder()
-            .setUnencryptedMail(ByteString.copyFrom(handshakeMessage.serialize()))
-            .build())
+        observer.onNext(
+            DecryptResponse.newBuilder()
+                .setUnencryptedMail(ByteString.copyFrom(handshakeMessage.serialize()))
+                .build()
+        )
     }
 
     private fun decryptMail(value: DecryptRequest?) {
@@ -64,9 +62,11 @@ class GrpcClient {
 
             val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(decryptedMail)
 
-            observer.onNext(DecryptResponse.newBuilder()
-                .setUnencryptedMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
-                .build())
+            observer.onNext(
+                DecryptResponse.newBuilder()
+                    .setUnencryptedMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
+                    .build()
+            )
         }
         observer.onNext(null)
 
@@ -100,13 +100,18 @@ class GrpcClient {
         )
     }
 
-    fun signCertificate(certificateSigningRequest: ByteArray?, encryptedPublicKey: ByteArray): SigningResponse {
+    fun signCertificate(
+        certificateSigningRequest: ByteArray?,
+        encryptedPublicKey: ByteArray
+    ): SigningResponse {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)
 
-        return stub.signPublicKey(SigningRequest.newBuilder()
-            .setCertificationRequest(ByteString.copyFrom(certificateSigningRequest))
-            .setPublicKey(ByteString.copyFrom(encryptedPublicKey))
-            .build())
+        return stub.signPublicKey(
+            SigningRequest.newBuilder()
+                .setCertificationRequest(ByteString.copyFrom(certificateSigningRequest))
+                .setPublicKey(ByteString.copyFrom(encryptedPublicKey))
+                .build()
+        )
     }
 
 }

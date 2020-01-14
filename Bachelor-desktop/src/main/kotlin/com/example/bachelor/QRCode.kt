@@ -6,7 +6,9 @@ import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
 import java.awt.FlowLayout
 import java.io.ByteArrayOutputStream
-import java.net.*
+import java.net.DatagramSocket
+import java.net.Inet4Address
+import java.net.InetAddress
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -21,7 +23,7 @@ class QRCode {
         val qrCodeWriter = QRCodeWriter()
         val bitMatrix = qrCodeWriter.encode(
                 getIpAdress() + ":" + 50051 +
-                "|" + SessionGenerator.instance.getIdentityKey().fingerprint,
+                        "|" + SessionGenerator.instance.getIdentityKey().fingerprint,
                 BarcodeFormat.QR_CODE, WIDTH, HEIGHT)
         val pngOutputStream = ByteArrayOutputStream()
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream)

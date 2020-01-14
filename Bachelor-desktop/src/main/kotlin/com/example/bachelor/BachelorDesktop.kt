@@ -57,7 +57,7 @@ class BachelorDesktop {
     // This is just for simulation purposes
     private fun sendMessages() {
         val timer = Timer()
-        val task = object: TimerTask() {
+        val task = object : TimerTask() {
             override fun run() = run {
                 DecrypterImpl.observer?.onNext(null)
                 DecrypterImpl.messages.add(DecryptRequest.newBuilder()
