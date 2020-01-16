@@ -14,7 +14,6 @@ import java.security.Security
 class MainActivity : AppCompatActivity() {
 
     private lateinit var btn: Button
-    private lateinit var comBtn: Button
     private lateinit var prefs: SharedPreferences
 
     companion object {
@@ -54,11 +53,6 @@ class MainActivity : AppCompatActivity() {
             prefs.edit()?.putBoolean("firstrun", false)?.apply()
         }
     }
-
-//
-//    fun startGreeting(view: View) {
-//        SessionGenerator().startCommunication()
-//    }
 
     fun startGreeting(scanResult: String?) {
         SessionGenerator().startCommunication(scanResult!!)

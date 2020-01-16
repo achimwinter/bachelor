@@ -1,5 +1,6 @@
 package com.example.bachelor.api
 
+import android.util.Log
 import com.example.bachelor.*
 import com.example.bachelor.signal.SessionGenerator
 import com.example.bachelor.smime.SmimeUtils
@@ -20,15 +21,15 @@ class GrpcClient {
 
     private val managedChannel = ManagedChannelBuilder
         .forTarget(SessionGenerator.serverAddress)
-//        .forTarget("192.168.2.117:50051")
         .usePlaintext()
         .build()
 
 
     val decryptStub = DecrypterGrpc.newStub(managedChannel)
-    val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptRequest> {
-        override fun onNext(value: DecryptRequest?) {
+    val observer = decryptStub.subscribeMails(object : StreamObserver<MailRequest> {
+        override fun onNext(value: MailRequest?) {
             decryptMail(value)
+
         }
 
         override fun onError(t: Throwable?) {
@@ -46,30 +47,36 @@ class GrpcClient {
         val handshakeMessage = SessionGenerator.sessionCipher.encrypt("INIT".toByteArray())
 
         observer.onNext(
-            DecryptResponse.newBuilder()
-                .setUnencryptedMail(ByteString.copyFrom(handshakeMessage.serialize()))
+            MailResponse.newBuilder()
+                .setMail(ByteString.copyFrom(handshakeMessage.serialize()))
                 .build()
         )
     }
 
-    private fun decryptMail(value: DecryptRequest?) {
-        if (!value?.encryptedMail?.isEmpty!!) {
-            val incomingSignalMessage = SignalMessage(value.encryptedMail?.toByteArray())
+    private fun decryptMail(value: MailRequest?) {
+        if (!value?.mail?.isEmpty!!) {
+            val incomingSignalMessage = SignalMessage(value.mail?.toByteArray())
 
-            val encryptedMail = SessionGenerator.sessionCipher.decrypt(incomingSignalMessage)
+            val mail = SessionGenerator.sessionCipher.decrypt(incomingSignalMessage)
 
-            val decryptedMail = SmimeUtils().decrypt(encryptedMail)
+            val editetMail = when (value.method) {
+                MailRequest.Method.SIGN -> SmimeUtils().sign(mail)
+                MailRequest.Method.DECRYPT -> SmimeUtils().decrypt(mail)
+                else -> {
+                    Log.ERROR
+                    ByteArray(-1)
+                }
+            }
 
-            val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(decryptedMail)
+            val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(editetMail)
 
             observer.onNext(
-                DecryptResponse.newBuilder()
-                    .setUnencryptedMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
+                MailResponse.newBuilder()
+                    .setMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
                     .build()
             )
         }
         observer.onNext(null)
-
     }
 
 

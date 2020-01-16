@@ -141,7 +141,7 @@ class KeyTool {
         return getKeyStoreInstance().getKey(keyAlias, null) != null
     }
 
-    private fun getKeyStoreInstance(): KeyStore {
+    fun getKeyStoreInstance(): KeyStore {
         val keyStore = KeyStore.getInstance(keyStoreProvider)
 
         keyStore.load(null)

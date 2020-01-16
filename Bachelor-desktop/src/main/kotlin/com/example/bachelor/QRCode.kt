@@ -51,7 +51,7 @@ class QRCode {
         }
 
         if (ipAddress.isBlank() || ipAddress == "0.0.0.0") {
-            ipAddress = Inet4Address.getLocalHost().hostAddress
+            ipAddress = Inet4Address.getLocalHost().hostName
         }
 
         return ipAddress
