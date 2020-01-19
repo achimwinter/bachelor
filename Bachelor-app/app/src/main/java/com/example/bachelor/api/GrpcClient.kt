@@ -1,19 +1,16 @@
 package com.example.bachelor.api
 
+import android.util.Log
 import com.example.bachelor.*
 import com.example.bachelor.signal.SessionGenerator
 import com.example.bachelor.smime.SmimeUtils
 import com.google.protobuf.ByteString
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
-import org.bouncycastle.pkcs.PKCS10CertificationRequest
 import org.whispersystems.libsignal.IdentityKey
-import org.whispersystems.libsignal.InvalidMessageException
 import org.whispersystems.libsignal.ecc.Curve
-import org.whispersystems.libsignal.protocol.PreKeySignalMessage
 import org.whispersystems.libsignal.protocol.SignalMessage
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.security.PublicKey
 
 
 class GrpcClient {
@@ -24,15 +21,15 @@ class GrpcClient {
 
     private val managedChannel = ManagedChannelBuilder
         .forTarget(SessionGenerator.serverAddress)
-//        .forTarget("192.168.2.117:50051")
         .usePlaintext()
         .build()
 
 
     val decryptStub = DecrypterGrpc.newStub(managedChannel)
-    val observer = decryptStub.subscribeMails(object : StreamObserver<DecryptRequest> {
-        override fun onNext(value: DecryptRequest?) {
+    val observer = decryptStub.subscribeMails(object : StreamObserver<MailRequest> {
+        override fun onNext(value: MailRequest?) {
             decryptMail(value)
+
         }
 
         override fun onError(t: Throwable?) {
@@ -49,27 +46,37 @@ class GrpcClient {
     fun startCommunication() {
         val handshakeMessage = SessionGenerator.sessionCipher.encrypt("INIT".toByteArray())
 
-        observer.onNext(DecryptResponse.newBuilder()
-            .setUnencryptedMail(ByteString.copyFrom(handshakeMessage.serialize()))
-            .build())
+        observer.onNext(
+            MailResponse.newBuilder()
+                .setMail(ByteString.copyFrom(handshakeMessage.serialize()))
+                .build()
+        )
     }
 
-    private fun decryptMail(value: DecryptRequest?) {
-        if (!value?.encryptedMail?.isEmpty!!) {
-            val incomingSignalMessage = SignalMessage(value.encryptedMail?.toByteArray())
+    private fun decryptMail(value: MailRequest?) {
+        if (!value?.mail?.isEmpty!!) {
+            val incomingSignalMessage = SignalMessage(value.mail?.toByteArray())
 
-            val encryptedMail = SessionGenerator.sessionCipher.decrypt(incomingSignalMessage)
+            val mail = SessionGenerator.sessionCipher.decrypt(incomingSignalMessage)
 
-            val decryptedMail = SmimeUtils().decrypt(encryptedMail)
+            val editetMail = when (value.method) {
+                MailRequest.Method.SIGN -> SmimeUtils().sign(mail)
+                MailRequest.Method.DECRYPT -> SmimeUtils().decrypt(mail)
+                else -> {
+                    Log.ERROR
+                    ByteArray(-1)
+                }
+            }
 
-            val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(decryptedMail)
+            val outgoingSignalMessage = SessionGenerator.sessionCipher.encrypt(editetMail)
 
-            observer.onNext(DecryptResponse.newBuilder()
-                .setUnencryptedMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
-                .build())
+            observer.onNext(
+                MailResponse.newBuilder()
+                    .setMail(ByteString.copyFrom(outgoingSignalMessage.serialize()))
+                    .build()
+            )
         }
         observer.onNext(null)
-
     }
 
 
@@ -100,13 +107,18 @@ class GrpcClient {
         )
     }
 
-    fun signCertificate(certificateSigningRequest: ByteArray?, encryptedPublicKey: ByteArray): SigningResponse {
+    fun signCertificate(
+        certificateSigningRequest: ByteArray?,
+        encryptedPublicKey: ByteArray
+    ): SigningResponse {
         val stub = DecrypterGrpc.newBlockingStub(managedChannel)
 
-        return stub.signPublicKey(SigningRequest.newBuilder()
-            .setCertificationRequest(ByteString.copyFrom(certificateSigningRequest))
-            .setPublicKey(ByteString.copyFrom(encryptedPublicKey))
-            .build())
+        return stub.signPublicKey(
+            SigningRequest.newBuilder()
+                .setCertificationRequest(ByteString.copyFrom(certificateSigningRequest))
+                .setPublicKey(ByteString.copyFrom(encryptedPublicKey))
+                .build()
+        )
     }
 
 }

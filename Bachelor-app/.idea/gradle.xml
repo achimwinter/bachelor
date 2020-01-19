@@ -4,6 +4,10 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+<<<<<<< HEAD
+=======
+        <option name="delegatedBuild" value="false" />
+>>>>>>> 41d0caa41f723b5b085021f5dcce617cdf0ff6a4
         <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -14,7 +18,10 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+<<<<<<< HEAD
         <option name="useAutoImport" value="true" />
+=======
+>>>>>>> 41d0caa41f723b5b085021f5dcce617cdf0ff6a4
       </GradleProjectSettings>
     </option>
   </component>

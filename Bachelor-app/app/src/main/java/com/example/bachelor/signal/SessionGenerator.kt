@@ -8,7 +8,7 @@ import org.whispersystems.libsignal.SessionCipher
 import org.whispersystems.libsignal.SignalProtocolAddress
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.state.PreKeyBundle
-import java.util.*
+import java.security.SecureRandom
 
 
 class SessionGenerator {
@@ -25,9 +25,14 @@ class SessionGenerator {
         )
 
         val ownPreKeyBundle = PreKeyBundle(
-            signalProtocolStore.localRegistrationId, 1,
-            Random().nextInt(), ownPreKeyPair.publicKey, Random().nextInt(), ownSignedPreKeyPair.publicKey,
-            ownSignedPreKeySignature, signalProtocolStore.identityKeyPair.publicKey
+            signalProtocolStore.localRegistrationId,
+            1,
+            SecureRandom().nextInt(),
+            ownPreKeyPair.publicKey,
+            SecureRandom().nextInt(),
+            ownSignedPreKeyPair.publicKey,
+            ownSignedPreKeySignature,
+            signalProtocolStore.identityKeyPair.publicKey
         )
 
         val desktopKeyBundle = GrpcClient.instance.exchangeKeybundles(ownPreKeyBundle)

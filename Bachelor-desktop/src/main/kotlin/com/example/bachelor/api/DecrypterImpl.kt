@@ -18,30 +18,39 @@ import java.util.*
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
     companion object {
-        var observer: StreamObserver<DecryptRequest>? = null
-        val messages = LinkedList<DecryptRequest>()
+        var observer: StreamObserver<MailRequest>? = null
+        val messages = LinkedList<MailRequest>()
     }
 
-    override fun subscribeMails(responseObserver: StreamObserver<DecryptRequest>?): StreamObserver<DecryptResponse?> {
+    override fun subscribeMails(responseObserver: StreamObserver<MailRequest>?): StreamObserver<MailResponse?> {
         observer = responseObserver
 
-        return object : StreamObserver<DecryptResponse?> {
-            override fun onNext(value: DecryptResponse?) {
-                if (!value?.unencryptedMail?.isEmpty!!) {
+        return object : StreamObserver<MailResponse?> {
+            override fun onNext(value: MailResponse?) {
+                if (!value?.mail?.isEmpty!!) {
                     if (SessionGenerator.instance.signalProtocolStore.containsSession(SessionGenerator.instance.MOBILE_ADDRESS)) {
-                        val message = SignalMessage(value.unencryptedMail?.toByteArray())
-                        println(String(SessionGenerator.instance.sessionCipher.decrypt(message)))
+                        val message = SignalMessage(value.mail?.toByteArray())
+                        val plaintext = SessionGenerator.instance.sessionCipher.decrypt(message)
+                        if (String(plaintext) != "Das ist eine Testmail") {
+                            println("Signatur ist korrekt?: ${verifySignature(plaintext)}")
+                        } else
+                            println(String(plaintext))
                     } else {
-                        val message = PreKeySignalMessage(value.unencryptedMail?.toByteArray())
+                        val message = PreKeySignalMessage(value.mail?.toByteArray())
                         println(String(SessionGenerator.instance.decryptMessage(message)))
                     }
                 }
+
                 val message = messages.firstOrNull()
                 if (message != null) {
-                    val encryptedMessage = SessionGenerator.instance.sessionCipher.encrypt(message.encryptedMail.toByteArray())
-                    val decryptRequest = DecryptRequest.newBuilder().setEncryptedMail(ByteString.copyFrom(encryptedMessage.serialize())).build()
+                    val encryptedMessage = SessionGenerator.instance.sessionCipher.encrypt(message.mail.toByteArray())
+
+                    val mailRequest = MailRequest.newBuilder()
+                            .setMail(ByteString.copyFrom(encryptedMessage.serialize()))
+                            .setMethod(message.method)
+                            .build()
                     messages.remove(message)
-                    observer?.onNext(decryptRequest)
+                    observer?.onNext(mailRequest)
                 }
             }
 

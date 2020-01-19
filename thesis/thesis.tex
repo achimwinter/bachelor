@@ -202,7 +202,7 @@ TODO
 TODO
 
 \newpage
-\chapter*{Acknowledgement}
+\chapter*{Acknowledgment}
 
 I would like to thank Prof. Dr. Junker-Schilling for his helpful support. The seminars and the discussions with the other students helped me a lot to stay on schedule and make the work what it is now. My further thanks go to Prof. Dr. Huffstadt for the second correction. 
 
@@ -425,7 +425,7 @@ Since Version 13.0, Apple introduced a new cryptographic API for developers, the
 \newpage
 \section{Signal-Protocol}
 
-The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an open standard end-to-end encryption protocol. The mayor benefit compared to other end-to-end encryption protocols is that messages can be sent encrypted even if the recipent is not online. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
+The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an open standard end-to-end encryption protocol. The mayor benefit compared to other end-to-end encryption protocols is that messages can be sent encrypted even if the recipient is not online. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
 \parencite{protocol_introducing_2018}
 
 
@@ -484,7 +484,7 @@ The Double Ratchet Algorithm as used in the Signal-Protocol is a Key Derivation 
 \end{figure}
 %Quelle für Bild (Wikimedia)
 
-By using this algorithm, the generated keys would rather seem random to an adversary, if he doesn´t know about the KDF-keys. Also if gets in possession of one of the KDF-keys, older and future keys would also appear random to him. Using this algorithm, three different key chains are in use. A root chain, a transmitter and a corresponding receiver chain, which are the same on the opposing sides (Alice receiver chain is the same as Bob´s transmitter chain and vice versa). Also, the corresponding chains have to start at the same point and have to be synchronized. Figure \ref{fig:KDF_Chain} shows, how the chains are generating keys. The output key can be used to encrypt data, the KDF-key is used to calculate the next chain element.
+By using this algorithm, the generated keys would rather seem random to an adversary, if he doesn't know about the KDF-keys. Also, if gets in possession of one of the KDF-keys, older and future keys would also appear random to him. Using this algorithm, three different key chains are in use. A root chain, a transmitter and a corresponding receiver chain, which are the same on the opposing sides (Alice receiver chain is the same as Bob´s transmitter chain and vice versa). Also, the corresponding chains have to start at the same point and have to be synchronized. Figure \ref{fig:KDF_Chain} shows, how the chains are generating keys. The output key can be used to encrypt data, the KDF-key is used to calculate the next chain element.
 \parencite{perrin_double_2016}
 
 \begin{figure}[ht]

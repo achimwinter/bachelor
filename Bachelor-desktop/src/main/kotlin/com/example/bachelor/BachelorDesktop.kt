@@ -1,7 +1,9 @@
 package com.example.bachelor
 
+//import com.example.bachelor.api.DecrypterImpl
 import com.example.bachelor.api.DecrypterImpl
 import com.google.protobuf.ByteString
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeBodyPart
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -53,21 +55,29 @@ class BachelorDesktop {
         server?.awaitTermination()
     }
 
-    // In real use-case, clicks in a user interface would add messages.
-    // This is just for simulation purposes
+    //     In real use-case, clicks in a user interface would add messages.
+//     This is just for simulation purposes
     private fun sendMessages() {
         val timer = Timer()
-        val task = object: TimerTask() {
+        val task = object : TimerTask() {
             override fun run() = run {
                 DecrypterImpl.observer?.onNext(null)
-                DecrypterImpl.messages.add(DecryptRequest.newBuilder()
-                        .setEncryptedMail(
+                DecrypterImpl.messages.add(MailRequest.newBuilder()
+                        .setMethod(MailRequest.Method.DECRYPT)
+                        .setMail(
                                 ByteString.copyFrom(
                                         Files.readAllBytes(File("/Users/achim/certs/testEncrypted.txt").toPath())
                                 )).build()
                 )
-                println("new message added.")
+                DecrypterImpl.messages.add(MailRequest.newBuilder()
+                        .setMethod(MailRequest.Method.SIGN)
+                        .setMail(ByteString.copyFrom("Please Sign this Message".toByteArray()))
+                        .build()
+
+                )
+                println("new messages added.")
             }
+
         }
         timer.schedule(task, 0, 20000)
     }

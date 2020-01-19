@@ -27,17 +27,21 @@ message SigningResponse {
   bytes x509_certificate = 1;
 }
 
-message DecryptRequest {
-  bytes encrypted_mail = 1;
+message MailRequest {
+  bytes mail = 1;
+  enum Method {
+    SIGN = 0;
+    DECRYPT = 1;
+  }
+  Method method = 2;
 }
 
-message DecryptResponse {
-  bytes unencrypted_mail = 1;
+message MailResponse {
+  bytes mail = 1;
 }
 
 service Decrypter {
-  // Client subscribes on emailDecryption
-  rpc SubscribeMails(stream DecryptResponse) returns(stream DecryptRequest) {}
+  rpc SubscribeMails(stream MailResponse) returns(stream MailRequest) {}
   rpc exchangeKeyBundle(Keybundle) returns (Keybundle) {}
   rpc signPublicKey(SigningRequest) returns (SigningResponse) {}
 }

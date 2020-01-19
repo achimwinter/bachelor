@@ -1,25 +1,19 @@
 package com.example.bachelor
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bachelor.signal.SessionGenerator
-import com.example.bachelor.smime.SmimeUtils
 import org.bouncycastle.jce.provider.BouncyCastleProvider
-import java.io.InputStream
 import java.security.Security
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var btn: Button
-    private lateinit var comBtn: Button
     private lateinit var prefs: SharedPreferences
 
     companion object {
@@ -59,11 +53,6 @@ class MainActivity : AppCompatActivity() {
             prefs.edit()?.putBoolean("firstrun", false)?.apply()
         }
     }
-
-//
-//    fun startGreeting(view: View) {
-//        SessionGenerator().startCommunication()
-//    }
 
     fun startGreeting(scanResult: String?) {
         SessionGenerator().startCommunication(scanResult!!)
