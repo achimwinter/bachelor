@@ -1,7 +1,7 @@
 \documentclass[12pt,oneside,a4paper,parskip]{scrbook}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
-%\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
 \usepackage{floatflt}
 \usepackage{subfigure}
 \usepackage[pdftex]{graphicx}
@@ -25,7 +25,7 @@
 \usepackage{subfigure}
 \usepackage{epstopdf}
 \usepackage{longtable}
-\usepackage{setspace}
+\newlength\colw
 \usepackage{booktabs}
 \usepackage{nameref}
 \usepackage[
@@ -33,10 +33,14 @@ backend=biber,
 style=apa,
 citestyle=authoryear-comp
 ]{biblatex}
+\usepackage{setspace}
+\onehalfspacing % Zeilenabstand 1,5 Zeilen
+\usepackage{seqsplit}
+\usepackage{hhline}
 
 \bibliography{bibliography}
 
-
+%% Auf Abbildungen immer verweisen
 %% Schauen ob die Reihenfolge passt
 
 %%%%%%%%%%%%%%%%%%%
@@ -87,6 +91,12 @@ pdfkeywords={Keywords}
   commentstyle=\color{gray}\upshape
   linewidth=\textwidth
 }
+
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}   % center
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}} % left
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}  % right
+%\newcolumntype{w}[1]{>{\raggedleft\hspace{0pt}}p{#1}}
 
 \lstdefinelanguage{json}{
     basicstyle=\normalfont\ttfamily,
@@ -351,7 +361,6 @@ However, there are concerns that a back door has been built into one of the rand
 % Vielleicht dass NIST-P-256 schlecht ist in die eigentliche Arbeit 
 
 % \section{Secret Sharing}
-\newpage
 \section{ARM TrustZone}
 \label{arm:TrustZone}
 
@@ -422,7 +431,6 @@ Since Version 13.0, Apple introduced a new cryptographic API for developers, the
 
 % uses secure enclave in background
 
-\newpage
 \section{Signal-Protocol}
 
 The signal protocol was developed by the Open Whisper Systems Foundation for their own messenger service Signal. It is an open standard end-to-end encryption protocol. The mayor benefit compared to other end-to-end encryption protocols is that messages can be sent encrypted even if the recipient is not online. This was also the reason for other messenger services such as WhatsApp, Skype or Facebook Messenger to implement a customized version of this encryption. 
@@ -493,7 +501,6 @@ By using this algorithm, the generated keys would rather seem random to an adver
   \caption{KDF Chain \parencite{perrin_double_2016}}
   \label{fig:KDF_Chain}
 \end{figure}
-\newpage
 
 \subsubsection{Symmetric-key ratchet}
 
@@ -512,59 +519,126 @@ If an adversary could steal the transmitter and receiver chain keys, it would be
 When designing a new type of key management, it is important to look at the current solutions and their characteristics. This helps to have a better overview of the functions required in the concept. In addition, the concept should also provide a way to make it as easy as possible for the user to use his keys on several devices and at the same time to have a simple administration of them. On the other hand, this step is also necessary to identify the problems of previous solutions so that they can be addressed in the concept. In a subsequent evaluation, the best solution in terms of security, usability and the required trust in third party providers can then be evaluated in various categories.
 
 \section{Use Cases for distributed Keys}
+In this section some possible applications are presented, where a secure storage of secrets is necessary. 
 
 \subsection{Email}
 
+One of the most used and oldest communication channels on the Internet is e-mail. A great advantage, especially in the early days of the Internet, was that messages could be sent asynchronously. This means that the recipient could retrieve the message even if he or she was not online when it was sent, since the messages can be stored temporarily on a server. However, the e-mail is more like a postcard than a letter. Anyone who receives it can also read it, since no form of encryption is provided. Nevertheless, important and confidential information is exchanged via this medium. In order to ensure the confidentiality and integrity of the messages, protocols such as SMIME or PGP were developed. These can ensure confidentiality by means of end-to-end encryption or integrity by means of a digital signature. Both solutions use the principle of public-key cryptography. However, even today most e-mails are neither signed nor encrypted, which is mainly due to the complicated setup. 
+
+In May 2018, there were major reports of the so-called E-Fail vulnerability, which affected both PGP and SMIME. Besides the outdated standards, a major reason for the vulnerability was that in many mail clients the display of HTML elements and the reloading of elements is enabled by default. In the meantime, the vulnerabilities have been fixed for both PGP and SMIME, so that both are again considered secure.
+
+The creation of the key pairs is somewhat complicated for both standards. They are usually created offline on a local computer and must then be distributed to all computers that need access to them using one of the methods from (dis of priv keys). Another possibility, as briefly mentioned in the basics, is to have the keys generated by a Certificate Authority, after which the keys must be distributed accordingly.
+
+% Vielleicht welche Hilfestellungen es dazu gibt.
+
 \subsection{SSH}
-% Git und die eigentlichen VPN Verbindungen
+SSH is a protocol that is mainly known through the remote administration of other computers and was also developed to replace other protocols like telnet.  Beyond that, it is an independent, encrypted network protocol. It also allows other protocols like http to be tunnelled through SSH connections, which is practically equivalent to a VPN. Other protocols such as SCP for data transfer or Git as a distributed version management system are also based on it or use SSH for authentication. 
+
+The authentication is ideally done with public and private keys. Alternatively, authentication via a password can also be implemented. 
+
+According to the report by Edward Snowden, the NSA is partially able to decrypt SSH connections.
+
+In most cases, a separate key can and should be generated for each device in the case of SSH. The distribution of the keys can therefore be disregarded here.
+
+% Git und die eigentlichen SSH Verbindungen
+% bei GIT: Sowohl authentifikation als auch verschlüsselung dank SSH
 
 \subsection{Password Manager}
+Passwords are one of the most widely used types of authentication mechanisms on the Internet. Nearly every service uses them to verify that the user is the specified user by knowing that only the authorized user should have access to them. The problem that emerges is that there are many users who use weak passwords or who use the same password for several services. Both of these are security risks. Therefore, there are password managers that are able to generate passwords securely and release them only with access to a master password and/or key file. The passwords of the services are stored in databases that are encrypted with the master password/keyfile.
 
-\subsection{Two Factor Authentication}
+To be able to use all services on all devices, the database must be distributed on several devices in the case of an offline password manager that does not store the data on the provider's servers. If a keyfile is used, it must also be securely distributed to multiple devices.
+
+\subsection{Multi-factor authentication}
+The multifactor authentication is an extension of the authentication as explained in the previous chapter by the password. In addition to the knowledge that a user must have in order to log in, the ownership of another device, for example, can be used as an additional authentication factor. 
 
 \subsection{Crypto Currencies}
+The principle of public-key cryptography is also used for cryptocurrencies like Bitcoin. This is used to generate signatures for transactions. 
 
-\subsection{VPN}
-
+The public key represents the receiving address, similar to the IBAN in bank communication. It can also be used to encrypt messages that only the recipient should be able to read. As a rule, however, there is not only one public-private key pair, but several, which are combined under a master key that encrypts all others as with the password manager. It is beyond the scope of this paper to look further into the background of the Master Key. However, if several devices are to have access to the money, the master key must be distributed to several devices.
 
 
 \section{Distribution of private keys}
 
 \subsection{Local/Offline}
+For example, to transfer a private key from one device to another, a USB cable can be used. For devices such as smartphones, a normal cable can be used for this purpose, which is also used to charge the smartphone. For example, if you want to transfer a private key from a desktop computer to a laptop, you need to use a link cable to make the transfer happen.
+% Quelle mit Linkkabel
 
-USB or some other offline connections are used to transfer the private key.
+\subsubsection{Pendrive}
+Another way to exchange data securely could be the use of an usb-stick, whereas this solution is more suitable for two different computers than the connection with smartphones. If the usb-stick is trustworthy, there is no danger for the respective computers and the key can be transferred in this way. However, it should be noted that the data of the key is still stored on the USB stick, even if the key has been deleted on the computer. The memory cells are only marked for deletion and not directly overwritten. The data can be reconstructed with special software. As an additional security measure one could pack the key into an archive and protect it with a password. However, there is also the attack vector that attackers who come into possession of the USB stick can find out the password with a dictionary attack or brute force.
+% Quelle Brute Force && Dass Daten nur zum löschen markiert werden.
+
 
 % \subsubsection{Subkeys}
 
 % Only possible for pgp
 % Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
 
-\subsection{Webservers/Downloads}
+\subsection{SCP}
+As already mentioned, SCP is a protocol for exchanging data securely via SSH. It could also be used to transfer the private key. A positive aspect is that the connection is automatically encrypted and, compared to USB sticks, no data is left over that an attacker could use. The disadvantage is that you have to set up SSH first, which is still easy on MAC or Linux computers. However, on iPhones it does not work without a jailbreak. The alternative for iPhones would be Airdrop, which is a proprietary protocol from Apple and not available on Linux and Windows machines. How easy it is to use therefore depends on the devices that are supposed to participate in the communication. In addition, there is the risk that, as mentioned, the NSA can partially decrypt SSH connections.
 
-Possible vulnerability by man in the middle attacks.
-The private key is stored on a trusted server. Whenever a new device is added, the user can download his private key.
+\subsection{Webservers/Downloads}
+The possibility to create the private key at a Certificate Authority also provides the potential to download it once on all devices via the web server of the Certificate Authority. Since the connection is protected with HTTPS, this is also secure and user-friendly, since no separate servers have to be set up beforehand to start the file transfer. For this kind of transfer only the known attacks for HTTPS would work, but these are not considered further in the context of this work.
 
 \subsection{External Providers}
+Last but not least there is the possibility to synchronize the private key with cloud providers like google drive or Dropbox on the different devices. However, this requires a great deal of trust in the cloud providers. In doing so, the legal regulations of the respective countries of origin must also be observed.
+The user-friendliness is very high, and the security is similar to that of web servers, as the transmissions are usually secured with HTTPS. In addition, there is also the risk that the login data can be tapped by means of phishing. Once the key has fallen into the hands of criminals, it is no longer usable. The biggest shortcoming, however, is the great trust that must be placed in the cloud provider. 
 
-Using Services like Dropbox or Google drive. This can be combined with encrypting the private key and or separating the key using secret sharing and 
-storing them on different clouds. 
-
-
+% https://de.wikipedia.org/wiki/USA_PATRIOT_Act#Auswirkungen_auf_den_Schutz_personenbezogener_Daten_und_geistigen_Eigentums
 
 
 \chapter{Requirements for Key-Distribution Systems}
+In order to create a new type of key distribution system, it is necessary to analyze what requirements are placed on such a system. For this purpose, the use cases are used to filter out an intersection of the requirements, which should then represent the cornerstones of the new application.
 
 \section{Usability}
+As the use cases have shown, a solution for the distribution of secrets must above all be user-friendly. If you take a closer look at SCP, you will notice that it can only be used very differently on different operating systems and platforms or only with massive intervention in the system. The most convenient solution is therefore the cloud. Here, any device can access and use the secrets, with minimal set-up effort for the user.
 
+% Welche Kriterien gibt es für die usability
 \section{Security}
+If you consider security, SCP is the best choice. The secrets are directly encrypted here, there are no remnants and no other parties involved. Both devices only need to be on the same network. The web server and cloud solutions are also technically secure. However, third parties must be trusted to keep the secrets secret. 
 
 Enter a passphrase on computer and then on mobile phone would add security but isn't that convenient.
 
 %\section{Loss Coverage}
 % Kommt nur in ausblick
 \chapter{Concept}
+The aim of this chapter is to use the previous analyses to develop a concept that facilitates the distribution of secrets.
 
 \section{Architecture}
+\begin{figure}[ht]
+	\centering
+  \includegraphics[width=0.9\textwidth]{ressources/process_flow.png}
+  \caption{Application Flow (self-created representation)}
+  \label{fig:app_flo}
+\end{figure}
+The figure shows the basic flow of the application. The Third-Party Application displays the fngerprint of his identity key in a QR-Code, which the smartphone can scan. Using the fingerprint, the smartphone can then request a PreKeyBundle from the Key Distribution Center. At the same time, it is used to check whether the PreKeyBundle really comes from the scanned QR Code, since it is signed with the Identity Key. If this check fails, the smartphone terminates the communication. Otherwise the smartphone can use the PreKeyBundle to create a PreKey Message which can be processed by the desktop application to establish a session. After these steps have been successfully completed, the application can make regular requests to the smartphone to perform cryptographic operations.
+
+\subsection{Signal Protocol}
+The signal protocol was selected as encryption between the smartphone and the third-party application. The reason for this is that the protocol 
+\begin{table}[ht]
+    \centering
+    \setlength{\colw}{0.15\textwidth-2\tabcolsep}
+
+    \begin{tabular}{L{0.39\textwidth-2\tabcolsep}||C{\colw}|C{\colw}|C{\colw}|C{\colw}}
+        & \textbf{Weighting}& \textbf{Signal-Protocol} & \textbf{SMIME} & \textbf{OTR}  \\
+        \hhline{=::====} Usability &
+        3 & 2 & 1 & 2 \\
+        \hline Platform independent & 2 & 3 & 3 & 2\\
+        \hline Scalability & 1 & 3 & 2 & 3 \\
+        \hline Verifiable security & 3 & 3 & 2 & 2 \\
+    \end{tabular}
+    \caption{Evaluation of the cryptography protocols}
+    \label{tab:crypto_eval}
+\end{table}
+% Hier könnte ihre Evaluierung stehen. 
+% Anbieter für End-to-End Encryption:
+% Signal, OpenPGP, S/MIME, OMEMO, Telethon (Telegramm)
+% Bei SSL gäbe es das Key Distribution Center dazwischen. 
+% Außerdem nicht 
+% Signal anfällig für Unknown Key-Share Attack --> Wird das durch Fingerprint behoben? Evtl. Francis fragen.
+
+\subsection{gRPC}
+
+
 
 \section{Usability}
 
@@ -597,7 +671,7 @@ Enter a passphrase on computer and then on mobile phone would add security but i
 
 \chapter{Outlook}
 
-Backup can be implemented using social secret sharing or other things.
+Backup can be implemented using social secret sharing or other things when keys are generated in memory --> Not possible with secure element and thus must be made Softwareside. 
 
 You could create clients for all kinds of desktop Programs, ssh, pgp, and so on.
 
