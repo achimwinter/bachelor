@@ -17,7 +17,7 @@
 \usepackage{subfigure}
 \usepackage{pdfpages}
 \usepackage[verbose]{placeins}
-\usepackage[nouppercase,headsepline,plainfootsepline]{scrlayer-scrpage}
+\usepackage[markcase=ignoreuppercase,headsepline,plainfootsepline]{scrlayer-scrpage}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{color}
@@ -34,21 +34,19 @@ style=apa,
 citestyle=authoryear-comp
 ]{biblatex}
 \usepackage{setspace}
-\onehalfspacing % Zeilenabstand 1,5 Zeilen
+\onehalfspacing
 \usepackage{seqsplit}
 \usepackage{hhline}
 
 \bibliography{bibliography}
 
-%% Auf Abbildungen immer verweisen
-%% Schauen ob die Reihenfolge passt
 
 %%%%%%%%%%%%%%%%%%%
 %% definitions
 %%%%%%%%%%%%%%%%%%%
 \def\BaAuthor{Achim Winter}
 \def\BaAuthorStudyProgram{Computer Science}
-\def\BaType{Bachelor thesis} %% passt das so?
+\def\BaType{Bachelor thesis} %% is this correct?
 \def\BaTitle{Operating a Smartphone as a Hardware Security Module}
 \def\BaSupervisorOne{Prof.\ Dr.\ Junker-Schilling}
 \def\BaSupervisorTwo{Prof.\ Dr.\ Huffstadt}
@@ -98,49 +96,6 @@ pdfkeywords={Keywords}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}  % right
 %\newcolumntype{w}[1]{>{\raggedleft\hspace{0pt}}p{#1}}
 
-\lstdefinelanguage{json}{
-    basicstyle=\normalfont\ttfamily,
-    numbers=left,
-    numberstyle=\scriptsize,
-    stepnumber=1,
-    numbersep=8pt,
-    showstringspaces=false,
-    breaklines=true,
-    backgroundcolor=\color{background},
-    literate=
-     *{0}{{{\color{numb}0}}}{1}
-      {1}{{{\color{numb}1}}}{1}
-      {2}{{{\color{numb}2}}}{1}
-      {3}{{{\color{numb}3}}}{1}
-      {4}{{{\color{numb}4}}}{1}
-      {5}{{{\color{numb}5}}}{1}
-      {6}{{{\color{numb}6}}}{1}
-      {7}{{{\color{numb}7}}}{1}
-      {8}{{{\color{numb}8}}}{1}
-      {9}{{{\color{numb}9}}}{1}
-      {:}{{{\color{punct}{:}}}}{1}
-      {,}{{{\color{punct}{,}}}}{1}
-      {\{}{{{\color{delim}{\{}}}}{1}
-      {\}}{{{\color{delim}{\}}}}}{1}
-      {[}{{{\color{delim}{[}}}}{1}
-      {]}{{{\color{delim}{]}}}}{1},
-}
-
-\lstset{language=xml,
-  morestring=[b]",
-  morestring=[s]{>}{<},
-  morecomment=[s]{<?}{?>},
-  stringstyle=\color{black},
-  numbers=left,
-  numberstyle=\scriptsize,
-  stepnumber=1,
-  numbersep=8pt,
-  identifierstyle=\color{darkblue},
-  keywordstyle=\color{cyan},
-  backgroundcolor=\color{background},
-  morekeywords={xmlns,version,type}% list your attributes here
-}
-
 \lstset{language=Java,
   showspaces=false,
   showtabs=false,
@@ -183,7 +138,7 @@ pdfkeywords={Keywords}
 \frontmatter
 \titlehead{%  {\centering Seitenkopf}
   {University of applied Sciences W\"{u}rzburg-Schweinfurt\\
-   Faculty of Computer Science und Business Informatics}}
+   Faculty of Computer Science and Business Informatics}}
 \subject{\BaType}
 \title{\BaTitle\\[15mm]}
 \subtitle{\normalsize{submitted to the University of Applied Sciences W\"{u}rzburg-Schweinfurt in the Faculty of \BaAuthorStudyProgram}}
@@ -194,7 +149,7 @@ pdfkeywords={Keywords}
   \normalsize{Second Supervisor: \BaSupervisorTwo}\\
 }
 %\lowertitleback{
-%\centering\includegraphics[width=4cm]{barcode_default}
+% \centering\includegraphics[width=4cm]{qrcode-thesis.png}
 
 %}
 \forcetwosidetitle
@@ -256,7 +211,6 @@ This could come due to several reasons. Whistleblower Edward Snowden has receive
 
 The use of public/private keys is too troublesome for many people, even IT professionals. The manual distribution of keys between several devices becomes more difficult the more devices there are. However, end-to-end encryption is only possible if multiple devices have the access to the same private key. The synchronization of private keys is often done via cloud providers, although they are also often attacked. The keys would either have to be additionally encrypted, which makes handling more difficult again, or distributed in another way. On the other hand, systems such as Android or iOS offer more and more security features in their latest versions, such as the generation of random numbers in their own encapsulated processor. It is therefore worth investigating to what extent this can be used to simplify the handling of private keys.
 
-The use of public/private keys is too difficult for many people, even IT professionals. The keys have to be distributed and stored securely. In many cases the distribution of keys is done by synchronizing the keys within a cloud. However, this is a potential security leak, because cloud service providers are not entirely trustworthy. On the other hand, distributing private keys by universal serial bus (USB) is too time-consuming for many users. 
 
 % \subsection{Entrepreneurial perspective}
 
@@ -278,14 +232,11 @@ The work was carried out in cooperation with adorsys GmbH \& Co. KG. Founded in 
 
 \section{Structural Overview}
 
-%% Was passiert in den einzelnen Kapiteln
-
 \chapter{Approach}
 
-%% Wie bin ich in den einzelnen Kapiteln vorgegangen.
 \section{Analysis of the current situation}
 
-First of all, it is necessary to examine how keys are currently handled and their most common uses, where the end user needs to be able to access the keys. Use cases like the Diffie-Hellman should be excluded. 
+First, it is necessary to examine how keys are currently handled and their most common uses, where the end user needs to be able to access the keys. Use cases like the Diffie-Hellman should be excluded. 
 
 \section{Requirements for Key-Distribution Systems}
 
@@ -297,9 +248,9 @@ From the results of the requirements, a concept can be worked out how different 
 
 \section{Implementation}
 
-With the help of the concept, a prototype can then be developed in the Implementation chapter, which fulfills the main functions of the concept in an exemplary manner. The findings that become visible during the development of the prototype can then be used to further improve the result of the work.
+With the help of the concept, a prototype can then be developed in the Implementation chapter, which fulfills the main functions of the concept exemplary. The findings that become visible during the development of the prototype can then be used to further improve the result of the work.
 
-
+% Wahrscheinlich sollte man noch GRPC erklären
 \chapter{Fundamentals}
 
 \section{Quick-Response Codes}
@@ -341,7 +292,7 @@ According to the principle of public-key cryptography, the private key of a user
 
 \section{Elliptic Curve Cryptography}
 
-Elliptical curve cryptography (ECC) is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a significantly smaller key length, which requires less computing power, but provide the same level of security. It can be used for creating and verifying signatures, but not for encryption. However, it can be combined with a Diffie-Hellman Key Exchange. In this way, encryption can also be implemented.
+Elliptical curve cryptography (ECC) is also based on the system of public-key cryptography. In comparison to other public-key cryptography systems such as RSA, algorithms that work with elliptic curves require a smaller key length, which requires less computing power, but provide the same level of security. It can be used for creating and verifying signatures, but not for encryption. However, it can be combined with a Diffie-Hellman Key Exchange. In this way, encryption can also be implemented.
 \parencite{hankerson_elliptic_2011}
 
 \subsection{DH-Key Exchange using ECC}
@@ -364,7 +315,7 @@ However, there are concerns that a back door has been built into one of the rand
 \section{ARM TrustZone}
 \label{arm:TrustZone}
 
-The ARM-TrustZone is an implementation for a Trusted Execution Environment (TEE) for ARM-Cortex based processors, which is the standard for mobile phones. It is a technology, which creates two environments, a trusted and a non-trusted, simultaneously on a single core. In each of the environments an own operating system is running. Software can run either in the trusted environment or the non-trusted. However, both environments can work together. For example an application running in the non-trusted enviroment can use a library which is running in the trusted environment. So, the TrustZone allows the secure storage of sensitive information like biometric information or Digital Rights Management (DRM) material, even if applications in the non-trusted environment are compromised.
+The ARM-TrustZone is an implementation for a Trusted Execution Environment (TEE) for ARM-Cortex based processors, which is the standard for mobile phones. It is a technology, which creates two environments, a trusted and a non-trusted, simultaneously on a single core. In each of the environments an own operating system is running. Software can run either in the trusted environment or the non-trusted. However, both environments can work together. For example an application running in the non-trusted environment can use a library which is running in the trusted environment. So, the TrustZone allows the secure storage of sensitive information like biometric information or Digital Rights Management (DRM) material, even if applications in the non-trusted environment are compromised.
 \parencite{fowler_trustzone_2017}
 
 \section{Hardware Security Module}
@@ -383,7 +334,7 @@ The Android keystore is a secure environment that is used to store keys and prev
 \subsection{Hardware Backed Keystore}
 \label{android:HWB}
 
-With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has an \nameref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
+With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has a \nameref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
 \parencite{google_hardware-backed_2020}
 % Quelle für Fingerprint 
 
@@ -408,7 +359,7 @@ The iOS Keychain helps developers and users to store passwords or other sensible
 
 It is an encrypted file in which all information that is particularly worth protecting is stored. In addition, this file can be synchronized via iCloud, Apple's cloud service, to make it available on all devices of a user. Particularly for the iPhone, every App can create its own keychain. Access to the Keychain can be additionally secured by authentication methods like FaceId or TouchId.
 
-However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
+However, this means that the key was handled to some point in plaintext in the phone's memory, which could lead to a compromised key, if the app is also compromised. Apple created the Secure Enclave, which is a coprocessor doing cryptographic operations. This way, the key never leaves the Secure Enclave and makes it harder for an adversary to compromise the key.
 Apple has implemented this feature for all smartphones with an A7 processor chip or higher.
 \parencite{apple_keychain_2020}
 
@@ -492,7 +443,7 @@ The Double Ratchet Algorithm as used in the Signal-Protocol is a Key Derivation 
 \end{figure}
 %Quelle für Bild (Wikimedia)
 
-By using this algorithm, the generated keys would rather seem random to an adversary, if he doesn't know about the KDF-keys. Also, if gets in possession of one of the KDF-keys, older and future keys would also appear random to him. Using this algorithm, three different key chains are in use. A root chain, a transmitter and a corresponding receiver chain, which are the same on the opposing sides (Alice receiver chain is the same as Bob´s transmitter chain and vice versa). Also, the corresponding chains have to start at the same point and have to be synchronized. Figure \ref{fig:KDF_Chain} shows, how the chains are generating keys. The output key can be used to encrypt data, the KDF-key is used to calculate the next chain element.
+By using this algorithm, the generated keys would rather seem random to an adversary, if he doesn't know about the KDF-keys. Also, if gets in possession of one of the KDF-keys, older and future keys would also appear random to him. Using this algorithm, three different key chains are in use. A root chain, a transmitter and a corresponding receiver chain, which are the same on the opposing sides (Alice receiver chain is the same as Bob's transmitter chain and vice versa). Also, the corresponding chains have to start at the same point and have to be synchronized. Figure \ref{fig:KDF_Chain} shows, how the chains are generating keys. The output key can be used to encrypt data, the KDF-key is used to calculate the next chain element.
 \parencite{perrin_double_2016}
 
 \begin{figure}[ht]
@@ -504,7 +455,7 @@ By using this algorithm, the generated keys would rather seem random to an adver
 
 \subsubsection{Symmetric-key ratchet}
 
-With the Symmetric-key ratchet, each message is encrypted with a unique message key. The message keys are generated with every ratchet step. In addition, a chain key is generated, which then can be is used as a KDF key for the ratchet step. The input, which can also be seen in figure \ref{fig:KDF_Chain}, is always a constant in the Symmetric-Key Ratchet, which means that if an attacker comes into possession of a chain key and the constant, he can decrypt subsequent messages. The message keys only ensure that each message is encrypted with a unique key and can theoretically be deleted after receiving the message. In addition, however, the respective keys contain a counter that allows the matching key to be found for the message, which could by possibility not arrive in the order, in which they were sent. Though, there is no security flaw in storing these message keys, because they are not used to generate other keys.
+With the Symmetric-key ratchet, each message is encrypted with a unique message key. The message keys are generated with every ratchet step. In addition, a chain key is generated, which then can be used as a KDF key for the ratchet step. The input, which can also be seen in figure \ref{fig:KDF_Chain}, is always a constant in the Symmetric-Key Ratchet, which means that if an attacker comes into possession of a chain key and the constant, he can decrypt subsequent messages. The message keys only ensure that each message is encrypted with a unique key and can theoretically be deleted after receiving the message. In addition, however, the respective keys contain a counter that allows the matching key to be found for the message, which could by possibility not arrive in the order, in which they were sent. Though, there is no security flaw in storing these message keys, because they are not used to generate other keys.
 \parencite{perrin_double_2016}
 
 \subsubsection{Diffie-Hellman ratchet}
@@ -527,12 +478,12 @@ One of the most used and oldest communication channels on the Internet is e-mail
 
 In May 2018, there were major reports of the so-called E-Fail vulnerability, which affected both PGP and SMIME. Besides the outdated standards, a major reason for the vulnerability was that in many mail clients the display of HTML elements and the reloading of elements is enabled by default. In the meantime, the vulnerabilities have been fixed for both PGP and SMIME, so that both are again considered secure.
 
-The creation of the key pairs is somewhat complicated for both standards. They are usually created offline on a local computer and must then be distributed to all computers that need access to them using one of the methods from (dis of priv keys). Another possibility, as briefly mentioned in the basics, is to have the keys generated by a Certificate Authority, after which the keys must be distributed accordingly.
+The creation of the key pairs is somewhat complicated for both standards. They are usually created offline on a local computer and must then be distributed to all computers that need access to them using one of the methods from \ref{sec:distribution}. Another possibility, as briefly mentioned in the basics, is to have the keys generated by a Certificate Authority, after which the keys must be distributed accordingly.
 
 % Vielleicht welche Hilfestellungen es dazu gibt.
 
 \subsection{SSH}
-SSH is a protocol that is mainly known through the remote administration of other computers and was also developed to replace other protocols like telnet.  Beyond that, it is an independent, encrypted network protocol. It also allows other protocols like http to be tunnelled through SSH connections, which is practically equivalent to a VPN. Other protocols such as SCP for data transfer or Git as a distributed version management system are also based on it or use SSH for authentication. 
+SSH is a protocol that is mainly known through the remote administration of other computers and was also developed to replace other protocols like telnet.  Beyond that, it is an independent, encrypted network protocol. It also allows other protocols like HTTP to be tunneled through SSH connections, which is practically equivalent to a VPN. Other protocols such as SCP for data transfer or Git as a distributed version management system are also based on it or use SSH for authentication. 
 
 The authentication is ideally done with public and private keys. Alternatively, authentication via a password can also be implemented. 
 
@@ -549,7 +500,7 @@ Passwords are one of the most widely used types of authentication mechanisms on 
 To be able to use all services on all devices, the database must be distributed on several devices in the case of an offline password manager that does not store the data on the provider's servers. If a keyfile is used, it must also be securely distributed to multiple devices.
 
 \subsection{Multi-factor authentication}
-The multifactor authentication is an extension of the authentication as explained in the previous chapter by the password. In addition to the knowledge that a user must have in order to log in, the ownership of another device, for example, can be used as an additional authentication factor. 
+The multi factor authentication is an extension of the authentication as explained in the previous chapter by the password. In addition to the knowledge that a user must have in order to log in, the ownership of another device, for example, can be used as an additional authentication factor. 
 
 \subsection{Crypto Currencies}
 The principle of public-key cryptography is also used for cryptocurrencies like Bitcoin. This is used to generate signatures for transactions. 
@@ -558,20 +509,15 @@ The public key represents the receiving address, similar to the IBAN in bank com
 
 
 \section{Distribution of private keys}
+\label{sec:distribution}
 
 \subsection{Local/Offline}
-For example, to transfer a private key from one device to another, a USB cable can be used. For devices such as smartphones, a normal cable can be used for this purpose, which is also used to charge the smartphone. For example, if you want to transfer a private key from a desktop computer to a laptop, you need to use a link cable to make the transfer happen.
+For example, to transfer a private key from one device to another, a USB cable can be used. For devices such as smartphones, a normal cable can be used for this purpose, which is also used to charge the smartphone. If you wish to transfer a private key from a desktop computer to a laptop, for example, you must use a connection cable to enable the transfer.
 % Quelle mit Linkkabel
 
-\subsubsection{Pendrive}
-Another way to exchange data securely could be the use of an usb-stick, whereas this solution is more suitable for two different computers than the connection with smartphones. If the usb-stick is trustworthy, there is no danger for the respective computers and the key can be transferred in this way. However, it should be noted that the data of the key is still stored on the USB stick, even if the key has been deleted on the computer. The memory cells are only marked for deletion and not directly overwritten. The data can be reconstructed with special software. As an additional security measure one could pack the key into an archive and protect it with a password. However, there is also the attack vector that attackers who come into possession of the USB stick can find out the password with a dictionary attack or brute force.
+\subsubsection{USB stick}
+Another way to exchange data securely could be the use of an USB stick, whereas this solution is more suitable for two different computers than the connection with smartphones. If the USB stick is trustworthy, there is no danger for the respective computers and the key can be transferred in this way. However, it should be noted that the data of the key is still stored on the USB stick, even if the key has been deleted on the computer. The memory cells are only marked for deletion and not directly overwritten. The data can be reconstructed with special software. As an additional security measure one could pack the key into an archive and protect it with a password. However, there is also the attack vector that attackers who come into possession of the USB stick can find out the password with a dictionary attack or brute force.
 % Quelle Brute Force && Dass Daten nur zum löschen markiert werden.
-
-
-% \subsubsection{Subkeys}
-
-% Only possible for pgp
-% Only the latest subkey can be used to encrypt messages. Thus, every device must be in possession of this subkey. 
 
 \subsection{SCP}
 As already mentioned, SCP is a protocol for exchanging data securely via SSH. It could also be used to transfer the private key. A positive aspect is that the connection is automatically encrypted and, compared to USB sticks, no data is left over that an attacker could use. The disadvantage is that you have to set up SSH first, which is still easy on MAC or Linux computers. However, on iPhones it does not work without a jailbreak. The alternative for iPhones would be Airdrop, which is a proprietary protocol from Apple and not available on Linux and Windows machines. How easy it is to use therefore depends on the devices that are supposed to participate in the communication. In addition, there is the risk that, as mentioned, the NSA can partially decrypt SSH connections.
@@ -580,9 +526,8 @@ As already mentioned, SCP is a protocol for exchanging data securely via SSH. It
 The possibility to create the private key at a Certificate Authority also provides the potential to download it once on all devices via the web server of the Certificate Authority. Since the connection is protected with HTTPS, this is also secure and user-friendly, since no separate servers have to be set up beforehand to start the file transfer. For this kind of transfer only the known attacks for HTTPS would work, but these are not considered further in the context of this work.
 
 \subsection{External Providers}
-Last but not least there is the possibility to synchronize the private key with cloud providers like google drive or Dropbox on the different devices. However, this requires a great deal of trust in the cloud providers. In doing so, the legal regulations of the respective countries of origin must also be observed.
+Last but not least there is the possibility to synchronize the private key with cloud providers like Google Drive or Dropbox on the different devices. However, this requires a great deal of trust in the cloud providers. In doing so, the legal regulations of the respective countries of origin must also be observed.
 The user-friendliness is very high, and the security is similar to that of web servers, as the transmissions are usually secured with HTTPS. In addition, there is also the risk that the login data can be tapped by means of phishing. Once the key has fallen into the hands of criminals, it is no longer usable. The biggest shortcoming, however, is the great trust that must be placed in the cloud provider. 
-
 % https://de.wikipedia.org/wiki/USA_PATRIOT_Act#Auswirkungen_auf_den_Schutz_personenbezogener_Daten_und_geistigen_Eigentums
 
 
@@ -606,14 +551,14 @@ The aim of this chapter is to use the previous analyses to develop a concept tha
 \section{Architecture}
 \begin{figure}[ht]
 	\centering
-  \includegraphics[width=0.9\textwidth]{ressources/process_flow.png}
+  \includegraphics[width=0.8\textwidth]{ressources/process_flow.png}
   \caption{Application Flow (self-created representation)}
   \label{fig:app_flo}
 \end{figure}
 The figure shows the basic flow of the application. The Third-Party Application displays the fngerprint of his identity key in a QR-Code, which the smartphone can scan. Using the fingerprint, the smartphone can then request a PreKeyBundle from the Key Distribution Center. At the same time, it is used to check whether the PreKeyBundle really comes from the scanned QR Code, since it is signed with the Identity Key. If this check fails, the smartphone terminates the communication. Otherwise the smartphone can use the PreKeyBundle to create a PreKey Message which can be processed by the desktop application to establish a session. After these steps have been successfully completed, the application can make regular requests to the smartphone to perform cryptographic operations.
 
-\subsection{Signal Protocol}
-The signal protocol was selected as encryption between the smartphone and the third-party application. The reason for this is that the protocol 
+\section{Signal Protocol}
+After an evaluation, as shown in \ref{tab:crypto_eval}, it has been found that the signal protocol is best suited for such an application. A classical secure connection like in a client-server model, for example with https, would not be appropriate, because then more trust has to be put back into the server in the middle, which establishes the connections of the clients. Therefore, only protocols that offer end-to-end encryption can be considered. 
 \begin{table}[ht]
     \centering
     \setlength{\colw}{0.15\textwidth-2\tabcolsep}
@@ -623,12 +568,19 @@ The signal protocol was selected as encryption between the smartphone and the th
         \hhline{=::====} Usability &
         3 & 2 & 1 & 2 \\
         \hline Platform independent & 2 & 3 & 3 & 2\\
-        \hline Scalability & 1 & 3 & 2 & 3 \\
+        \hline Scalability & 1 & 3 & 3 & 3 \\
         \hline Verifiable security & 3 & 3 & 2 & 2 \\
     \end{tabular}
     \caption{Evaluation of the cryptography protocols}
     \label{tab:crypto_eval}
 \end{table}
+The usability of the protocol is very important for the application, as plugins have to be written for various third-party applications, which then communicate with the app on the smartphone. The developers of these plugins should therefore be made as easy as possible. With the signal protocol, there is a simple guide for the implementation, and once the classes for storing the secrets are written, a connection can be established with a few lines of code. With SMIME, the certificates would have to be signed first, as before, or signed by everyone themselves, which would require separate keys for a Certificate Authority. Compared to Signal, OTR does without the Key Distribution Center, which is an advantage in this case, since no asynchronous communication is necessary anyway. However, there is no official implementation of the protocol and most of the existing ones are mostly developed by one person.
+The signal library is available for Java, C and Javascript. SMIME is based on OpenSSL, which is also available on every system. OTR lacks an implementation for the Web, that is, Javascript.
+Scalability plays a rather subordinate role in this application, as there are only 1:1 connections. However, intermediate stations, as required by the signal protocol, should not become a bottleneck. Considering the millions of users who use Whatsapp, which uses the signal protocol as mentioned, there are no problems here.
+Since secrets are to be transferred via the application, it is important that the protocol can be checked for security by independent researchers and that it passes this check.
+With the signal protocol, there is a risk of a man-in-the-middle attack if the fingerprint is not verified. In addition, an Unknown Key Share attack may occur. To exploit this, an attacker would have to be able to present his own QR code to the smartphone. This attack can only be minimized by additional information in the fingerprint, such as a clear name, telephone number or similar, but cannot be prevented. SMIME had problems in the past with the E-Fail gap, which has been closed. However, the entire communication is readable for an attacker as soon as he knows the victim's private key.
+
+
 % Hier könnte ihre Evaluierung stehen. 
 % Anbieter für End-to-End Encryption:
 % Signal, OpenPGP, S/MIME, OMEMO, Telethon (Telegramm)
@@ -636,11 +588,15 @@ The signal protocol was selected as encryption between the smartphone and the th
 % Außerdem nicht 
 % Signal anfällig für Unknown Key-Share Attack --> Wird das durch Fingerprint behoben? Evtl. Francis fragen.
 
-\subsection{gRPC}
+\section{gRPC}
+The way the architecture of the application is constructed suggests that the smartphone represents the server role, as it provides the cryptographic services. However, this would mean that the third-party application would make the request for decryption to the smartphone. But it cannot do this, because it does not know the address of the server. While it would theoretically be possible, after scanning the QR code containing the identifier, to send a notification from the server to the third party application with the address of the smartphone, this increases the complexity and the standard implementation of the signal server has to be adapted additionally. Instead, it is easier for the third-party application to create a server and the smartphone can access it. As you can see in Figure 6.1, however, you need a way for the server to send messages to the smartphone. This could be done through a web socket connection or gRPC. While websockets require additional manual identifiers to specify what the smartphone should do with the message, gRPC allows you to call another function directly. Therefore gRPC is very well suited for this application.
 
+\section{Keychain/Keystore}
+The keychain in iOS or the keystore in Android can be used in the application to generate keys and store them securely. For example, an RSA key can be generated that can be used for SMIME. 
 
-
+However, please note that a key that was generated with hardware elements cannot be exported from the application. While this increases the security of the key on the one hand, it prevents you from making a backup of the key on the other hand. So if the app is uninstalled or the phone is lost, the key will be gone too. 
 \section{Usability}
+As already mentioned in architecture(ref make), the connection from the smartphone to the third-party application is established using a QR code. As soon as the smartphone has registered with the application as an HSM device, communication can already begin. If the session has ended, the connection is terminated. If a new connection is desired, a QR code must be scanned again.
 
 \chapter{Implementation}
 
@@ -686,7 +642,7 @@ You could create clients for all kinds of desktop Programs, ssh, pgp, and so on.
 %%%%%%%%%%%%%%%%%%%
 %% create tables list
 %%%%%%%%%%%%%%%%%%%
-\listoftables
+% \listoftables
 
 %%%%%%%%%%%%%%%%%%%
 %% create listings list

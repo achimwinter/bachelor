@@ -2,5 +2,11 @@
     "cSpell.words": [
         "Keystore",
         "adorsys"
+    ],
+    "ltex.ignoreRuleInSentence": [
+        {
+            "rule": "PUNCTUATION_PARAGRAPH_END",
+            "sentence": "^\\QConsent to plagiarism check\\E$"
+        }
     ]
 }

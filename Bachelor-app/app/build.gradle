@@ -23,8 +23,6 @@ android {
     }
     configurations {
         implementation.exclude module:'protobuf-lite'
-//        implementation.exclude module:'android-activation'
-//        implementation.exclude module:'javax.mail'
     }
 }
 
