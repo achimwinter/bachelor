@@ -328,13 +328,13 @@ A Hardware Security Module (HSM) is a peripheral device which, depending on the 
 
 \section{Android Keystore System}
 
-The Android keystore is a secure environment that is used to store keys and prevent their extraction as much as possible. To prevent extraction, the Android keystore follows several paths. Firstly, it gives the possibility to link the key to a secure hardware element if it supports the key type. Then the actual application never has full access to the generated key. If the application wants to perform cryptographic operations like signing, encrypting or decrypting, this does not happen inside the application, but the application requests the keystore to perform the requested operation. The keystore can also be used to specify exactly which applications should have access to the keystore. So if an app is compromised, the attacker can only perform the same operations as the user did before. For example, if an attack has taken place and countermeasures have been taken, it is ensured that the attacker cannot do operations with the key anymore. 
+The Android keystore is a secure environment that is used to store keys and prevent their extraction as much as possible. To prevent extraction, the Android keystore follows several paths. Firstly, it gives the possibility to link the key to a secure hardware element if it supports the key type. Secondly, the actual application never has full access to the generated key. If the application wants to perform cryptographic operations like signing, encrypting or decrypting, this does not happen inside the application, but the application requests the keystore to perform the requested operation. The keystore can also be used to specify exactly which applications should have access to the keystore. So if an app is compromised, the attacker can only perform the same operations as the user did before. For example, if an attack has taken place and countermeasures have been taken, it is ensured that the attacker cannot do operations with the key anymore. 
 \parencite{google_android_2020}
 
 \subsection{Hardware Backed Keystore}
 \label{android:HWB}
 
-With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. Additionally, keys can be generated with hardware support, if the devices has a \nameref{arm:TrustZone} builtin, which is the case if the device supports authentication with a fingerprint or has access to DRM related material. If this is the case, the keystore is operating in a trusted environment and thus also performing cryptographic operations in it.
+With the different Generations of Android Versions, the Keystore System also has evolved. While Smartphones certified for Android Versions prior 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. In addition, the keys can be generated with hardware support if the device has an implementation of the \nameref{arm:TrustZone}. This is always the case if the device contains a fingerprint scanner or has access to DRM material. The device can then perform cryptographic operations with the help of the keystore.
 \parencite{google_hardware-backed_2020}
 % Quelle für Fingerprint 
 
@@ -348,7 +348,7 @@ As an extension to the \nameref{android:HWB}, Google introduced a new security f
 
 \section{iOS Keychain}
 
-The iOS Keychain helps developers and users to store passwords or other sensible information. But also Keys, or things like certificates. There is also a built-in password manager that is designed for the user. The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. 
+The iOS Keychain helps developers and users to store passwords or other sensible information. But also keys, or things like certificates. There is also a built-in password manager that is designed for the user. The way it works is, that a secret which has to be stored gets packaged in a keychain item. Additionally, there should be packaged public attributes like a name or an identifier to make the item searchable. 
 
 \begin{figure}[ht]
   \centering
@@ -500,7 +500,7 @@ Passwords are one of the most widely used types of authentication mechanisms on 
 To be able to use all services on all devices, the database must be distributed on several devices in the case of an offline password manager that does not store the data on the provider's servers. If a keyfile is used, it must also be securely distributed to multiple devices.
 
 \subsection{Multi-factor authentication}
-The multi factor authentication is an extension of the authentication as explained in the previous chapter by the password. In addition to the knowledge that a user must have in order to log in, the ownership of another device, for example, can be used as an additional authentication factor. 
+The multi factor authentication is an extension of the authentication as explained in the previous chapter by the password. In addition to the knowledge that an user must have in order to log in, the ownership of another device, for example, can be used as an additional authentication factor. 
 
 \subsection{Crypto Currencies}
 The principle of public-key cryptography is also used for cryptocurrencies like Bitcoin. This is used to generate signatures for transactions. 
