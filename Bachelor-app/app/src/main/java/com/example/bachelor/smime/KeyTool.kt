@@ -5,15 +5,15 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.example.bachelor.api.GrpcClient
 import com.example.bachelor.signal.SessionGenerator
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier
-import org.bouncycastle.asn1.x509.BasicConstraints
-import org.bouncycastle.asn1.x509.Extension
-import org.bouncycastle.asn1.x509.ExtensionsGenerator
-import org.bouncycastle.operator.ContentSigner
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder
-import org.bouncycastle.pkcs.PKCS10CertificationRequest
-import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder
+import org.spongycastle.asn1.pkcs.PKCSObjectIdentifiers
+import org.spongycastle.asn1.x509.AlgorithmIdentifier
+import org.spongycastle.asn1.x509.BasicConstraints
+import org.spongycastle.asn1.x509.Extension
+import org.spongycastle.asn1.x509.ExtensionsGenerator
+import org.spongycastle.operator.ContentSigner
+import org.spongycastle.operator.DefaultSignatureAlgorithmIdentifierFinder
+import org.spongycastle.pkcs.PKCS10CertificationRequest
+import org.spongycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder
 import org.whispersystems.libsignal.protocol.SignalMessage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -64,7 +64,6 @@ class KeyTool {
                             KeyProperties.PURPOSE_VERIFY or
                             KeyProperties.PURPOSE_SIGN
                 )
-                    // Disabled, Emulator doesnt support biometric
 //                    .setUserAuthenticationRequired(true)
                     .setKeySize(4096)
                     .setKeyValidityEnd(end.time)

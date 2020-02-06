@@ -1,17 +1,17 @@
 package com.example.bachelor.smime
 
-import org.bouncycastle.cert.jcajce.JcaCertStore
-import org.bouncycastle.cms.CMSEnvelopedDataParser
-import org.bouncycastle.cms.CMSProcessableByteArray
-import org.bouncycastle.cms.CMSSignedDataGenerator
-import org.bouncycastle.cms.RecipientInformation
-import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder
-import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
-import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder
+import org.spongycastle.cert.jcajce.JcaCertStore
+import org.spongycastle.cms.CMSEnvelopedDataParser
+import org.spongycastle.cms.RecipientInformation
+import org.spongycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder
+import org.spongycastle.cms.jcajce.JceKeyTransEnvelopedRecipient
+import org.spongycastle.mail.smime.SMIMESignedGenerator
+import org.spongycastle.util.encoders.Hex
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.security.cert.Certificate
 import java.security.cert.X509Certificate
-
+import javax.mail.internet.MimeBodyPart
 
 class SmimeUtils {
 
@@ -22,35 +22,38 @@ class SmimeUtils {
         val recInfo = getSingleRecipient(parser)
         val recipient = JceKeyTransEnvelopedRecipient(keypair?.private)
 
+
         return recInfo?.getContent(recipient)
     }
 
     fun sign(message: ByteArray): ByteArray {
+        val inputStream = ByteArrayInputStream(message)
+        val messageBody = MimeBodyPart(inputStream)
+
         val keyPair = KeyTool().getKeyPair()
         val keyStore = KeyTool().getKeyStoreInstance()
         val signedCert = keyStore.getCertificate("signed") as X509Certificate
 
         val certificateList = ArrayList<Certificate>()
-        val cmsMessage = CMSProcessableByteArray(message)
-
         certificateList.add(signedCert)
 
         val certs = JcaCertStore(certificateList)
 
-        val gen = CMSSignedDataGenerator()
-        val sha512Signer =
-            JcaContentSignerBuilder("SHA512withRSA").build(keyPair?.private)
+        val gen = SMIMESignedGenerator()
 
         gen.addSignerInfoGenerator(
-            JcaSignerInfoGeneratorBuilder(
-                JcaDigestCalculatorProviderBuilder().build()
-            )
-                .build(sha512Signer, signedCert)
+            JcaSimpleSignerInfoGeneratorBuilder()
+                .build("SHA512withRSA", keyPair?.private, signedCert)
         )
 
         gen.addCertificates(certs)
 
-        return gen.generate(cmsMessage, true).encoded
+        val outputStream = ByteArrayOutputStream()
+        val multipart = gen.generate(messageBody)
+
+        multipart.writeTo(outputStream)
+
+        return outputStream.toByteArray().plus(("|" + multipart.contentType).toByteArray())
     }
 
 

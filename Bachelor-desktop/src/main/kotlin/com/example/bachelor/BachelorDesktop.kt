@@ -1,12 +1,11 @@
 package com.example.bachelor
 
-//import com.example.bachelor.api.DecrypterImpl
 import com.example.bachelor.api.DecrypterImpl
 import com.google.protobuf.ByteString
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeBodyPart
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -14,6 +13,13 @@ import java.security.Security
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
+import javax.mail.internet.MimeMessage
 
 
 class BachelorDesktop {
@@ -71,7 +77,7 @@ class BachelorDesktop {
                 )
                 DecrypterImpl.messages.add(MailRequest.newBuilder()
                         .setMethod(MailRequest.Method.SIGN)
-                        .setMail(ByteString.copyFrom("Please Sign this Message".toByteArray()))
+                        .setMail(ByteString.copyFrom(createMail()))
                         .build()
 
                 )
@@ -82,6 +88,15 @@ class BachelorDesktop {
         timer.schedule(task, 0, 20000)
     }
 
+    private fun createMail(): ByteArray{
+        val message = MimeBodyPart()
+        val outputStream = ByteArrayOutputStream()
+
+        message.setText("Hallo Herr Junker-Schilling")
+
+        message.writeTo(outputStream)
+        return outputStream.toByteArray()
+    }
 
     companion object {
         private val logger = Logger.getLogger(BachelorDesktop::class.java.name)

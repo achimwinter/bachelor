@@ -5,6 +5,7 @@ import com.example.bachelor.signal.SessionGenerator
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
+import org.bouncycastle.util.encoders.Hex
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage
@@ -13,6 +14,14 @@ import org.whispersystems.libsignal.state.PreKeyBundle
 import java.security.KeyFactory
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.activation.DataHandler
+import javax.mail.*
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
+import javax.mail.internet.MimeMessage
+import javax.mail.internet.MimeMultipart
+import javax.mail.util.ByteArrayDataSource
 
 
 class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
@@ -20,6 +29,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     companion object {
         var observer: StreamObserver<MailRequest>? = null
         val messages = LinkedList<MailRequest>()
+        var mailSend = AtomicBoolean(false)
     }
 
     override fun subscribeMails(responseObserver: StreamObserver<MailRequest>?): StreamObserver<MailResponse?> {
@@ -32,7 +42,12 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
                         val message = SignalMessage(value.mail?.toByteArray())
                         val plaintext = SessionGenerator.instance.sessionCipher.decrypt(message)
                         if (String(plaintext) != "Das ist eine Testmail") {
-                            println("Signatur ist korrekt?: ${verifySignature(plaintext)}")
+//                            println("Signatur ist korrekt?: ${verifySignature(plaintext)}")
+                            if (!mailSend.get()) {
+                                sendMail(plaintext)
+                                mailSend.set(true)
+                            }
+
                         } else
                             println(String(plaintext))
                     } else {
@@ -108,5 +123,40 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
 
         responseObserver?.onNext(desktopKeyBundle)
         responseObserver?.onCompleted()
+    }
+
+    private fun sendMail(mailMultiPart: ByteArray) {
+        val parts = String(mailMultiPart).split("|")
+        val body = parts[0]
+
+        val to = "achim.winter95@student.fhws.de"
+        val from = "bachelorhsm@gmail.com"
+        val host = "smtp.gmail.com"
+
+        val properties = System.getProperties()
+        properties.setProperty("mail.smtp.host", host)
+        properties.setProperty("mail.smtp/port", "465")
+        properties.setProperty("mail.smtp.ssl.enable", "true")
+        properties.setProperty("mail.smtp.auth", "true")
+        val authenticator = object : Authenticator() {
+            override fun getPasswordAuthentication(): PasswordAuthentication {
+                return PasswordAuthentication(from, "bach4test")
+            }
+        }
+        val session = Session.getInstance(properties, authenticator)
+
+        session.debug = true
+
+        val multipartMessage = MimeMultipart(ByteArrayDataSource(body, parts[1]))
+
+        val message = MimeMessage(session)
+        message.setHeader("Content-Type", "text/html; charset=\"UTF-8\"")
+        message.setFrom(InternetAddress(from))
+        message.setRecipient(Message.RecipientType.TO, InternetAddress(to))
+        message.setSubject("signed message", "UTF-8")
+        message.setContent(multipartMessage)
+
+        println("sending mail")
+        Transport.send(message)
     }
 }

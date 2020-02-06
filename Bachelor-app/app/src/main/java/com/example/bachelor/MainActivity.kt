@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bachelor.signal.SessionGenerator
-import org.bouncycastle.jce.provider.BouncyCastleProvider
-import java.security.Security
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,8 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn = findViewById(R.id.btn)
-
-        Security.addProvider(BouncyCastleProvider())
 
         btn.setOnClickListener {
             val intent = Intent(this@MainActivity, ScanActivity::class.java)
