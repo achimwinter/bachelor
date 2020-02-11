@@ -129,7 +129,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         val parts = String(mailMultiPart).split("|")
         val body = parts[0]
 
-        val to = "achim.winter95@student.fhws.de"
+        val to = "acw@adorsys.de"
         val from = "bachelorhsm@gmail.com"
         val host = "smtp.gmail.com"
 

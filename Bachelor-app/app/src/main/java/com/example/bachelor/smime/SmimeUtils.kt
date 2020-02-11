@@ -6,7 +6,6 @@ import org.spongycastle.cms.RecipientInformation
 import org.spongycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder
 import org.spongycastle.cms.jcajce.JceKeyTransEnvelopedRecipient
 import org.spongycastle.mail.smime.SMIMESignedGenerator
-import org.spongycastle.util.encoders.Hex
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.security.cert.Certificate
