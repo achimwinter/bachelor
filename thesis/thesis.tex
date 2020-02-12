@@ -200,11 +200,11 @@ This will then be used to show how the smartphone can manage the secrets securel
 
 
 \section*{Zusammenfassung}
-Die Verwaltung von privaten Schlüsseln auf unterschiedlichen Geräten ist derzeit sehr kompliziert. Vor allem, wenn das auch noch auf eine sichere Art und Weise geschehen soll. Außerdem bildet jedes Gerät, welches im Besitz des privaten Schlüssel ist, ein weiteres Sicherheitsrisiko für Angriffe. 
+Die Verwaltung von privaten Schlüsseln auf unterschiedlichen Geräten ist derzeit sehr kompliziert. Vor allem, wenn dies auch noch auf eine sichere Art und Weise geschehen soll. Außerdem bildet jedes Gerät, welches im Besitz des privaten Schlüssels ist, ein weiteres Sicherheitsrisiko für Angriffe. 
 
-Dabei fügen Hersteller von Mobilfunkgeräten immer mehr Sicherheitsmerkmale in ihre Produkte ein. Die neusten Standards dieser Sicherheitsmerkmale bieten gar ein eigenständiges Hardware Security Module, welches abgekapselt vom eigentlichen Gerät auf einem eigenen Chip arbeitet. Daher soll auch untersucht werden, wie sicher die jeweiligen Lösungen sind.
+Dabei fügen Hersteller von Mobilfunkgeräten immer mehr Sicherheitsmerkmale in ihre Produkte ein. Die neuesten Standards dieser Sicherheitsmerkmale bieten gar ein eigenständiges Hardware Security Module, welches abgekapselt vom eigentlichen Gerät auf einem eigenen Chip arbeitet. Daher soll auch untersucht werden, wie sicher die jeweiligen Lösungen sind.
 
-Damit soll dann gezeigt werden, wie das Smartphone die Geheimnisse sicher verwalten kann und sie für andere Geräte bzw. Anwendungen verfügbar machen kann.
+Damit soll dann gezeigt werden, wie das Smartphone die Geheimnisse sicher verwalten und sie für andere Geräte bzw. Anwendungen verfügbar machen kann.
 
 \newpage
 \chapter*{Acknowledgment}
@@ -234,12 +234,13 @@ To avoid this kind of key management, Whitfield Diffie and Martin Hellman publis
 By using both key pairs, a common shared key can be calculated which then can be used for the encryption. This system relies on the computational complexity, such as prime factorization, which is hard to do with big numbers \parencite{luber_encryption_2017}.
 %[Was ist der Diffie-Hellman-Schlüsselaustausch?] [https://en.wikipedia.org/wiki/Cryptography#Computer_era]
 
-The usage of encryption when visiting a web page has grown from about 30\% in 2014 to about 80\% by the end of 2019
+The usage of encryption when visiting a web page has grown from about 30\% in 2014 to about 80\% by the end of 2019 as \ref{fig:https} shows.
 
 \begin{figure}[ht]
-	\centering
-  \includegraphics[width=0.8\textwidth]{ressources/https_statistics.png}
+    \centering
+    \includegraphics[width=0.8\textwidth]{ressources/https_statistics.png}
 	\caption{Percentage of Web Pages Loaded by Firefox Using HTTPS \parencite{letsencrypt_lets_2019}}
+	\label{fig:https}
 \end{figure}
 \newpage
 There are also worldwide discussions about the development of 5G mobile technology. Huawei, the manufacturer of the required hardware, is suspected of having installed interception capabilities for the Chinese state \parencite{stokel-walker_banning_2019}. \newline
@@ -351,12 +352,12 @@ The Keystore can also be used to specify exactly which applications should have 
 
 With the different generations of Android versions, the Keystore System also has evolved. While smartphones certified for Android versions prior to 'Marshmallow' (Android Version 6.0) only supported the creation of signatures, verification and generating/importing of asymmetric keys, newer versions (> Android 6.0) also support the usage of symmetric keys. In addition, the keys can be generated with hardware support, if the device has an implementation of the \nameref{arm:TrustZone}. This is usually the case, if the device contains a fingerprint scanner or has access to DRM material. The device can then perform cryptographic operations with the help of the hardware backed keys. \parencite{google_hardware-backed_2020}.
 
-
+\newpage
 \subsection{Strongbox Keystore}
 \label{subsec:strongbox}
 % Die Secure CPU muss zwingend eine seperate hardware CPU sein
 % Theoretisch kann der Hardwarehersteller oder OEM dann auch scheiße bauen, aber die Strongbox bleibt sicher
-As an extension to the \nameref{android:HWB}, Google introduced a new security feature in Android Pie (Android Version 9.0), the StrongBox Keystore. The addition is, that the kind of Keystore implementation is specified by Google. With the \nameref{android:HWB}, every mobile phone manufacturer can choose their own implementation. Also, the StrongBox must operate on separated hardware to fulfill the specifications of a \nameref{sec:HSM} and to increase the security level by using dedicated hardware.
+As an extension to the \nameref{android:HWB}, Google introduced a new security feature in Android Pie (Android Version 9.0), the StrongBox Keystore. The addition is, that the kind of Keystore implementation is specified by Google. With the \nameref{android:HWB}, every mobile phone manufacturer can choose their own implementation. Also, the StrongBox must operate on separated hardware to fulfill the specifications of a \nameref{sec:HSM} and to increase the security level by using dedicated hardware \parencite{google_android_2020}.
 
 %% HW-Backed = various implementations like TrustZone
 %% StrongBox = separated hardware
@@ -440,17 +441,14 @@ By receiving the message, Bob tries to decrypt the ciphertext by loading his ide
 \label{subsec:double_ratchet}
 
 The Double Ratchet Algorithm as used in the Signal-Protocol is a KDF algorithm, which is used to exchange encrypted messages by using a previously known SK. This SK can be generated by using some sort Key Exchange e.g. X3DH, but outside this scope also by every other Key Exchange. By using this algorithm, the generated keys would rather seem random to an adversary, if he doesn't know about the KDF-keys. Also, if he gets in possession of one of the KDF-keys, old and keys in the future would also appear random to him. Using this algorithm, three different key chains are in use. A root chain, a transmitter and a corresponding receiver chain, which are the same on the opposing sides (Alice's receiver chain is the same as Bob's transmitter chain and vice versa). Also, the corresponding chains have to start at the same point and have to be synchronized. Figure \ref{fig:KDF_Chain} shows, how the chains are generating keys. The output key can be used to encrypt data, the KDF-key is used to calculate the next chain element \parencite{perrin_double_2016}.
-
 \begin{figure}[ht]
 	\centering
-  \includegraphics[width=0.8\textwidth]{ressources/kdf_chain.png}
+  \includegraphics[width=0.55\textwidth]{ressources/kdf_chain.png}
   \caption{KDF Chain \parencite{perrin_double_2016}}
   \label{fig:KDF_Chain}
 \end{figure}
-
 \newpage
 \subsubsection{Symmetric-key ratchet}
-
 With the Symmetric-key ratchet, each message is encrypted with a unique message key. The message keys are generated with every ratchet step. In addition, a chain key is generated, which then can be used as a KDF key for the next ratchet step. The input, which can also be seen in figure \ref{fig:KDF_Chain}, is always a constant in the Symmetric-Key Ratchet, which means that if an attacker comes into possession of a chain key and the constant, he can decrypt subsequent messages. The message keys only ensure that each message is encrypted with a unique key and can theoretically be deleted after receiving the message. In addition, however, the respective keys contain a counter that allows the matching key to be found for the message, which could by chance not arrive in the order, in which they were sent. However, there is no security flaw in storing these message keys, because they are not used to generate other keys \parencite{perrin_double_2016}.
 
 
@@ -508,6 +506,7 @@ As already mentioned, SCP is a protocol for exchanging data securely via SSH. It
 \subsection{Webservers/Downloads}
 The possibility to create the private key at a CA also provides the potential to download it once on all devices via the web server of the CA. Since the connection is protected with HTTPS, this is also secure and user-friendly, since no separate servers have to be set up beforehand to start the file transfer. For this kind of transfer, only the known attacks for HTTPS would work. In addition, the server would have to carry out authentication, which again involves the risk of phising.
 
+\newpage
 \subsection{External Providers}
 Last but not least, there is the possibility to synchronize the private key with cloud providers like Google Drive or Dropbox on the different devices. However, this requires a great deal of trust in the cloud provider. In doing so, the legal regulations of the respective countries of origin must also be observed. Since the service may have to release the data at the request of the government \parencite{heise_us_nodate}. \newline
 The user-friendliness is very high and the security is similar to that of web servers, as the transmissions are usually secured with HTTPS. In addition, there is also the risk that the login data can be tapped by means of phishing. Once the key has fallen into the hands of criminals, it is no longer usable. The biggest shortcoming, however, is the great trust that must be placed in the cloud provider. 
@@ -690,6 +689,7 @@ fun generateKeyPair() {
 \end{lstlisting}
 
 Listing \ref{lst:keyparams} shows how an RSA key is created via the AndroidKeystoreProvider. Parameters such as the period of validity or the key length can also be specified here. A special security feature can be set with the option "setUserAuthenticationRequired(true)". This means that when the app accesses the key, the user must authenticate himself separately with stored features such as a pin or his fingerprint. Additionally, the Android version can be read out to check if there is a possibility that the device has a StrongBox.
+\newpage
 
 \begin{lstlisting}[label=lst:session,
 				   language=java,
@@ -722,9 +722,7 @@ fun startCommunication(qrCode: String) {
     }
 
     sessionBuilder.process(desktopKeyBundle)
-
     KeyTool().generateKeyPair()
-
     GrpcClient.instance.startCommunication()
 }
 \end{lstlisting}
@@ -737,8 +735,11 @@ To enable the cryptographic functions such as the generation of a signature in A
 
 \subsection{Desktop Client}
 The prototype for the third-party application has several functions to fulfill. The most important one is to create the server and generate the QR-Code. In addition, as mentioned, being a Certificate Authority. To simulate a user who wants to view different mails, every 20 seconds a file is read from the file system, which was previously encrypted using the public key generated on the smartphone. This file is then sent to the smartphone, decrypted and then displayed in plain text in the server console. 
-
-\begin{lstlisting}
+\newpage
+\begin{lstlisting}[label=lst:subscribe,
+				   language=java,
+				   firstnumber=1,
+				   caption=Creating a Session]
 override fun subscribeMails(responseObserver: StreamObserver<MailRequest>?): StreamObserver<MailResponse?> {
     observer = responseObserver
     
@@ -786,9 +787,10 @@ override fun subscribeMails(responseObserver: StreamObserver<MailRequest>?): Str
 }
 \end{lstlisting}
 
-In addition, the prototype has functions such as requesting the decryption or signing of a mail and the sending of a mail.
-% Nach dem verbinden mit QR Code könnte in der App eine Pin angezeigt werden die dann am PC eingegeben werden muss.
+\newpage
+In \ref{lst:subscribe} the smartphone establishes a the bidirectional connection between the two devices. The third-party application stores the client data of the smartphone in an observer object, which the application can use to send requests to the client again. When a response to a request is returned to the application, the application must check whether a SignalSession already exists for this client. If this is the case, you can work with the simple signal message. Otherwise, the PreKeySignalMessage is used to establish the session. Within the prototype, the check of which response it is is handled very simply with a string comparison. In a full-featured application, identifiers could be sent here, which signal to the application what kind of response it is. Afterwards the third party application checks if there are already further requests to the smartphone in the list and if so, sends them to the smartphone. In addition, the methods for error handling and stream termination must be implemented on the server and client side.
 
+In addition, the prototype has functions such as requesting the decryption or signing of a mail and the sending of a mail.
 
 %\chapter{Evaluation}
 
