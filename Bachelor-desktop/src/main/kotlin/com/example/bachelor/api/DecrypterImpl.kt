@@ -5,7 +5,6 @@ import com.example.bachelor.signal.SessionGenerator
 import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
 import org.bouncycastle.pkcs.PKCS10CertificationRequest
-import org.bouncycastle.util.encoders.Hex
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.ecc.Curve
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage
@@ -15,10 +14,8 @@ import java.security.KeyFactory
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.activation.DataHandler
 import javax.mail.*
 import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.mail.util.ByteArrayDataSource
@@ -42,7 +39,6 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
                         val message = SignalMessage(value.mail?.toByteArray())
                         val plaintext = SessionGenerator.instance.sessionCipher.decrypt(message)
                         if (String(plaintext) != "Das ist eine Testmail") {
-//                            println("Signatur ist korrekt?: ${verifySignature(plaintext)}")
                             if (!mailSend.get()) {
                                 sendMail(plaintext)
                                 mailSend.set(true)
@@ -140,12 +136,10 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         properties.setProperty("mail.smtp.auth", "true")
         val authenticator = object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
-                return PasswordAuthentication(from, "bach4test")
+                return PasswordAuthentication(from, "*****")
             }
         }
         val session = Session.getInstance(properties, authenticator)
-
-        session.debug = true
 
         val multipartMessage = MimeMultipart(ByteArrayDataSource(body, parts[1]))
 

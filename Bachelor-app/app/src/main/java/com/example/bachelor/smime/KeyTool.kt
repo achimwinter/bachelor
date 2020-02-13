@@ -64,7 +64,7 @@ class KeyTool {
                             KeyProperties.PURPOSE_VERIFY or
                             KeyProperties.PURPOSE_SIGN
                 )
-//                    .setUserAuthenticationRequired(true)
+                    .setUserAuthenticationRequired(true)
                     .setKeySize(4096)
                     .setKeyValidityEnd(end.time)
                     .setKeyValidityStart(start.time)
@@ -77,7 +77,7 @@ class KeyTool {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     initialize(
                         certBuilder
-//                            .setIsStrongBoxBacked(true)
+                            .setIsStrongBoxBacked(true)
                             .build()
                     )
                 } else {

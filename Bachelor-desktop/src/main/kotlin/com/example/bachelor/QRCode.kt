@@ -7,7 +7,6 @@ import com.google.zxing.qrcode.QRCodeWriter
 import java.awt.FlowLayout
 import java.io.ByteArrayOutputStream
 import java.net.DatagramSocket
-import java.net.Inet4Address
 import java.net.InetAddress
 import javax.swing.ImageIcon
 import javax.swing.JFrame

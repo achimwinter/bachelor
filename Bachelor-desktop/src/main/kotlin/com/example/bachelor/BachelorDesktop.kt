@@ -13,13 +13,7 @@ import java.security.Security
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
-import javax.mail.Authenticator
-import javax.mail.Message
-import javax.mail.PasswordAuthentication
-import javax.mail.Session
-import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
-import javax.mail.internet.MimeMessage
 
 
 class BachelorDesktop {
@@ -62,7 +56,7 @@ class BachelorDesktop {
     }
 
     //     In real use-case, clicks in a user interface would add messages.
-//     This is just for simulation purposes
+    //     This is just for simulation purposes
     private fun sendMessages() {
         val timer = Timer()
         val task = object : TimerTask() {
@@ -88,7 +82,7 @@ class BachelorDesktop {
         timer.schedule(task, 0, 20000)
     }
 
-    private fun createMail(): ByteArray{
+    private fun createMail(): ByteArray {
         val message = MimeBodyPart()
         val outputStream = ByteArrayOutputStream()
 

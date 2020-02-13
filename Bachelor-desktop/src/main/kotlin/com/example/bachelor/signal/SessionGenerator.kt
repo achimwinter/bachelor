@@ -20,7 +20,6 @@ class SessionGenerator {
     }
 
     val MOBILE_ADDRESS = SignalProtocolAddress("MOBILE", 1)
-    var DESKTOP_ADDRESS = SignalProtocolAddress("DESKTOP", 2)
 
     val signalProtocolStore = TestInMemorySignalProtocolStore()
     val desktopPreKeyPair = Curve.generateKeyPair()
