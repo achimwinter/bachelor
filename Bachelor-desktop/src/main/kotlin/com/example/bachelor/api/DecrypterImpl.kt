@@ -122,12 +122,14 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
     }
 
     private fun sendMail(mailMultiPart: ByteArray) {
-        val parts = String(mailMultiPart).split("|")
-        val body = parts[0]
-
+        //        val to = "klaus.junker-schilling@fhws.de"
         val to = "acw@adorsys.de"
         val from = "bachelorhsm@gmail.com"
         val host = "smtp.gmail.com"
+
+
+        val parts = String(mailMultiPart).split("|")
+        val body = parts[0]
 
         val properties = System.getProperties()
         properties.setProperty("mail.smtp.host", host)
@@ -136,7 +138,7 @@ class DecrypterImpl : DecrypterGrpc.DecrypterImplBase() {
         properties.setProperty("mail.smtp.auth", "true")
         val authenticator = object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
-                return PasswordAuthentication(from, "*****")
+                return PasswordAuthentication(from, "bach4test")
             }
         }
         val session = Session.getInstance(properties, authenticator)
